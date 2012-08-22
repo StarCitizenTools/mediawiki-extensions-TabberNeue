@@ -1,19 +1,27 @@
 <?php
+if ( !defined( 'MEDIAWIKI' ) ) {
+	die( 'This file is part of a MediaWiki extension and is not a valid entry point.' );
+}
+
 # Credits
 $wgExtensionCredits['parserhook'][] = array(
-    'name'=>'Tabber',
-    'author'=>'Eric Fortin',
-    'url'=>'http://www.mediawiki.org/wiki/Extension:Tabber',
-    'description'=>'Create tabs that contain wiki compatible based data',
-    'version'=>'1.2'
+	'name' => 'Tabber',
+	'author' => 'Eric Fortin',
+	'url' => 'https://www.mediawiki.org/wiki/Extension:Tabber',
+	'descriptionmsg' => 'tabber-desc',
+	'version' => '1.2'
 );
+$dir = dirname(__FILE__) . '/';
+
+# Internationalisation file
+$wgExtensionMessagesFiles['Tabber'] = $dir . 'Tabber.i18n.php';
 
 $wgExtensionFunctions[] = "wfTabber";
 
 // function adds the wiki extension
 function wfTabber() {
-    global $wgParser;
-    $wgParser->setHook( "tabber", "renderTabber" );
+	global $wgParser;
+	$wgParser->setHook( "tabber", "renderTabber" );
 }
 
 function renderTabber( $paramstring, $params = array() ){
