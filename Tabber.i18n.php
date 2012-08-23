@@ -41,6 +41,13 @@ $messages['es'] = array(
 	'tabber-desc' => 'Permite para fichas dentro de una página',
 );
 
+/** Galician (galego)
+ * @author Toliño
+ */
+$messages['gl'] = array(
+	'tabber-desc' => 'Permite a creación de lapelas dentro dunha páxina',
+);
+
 /** Upper Sorbian (hornjoserbsce)
  * @author Michawiki
  */
@@ -53,6 +60,20 @@ $messages['hsb'] = array(
  */
 $messages['ja'] = array(
 	'tabber-desc' => 'ページ内にタブを作成できるようにする',
+);
+
+/** Macedonian (македонски)
+ * @author Bjankuloski06
+ */
+$messages['mk'] = array(
+	'tabber-desc' => 'Овозможува создавање на јазичиња во рамките на една страница',
+);
+
+/** Dutch (Nederlands)
+ * @author SPQRobin
+ */
+$messages['nl'] = array(
+	'tabber-desc' => 'Maakt het mogelijk om tabbladen binnen een pagina te maken',
 );
 
 /** Tagalog (Tagalog)
