@@ -20,6 +20,13 @@ $messages['qqq'] = array(
 	'tabber-desc' => '{{desc}}',
 );
 
+/** Belarusian (Taraškievica orthography) (‪беларуская (тарашкевіца)‬)
+ * @author Wizardist
+ */
+$messages['be-tarask'] = array(
+	'tabber-desc' => 'Дазваляе ствараць закладкі на старонцы',
+);
+
 /** German (Deutsch)
  * @author Kghbln
  */
@@ -39,6 +46,13 @@ $messages['dsb'] = array(
  */
 $messages['es'] = array(
 	'tabber-desc' => 'Permite para fichas dentro de una página',
+);
+
+/** French (français)
+ * @author Wyz
+ */
+$messages['fr'] = array(
+	'tabber-desc' => 'Permet de créer des onglets sur une page',
 );
 
 /** Galician (galego)
