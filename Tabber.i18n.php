@@ -62,11 +62,25 @@ $messages['gl'] = array(
 	'tabber-desc' => 'Permite a creación de lapelas dentro dunha páxina',
 );
 
+/** Hebrew (עברית)
+ * @author Amire80
+ */
+$messages['he'] = array(
+	'tabber-desc' => 'אפשרות ליצור לשוניות בדף',
+);
+
 /** Upper Sorbian (hornjoserbsce)
  * @author Michawiki
  */
 $messages['hsb'] = array(
 	'tabber-desc' => 'Zmóžnja rajtarki znutřka strony wutworić',
+);
+
+/** Italian (italiano)
+ * @author Darth Kule
+ */
+$messages['it'] = array(
+	'tabber-desc' => "Permette di creare schede all'interno di una pagina",
 );
 
 /** Japanese (日本語)
