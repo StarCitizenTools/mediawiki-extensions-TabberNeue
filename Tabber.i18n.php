@@ -104,6 +104,13 @@ $messages['nl'] = array(
 	'tabber-desc' => 'Maakt het mogelijk om tabbladen binnen een pagina te maken',
 );
 
+/** Russian (русский)
+ * @author Lockal
+ */
+$messages['ru'] = array(
+	'tabber-desc' => 'Позволяет создавать вкладки внутри страницы',
+);
+
 /** Tagalog (Tagalog)
  * @author AnakngAraw
  */
