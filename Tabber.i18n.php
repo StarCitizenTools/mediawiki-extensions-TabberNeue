@@ -104,6 +104,13 @@ $messages['nl'] = array(
 	'tabber-desc' => 'Maakt het mogelijk om tabbladen binnen een pagina te maken',
 );
 
+/** Piedmontese (Piemontèis)
+ * @author Dragonòt
+ */
+$messages['pms'] = array(
+	'tabber-desc' => 'A përmëtt ëd creé dle schede drinta a na pagina',
+);
+
 /** Russian (русский)
  * @author Lockal
  */
