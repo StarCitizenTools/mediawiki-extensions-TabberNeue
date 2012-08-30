@@ -105,10 +105,11 @@ $messages['nl'] = array(
 );
 
 /** Piedmontese (Piemontèis)
+ * @author Borichèt
  * @author Dragonòt
  */
 $messages['pms'] = array(
-	'tabber-desc' => 'A përmëtt ëd creé dle schede drinta a na pagina',
+	'tabber-desc' => 'A përmët ëd creé dle schede drinta a na pàgina',
 );
 
 /** Russian (русский)
