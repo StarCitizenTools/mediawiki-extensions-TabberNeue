@@ -90,6 +90,13 @@ $messages['ja'] = array(
 	'tabber-desc' => 'ページ内にタブを作成できるようにする',
 );
 
+/** Korean (한국어)
+ * @author 아라
+ */
+$messages['ko'] = array(
+	'tabber-desc' => '문서 내에서 탭 만들기 허용',
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */
