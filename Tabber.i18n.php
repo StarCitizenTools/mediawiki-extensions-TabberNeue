@@ -27,6 +27,13 @@ $messages['be-tarask'] = array(
 	'tabber-desc' => 'Дазваляе ствараць закладкі на старонцы',
 );
 
+/** Catalan (català)
+ * @author BroOk
+ */
+$messages['ca'] = array(
+	'tabber-desc' => 'Permet crear tabs dins una pàgina',
+);
+
 /** German (Deutsch)
  * @author Kghbln
  */
