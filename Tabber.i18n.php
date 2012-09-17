@@ -104,6 +104,13 @@ $messages['ko'] = array(
 	'tabber-desc' => '문서 내에서 탭 만들기 허용',
 );
 
+/** Colognian (Ripoarisch)
+ * @author Purodha
+ */
+$messages['ksh'] = array(
+	'tabber-desc' => 'Määd et müjjelesch, en Sigge  Tabs erin ze maache.',
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */
