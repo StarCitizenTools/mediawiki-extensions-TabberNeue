@@ -27,6 +27,13 @@ $messages['be-tarask'] = array(
 	'tabber-desc' => 'Дазваляе ствараць закладкі на старонцы',
 );
 
+/** Breton (brezhoneg)
+ * @author Y-M D
+ */
+$messages['br'] = array(
+	'tabber-desc' => 'Aotreañ a ra krouiñ ivinelloù war ur bajenn',
+);
+
 /** Catalan (català)
  * @author BroOk
  */
