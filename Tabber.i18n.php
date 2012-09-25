@@ -132,6 +132,13 @@ $messages['nl'] = array(
 	'tabber-desc' => 'Maakt het mogelijk om tabbladen binnen een pagina te maken',
 );
 
+/** Polish (polski)
+ * @author BeginaFelicysym
+ */
+$messages['pl'] = array(
+	'tabber-desc' => 'Pozwala na tworzenie zakładek na stronie',
+);
+
 /** Piedmontese (Piemontèis)
  * @author Borichèt
  * @author Dragonòt
