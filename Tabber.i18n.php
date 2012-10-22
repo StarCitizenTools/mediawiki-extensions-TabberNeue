@@ -15,7 +15,8 @@ $messages['en'] = array(
 	'tabber-desc' => 'Allows to create tabs within a page',
 );
 
-/** Message documentation (Message documentation) */
+/** Message documentation (Message documentation)
+ */
 $messages['qqq'] = array(
 	'tabber-desc' => '{{desc}}',
 );
@@ -115,7 +116,7 @@ $messages['ko'] = array(
  * @author Purodha
  */
 $messages['ksh'] = array(
-	'tabber-desc' => 'Määd et müjjelesch, en Sigge  Tabs erin ze maache.',
+	'tabber-desc' => 'Määd et müjjelesch, en Sigge  Tabs erin ze maache.', # Fuzzy
 );
 
 /** Macedonian (македонски)
@@ -160,4 +161,3 @@ $messages['ru'] = array(
 $messages['tl'] = array(
 	'tabber-desc' => 'Nagpapahintulot upang makalikha ng mga laylay sa loob ng isang pahina',
 );
-
