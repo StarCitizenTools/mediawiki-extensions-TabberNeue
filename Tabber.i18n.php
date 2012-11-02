@@ -161,3 +161,10 @@ $messages['ru'] = array(
 $messages['tl'] = array(
 	'tabber-desc' => 'Nagpapahintulot upang makalikha ng mga laylay sa loob ng isang pahina',
 );
+
+/** Simplified Chinese (中文（简体）‎)
+ * @author Yfdyh000
+ */
+$messages['zh-hans'] = array(
+	'tabber-desc' => '允许在页面内创建选项卡',
+);
