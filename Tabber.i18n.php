@@ -63,6 +63,13 @@ $messages['es'] = array(
 	'tabber-desc' => 'Permite para fichas dentro de una página',
 );
 
+/** Finnish (suomi)
+ * @author Nedergard
+ */
+$messages['fi'] = array(
+	'tabber-desc' => 'Mahdollista välilehtien luonnin sivulla',
+);
+
 /** French (français)
  * @author Wyz
  */
