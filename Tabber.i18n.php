@@ -65,9 +65,10 @@ $messages['es'] = array(
 
 /** Finnish (suomi)
  * @author Nedergard
+ * @author Nike
  */
 $messages['fi'] = array(
-	'tabber-desc' => 'Mahdollista välilehtien luonnin sivulla',
+	'tabber-desc' => 'Mahdollistaa välilehtien luonnin sivulla',
 );
 
 /** French (français)
