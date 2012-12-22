@@ -21,6 +21,13 @@ $messages['qqq'] = array(
 	'tabber-desc' => '{{desc}}',
 );
 
+/** Asturian (asturianu)
+ * @author Xuacu
+ */
+$messages['ast'] = array(
+	'tabber-desc' => "Permite crear llingüetes dientro d'una páxina",
+);
+
 /** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)
  * @author Wizardist
  */
