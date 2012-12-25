@@ -177,6 +177,13 @@ $messages['tl'] = array(
 	'tabber-desc' => 'Nagpapahintulot upang makalikha ng mga laylay sa loob ng isang pahina',
 );
 
+/** Ukrainian (українська)
+ * @author Ата
+ */
+$messages['uk'] = array(
+	'tabber-desc' => 'Дозволяє створювати вкладки всередині сторінки',
+);
+
 /** Simplified Chinese (中文（简体）‎)
  * @author Yfdyh000
  */
