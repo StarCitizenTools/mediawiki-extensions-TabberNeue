@@ -170,6 +170,13 @@ $messages['ru'] = array(
 	'tabber-desc' => 'Позволяет создавать вкладки внутри страницы',
 );
 
+/** Sinhala (සිංහල)
+ * @author පසිඳු කාවින්ද
+ */
+$messages['si'] = array(
+	'tabber-desc' => 'පිටු අතර ටැබයන් තැනීමට ඉඩ දෙයි',
+);
+
 /** Tagalog (Tagalog)
  * @author AnakngAraw
  */
