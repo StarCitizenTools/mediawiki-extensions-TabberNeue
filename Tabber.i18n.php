@@ -177,6 +177,13 @@ $messages['si'] = array(
 	'tabber-desc' => 'පිටු අතර ටැබයන් තැනීමට ඉඩ දෙයි',
 );
 
+/** Swedish (svenska)
+ * @author WikiPhoenix
+ */
+$messages['sv'] = array(
+	'tabber-desc' => 'Gör det möjligt att skapa flikar på en sida',
+);
+
 /** Tagalog (Tagalog)
  * @author AnakngAraw
  */
