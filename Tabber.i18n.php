@@ -163,6 +163,13 @@ $messages['pms'] = array(
 	'tabber-desc' => 'A përmët ëd creé dle schede drinta a na pàgina',
 );
 
+/** tarandíne (tarandíne)
+ * @author Joetaras
+ */
+$messages['roa-tara'] = array(
+	'tabber-desc' => "Permette de ccrejà le schede jndr'à 'na pàgene",
+);
+
 /** Russian (русский)
  * @author Lockal
  */
