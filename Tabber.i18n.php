@@ -16,9 +16,10 @@ $messages['en'] = array(
 );
 
 /** Message documentation (Message documentation)
+ * @author Shirayuki
  */
 $messages['qqq'] = array(
-	'tabber-desc' => '{{desc}}',
+	'tabber-desc' => '{{desc|name=Tabber|url=http://www.mediawiki.org/wiki/Extension:Tabber}}',
 );
 
 /** Asturian (asturianu)
