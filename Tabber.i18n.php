@@ -212,3 +212,10 @@ $messages['uk'] = array(
 $messages['zh-hans'] = array(
 	'tabber-desc' => '允许在页面内创建选项卡',
 );
+
+/** Traditional Chinese (中文（繁體）‎)
+ * @author Justincheng12345
+ */
+$messages['zh-hant'] = array(
+	'tabber-desc' => '容許於頁面內創建分頁',
+);
