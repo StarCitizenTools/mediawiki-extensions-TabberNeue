@@ -36,6 +36,13 @@ $messages['be-tarask'] = array(
 	'tabber-desc' => 'Дазваляе ствараць закладкі на старонцы',
 );
 
+/** Bulgarian (български)
+ * @author DCLXVI
+ */
+$messages['bg'] = array(
+	'tabber-desc' => 'Позволява създаването на табове в страниците',
+);
+
 /** Breton (brezhoneg)
  * @author Y-M D
  */
