@@ -171,6 +171,13 @@ $messages['pms'] = array(
 	'tabber-desc' => 'A përmët ëd creé dle schede drinta a na pàgina',
 );
 
+/** Brazilian Portuguese (português do Brasil)
+ * @author Cainamarques
+ */
+$messages['pt-br'] = array(
+	'tabber-desc' => 'Permite a criação de abas dentro de uma página',
+);
+
 /** tarandíne (tarandíne)
  * @author Joetaras
  */
