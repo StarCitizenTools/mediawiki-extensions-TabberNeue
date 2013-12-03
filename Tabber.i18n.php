@@ -221,10 +221,11 @@ $messages['uk'] = array(
 );
 
 /** Simplified Chinese (中文（简体）‎)
+ * @author Xiaomingyan
  * @author Yfdyh000
  */
 $messages['zh-hans'] = array(
-	'tabber-desc' => '允许在页面内创建选项卡',
+	'tabber-desc' => '允许在页面内创建标签页',
 );
 
 /** Traditional Chinese (中文（繁體）‎)
