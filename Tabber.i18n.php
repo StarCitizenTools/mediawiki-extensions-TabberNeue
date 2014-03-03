@@ -78,6 +78,13 @@ $messages['es'] = array(
 	'tabber-desc' => 'Permite para fichas dentro de una página',
 );
 
+/** Persian (فارسی)
+ * @author Armin1392
+ */
+$messages['fa'] = array(
+	'tabber-desc' => 'اجازه برای ایجاد تب‌ها درون یک صفحه',
+);
+
 /** Finnish (suomi)
  * @author Nedergard
  * @author Nike
