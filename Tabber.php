@@ -9,11 +9,12 @@ $wgExtensionCredits['parserhook'][] = array(
 	'author' => 'Eric Fortin',
 	'url' => 'https://www.mediawiki.org/wiki/Extension:Tabber',
 	'descriptionmsg' => 'tabber-desc',
-	'version' => '1.2'
+	'version' => '1.3.0'
 );
 $dir = dirname(__FILE__) . '/';
 
 # Internationalisation file
+$wgMessagesDirs['Tabber'] = __DIR__ . '/i18n';
 $wgExtensionMessagesFiles['Tabber'] = $dir . 'Tabber.i18n.php';
 
 $wgExtensionFunctions[] = "wfTabber";
@@ -27,17 +28,17 @@ function wfTabber() {
 function renderTabber( $paramstring, $params = array() ){
 	global $wgParser, $wgScriptPath;
 	$wgParser->disableCache();
-	
+
 	$path = $wgScriptPath . '/extensions/Tabber/';
 
 	$htmlHeader = '<script type="text/javascript" src="'.$path.'Tabber.js"></script>'
 		. '<link rel="stylesheet" href="'.$path.'Tabber.css" TYPE="text/css" MEDIA="screen">'
 		. '<div class="tabber">';
-		
+
 	$htmlFooter = '</div>';
-	
+
 	$htmlTabs = '';
-	
+
 	$arr = explode("|-|", $paramstring);
 	foreach($arr as $tab){
 		$htmlTabs .= buildTab($tab);
@@ -48,13 +49,13 @@ function renderTabber( $paramstring, $params = array() ){
 
 function buildTab($tab){
 	global $wgParser;
-	
+
 	if( trim($tab) == '' ) return '';
-	
+
 	$arr = preg_split("/=/",$tab);
 	$tabName = array_shift( $arr );
 	$tabBody = $wgParser->recursiveTagParse( implode("=",$arr) );
-	
+
 	$tab = '<div class="tabbertab" title="'.htmlspecialchars($tabName).'">'
 		. '<p>'.$tabBody.'</p>'
 		. '</div>';
