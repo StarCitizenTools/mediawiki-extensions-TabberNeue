@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Wyz"
-        ]
-    },
-    "tabber-desc": "Permet de créer des onglets sur une page"
+	"@metadata": {
+		"authors": [
+			"Wyz"
+		]
+	},
+	"tabber-desc": "Permet de créer des onglets sur une page"
 }

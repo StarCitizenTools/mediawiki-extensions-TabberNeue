@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "BroOk"
-        ]
-    },
-    "tabber-desc": "Permet crear tabs dins una pàgina"
+	"@metadata": {
+		"authors": [
+			"BroOk"
+		]
+	},
+	"tabber-desc": "Permet crear tabs dins una pàgina"
 }
