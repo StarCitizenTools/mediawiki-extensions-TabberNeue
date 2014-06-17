@@ -29,6 +29,7 @@ $wgExtensionCredits['parserhook'][] = $credits;
 /******************************************/
 $extDir = __DIR__.'/';
 
+$wgMessagesDirs['Tabber']					= "{$extDir}/i18n";
 $wgExtensionMessagesFiles['Tabber']			= "{$extDir}/Tabber.i18n.php";
 
 $wgAutoloadClasses['TabberHooks']			= "{$extDir}/Tabber.hooks.php";

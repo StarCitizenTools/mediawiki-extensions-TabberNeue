@@ -33,3 +33,4 @@ if ( !function_exists( 'wfJsonI18nShim4f0a5bb1a7dd77ea' ) ) {
 
 	$GLOBALS['wgHooks']['LocalisationCacheRecache'][] = 'wfJsonI18nShim4f0a5bb1a7dd77ea';
 }
+?>
