@@ -1,64 +1,44 @@
 <?php
-if ( !defined( 'MEDIAWIKI' ) ) {
-	die( 'This file is part of a MediaWiki extension and is not a valid entry point.' );
-}
+/**
+ * Tabber
+ * Tabber Main File
+ *
+ * @author		Eric Fortin, Alexia E. Smith
+ * @license		GPL
+ * @package		Tabber
+ * @link		https://www.mediawiki.org/wiki/Extension:Tabber
+ *
+**/
 
-# Credits
-$wgExtensionCredits['parserhook'][] = array(
-	'name' => 'Tabber',
-	'author' => 'Eric Fortin',
-	'url' => 'https://www.mediawiki.org/wiki/Extension:Tabber',
-	'descriptionmsg' => 'tabber-desc',
-	'version' => '1.3.0'
-);
-$dir = dirname(__FILE__) . '/';
+/******************************************/
+/* Credits                                */
+/******************************************/
+$credits = [
+	'path'				=> __FILE__,
+	'name'				=> 'Tabber',
+	'author'			=> 'Eric Fortin',
+	'url'				=> 'https://www.mediawiki.org/wiki/Extension:Tabber',
+	'descriptionmsg'	=> 'tabber-desc',
+	'version'			=> '2.0'
+];
+$wgExtensionCredits['parserhook'][] = $credits;
 
-# Internationalisation file
-$wgMessagesDirs['Tabber'] = __DIR__ . '/i18n';
-$wgExtensionMessagesFiles['Tabber'] = $dir . 'Tabber.i18n.php';
 
-$wgExtensionFunctions[] = "wfTabber";
+/******************************************/
+/* Language Strings, Page Aliases, Hooks  */
+/******************************************/
+$extDir = __DIR__.'/';
 
-// function adds the wiki extension
-function wfTabber() {
-	global $wgParser;
-	$wgParser->setHook( "tabber", "renderTabber" );
-}
+$wgExtensionMessagesFiles['Tabber']			= "{$extDir}/Tabber.i18n.php";
 
-function renderTabber( $paramstring, $params = array() ){
-	global $wgParser, $wgScriptPath;
-	$wgParser->disableCache();
+$wgAutoloadClasses['TabberHooks']			= "{$extDir}/Tabber.hooks.php";
 
-	$path = $wgScriptPath . '/extensions/Tabber/';
+$wgHooks['ParserFirstCallInit'][]			= 'TabberHooks::onParserFirstCallInit';
 
-	$htmlHeader = '<script type="text/javascript" src="'.$path.'Tabber.js"></script>'
-		. '<link rel="stylesheet" href="'.$path.'Tabber.css" TYPE="text/css" MEDIA="screen">'
-		. '<div class="tabber">';
-
-	$htmlFooter = '</div>';
-
-	$htmlTabs = '';
-
-	$arr = explode("|-|", $paramstring);
-	foreach($arr as $tab){
-		$htmlTabs .= buildTab($tab);
-	}
-
-	return $htmlHeader . $htmlTabs . $htmlFooter;
-}
-
-function buildTab($tab){
-	global $wgParser;
-
-	if( trim($tab) == '' ) return '';
-
-	$arr = preg_split("/=/",$tab);
-	$tabName = array_shift( $arr );
-	$tabBody = $wgParser->recursiveTagParse( implode("=",$arr) );
-
-	$tab = '<div class="tabbertab" title="'.htmlspecialchars($tabName).'">'
-		. '<p>'.$tabBody.'</p>'
-		. '</div>';
-
-	return $tab;
-}
+$wgResourceModules['ext.Social']				= [
+	'localBasePath' => __DIR__,
+	'remoteExtPath' => 'Tabber',
+	'styles'		=> ['css/tabber.css'],
+	'scripts'		=> ['js/tabber.js']
+];
+?>
