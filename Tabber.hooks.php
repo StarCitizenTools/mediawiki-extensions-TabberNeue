@@ -35,7 +35,7 @@ class TabberHooks {
 	 * @return	string	HTML
 	 */
 	static public function renderTabber($input, array $args, Parser $parser, PPFrame $frame) {
-		RequestContext::getMain()->getOutput()->addModules('ext.Tabber');
+		$parser->getOutput()->addModules('ext.Tabber');
 
 		$arr = explode("|-|", $input);
 		foreach ($arr as $tab) {

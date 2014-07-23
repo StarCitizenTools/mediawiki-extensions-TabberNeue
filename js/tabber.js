@@ -346,24 +346,12 @@ function tabberAutomatic(tabberArgs) {
 } /*==================================================*/
 
 function tabberAutomaticOnLoad(tabberArgs) {
-/* This function adds tabberAutomatic to the window.onload event,
-     so it will run after the document has finished loading.
-  */
-	var oldOnLoad;
 	if (!tabberArgs) {
 		tabberArgs = {};
-	} /* Taken from: http://simon.incutio.com/archive/2004/05/26/addLoadEvent */
-	oldOnLoad = window.onload;
-	if (typeof window.onload != 'function') {
-		window.onload = function() {
-			tabberAutomatic(tabberArgs);
-		};
-	} else {
-		window.onload = function() {
-			oldOnLoad();
-			tabberAutomatic(tabberArgs);
-		};
 	}
+	jQuery(function() {
+			tabberAutomatic(tabberArgs);
+	});
 } /*==================================================*/
 /* Run tabberAutomaticOnload() unless the "manualStartup" option was specified */
 if (typeof tabberOptions == 'undefined') {

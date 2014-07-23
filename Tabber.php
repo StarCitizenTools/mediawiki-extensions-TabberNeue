@@ -36,7 +36,7 @@ $wgAutoloadClasses['TabberHooks']			= "{$extDir}/Tabber.hooks.php";
 
 $wgHooks['ParserFirstCallInit'][]			= 'TabberHooks::onParserFirstCallInit';
 
-$wgResourceModules['ext.Social']				= [
+$wgResourceModules['ext.Tabber']			= [
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'Tabber',
 	'styles'		=> ['css/tabber.css'],
