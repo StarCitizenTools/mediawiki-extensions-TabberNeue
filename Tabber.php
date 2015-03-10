@@ -42,4 +42,3 @@ $wgResourceModules['ext.Tabber']			= [
 	'styles'		=> ['css/tabber.css'],
 	'scripts'		=> ['js/tabber.js']
 ];
-?>
