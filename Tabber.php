@@ -16,7 +16,7 @@
 $credits = [
 	'path'				=> __FILE__,
 	'name'				=> 'Tabber',
-	'author'			=> 'Eric Fortin',
+	'author'			=> ['Eric Fortin', 'Alexia E. Smith'],
 	'url'				=> 'https://www.mediawiki.org/wiki/Extension:Tabber',
 	'descriptionmsg'	=> 'tabber-desc',
 	'version'			=> '2.0'
