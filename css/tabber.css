@@ -10,10 +10,6 @@
  * @see			http://www.barelyfitz.com/projects/tabber/
  */
 
-.tabberlive .tabbertabhide {
-    display: none;
-}
-
 ul.tabbernav {
     margin: 0;
     padding: 3px 0;
@@ -61,13 +57,8 @@ ul.tabbernav li.tabberactive a:hover {
     border-bottom: 1px solid #FFF;
 }
 
-.tabberlive .tabbertab {
+.tabber .tabbertab {
     padding: 5px;
     border: 1px solid #CCC;
     border-top: 0;
-}
-
-.tabberlive .tabbertab h2,
-.tabberlive .tabbertab h3 {
-    display: none;
 }
