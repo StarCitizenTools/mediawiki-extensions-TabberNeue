@@ -1,35 +1,33 @@
 <?php
 /**
- * Tabber
- * Tabber Main File
+ * Tabber Hooks
  *
- * @author		Eric Fortin, Alexia E. Smith
+ * @author		Eric Fortin, Alexia E. Smith, Kris Blair
  * @license		GPL
  * @package		Tabber
  * @link		https://www.mediawiki.org/wiki/Extension:Tabber
- *
-**/
+ */
 
 class TabberHooks {
 	/**
-	 * Sets up this extension's parser functions.
+	 * Sets up this extension's parser functions
 	 *
 	 * @access	public
-	 * @param	object	Parser object passed as a reference.
-	 * @return	boolean	true
+	 * @param	object	Parser object passed as a reference
+	 * @return	boolean	True
 	 */
 	static public function onParserFirstCallInit(Parser &$parser) {
-		$parser->setHook("tabber", "TabberHooks::renderTabber");
+		$parser->setHook('tabber', 'TabberHooks::renderTabber');
 
 		return true;
 	}
 
 	/**
-	 * Renders the necessary HTML for a <tabber> tag.
+	 * Renders the necessary HTML for a <tabber> tag
 	 *
 	 * @access	public
-	 * @param	string	The input URL between the beginning and ending tags.
-	 * @param	array	Array of attribute arguments on that beginning tag.
+	 * @param	string	The input URL between the beginning and ending tags
+	 * @param	array	Array of attribute arguments on that beginning tag
 	 * @param	object	Mediawiki Parser Object
 	 * @param	object	Mediawiki PPFrame Object
 	 * @return	string	HTML
@@ -37,18 +35,18 @@ class TabberHooks {
 	static public function renderTabber($input, array $args, Parser $parser, PPFrame $frame) {
 		$parser->getOutput()->addModules('ext.Tabber');
 
-		$arr = explode("|-|", $input);
+		$arr = explode('|-|', $input);
 		foreach ($arr as $tab) {
 			$htmlTabs .= self::buildTab($tab, $parser);
 		}
 
-		$HTML = '<div class="tabber">'.$htmlTabs."</div>";
+		$HTML = "<div class='tabber'>{$htmlTabs}</div>";
 
 		return $HTML;
 	}
 
 	/**
-	 * Build individual tab.
+	 * Build individual tab
 	 *
 	 * @access	private
 	 * @param	string	Tab information
@@ -65,10 +63,9 @@ class TabberHooks {
 		$tabName = array_shift($args);
 		$tabBody = $parser->recursiveTagParse(implode('=', $args));
 
-		$tab = '
-			<div class="tabbertab" title="'.htmlspecialchars($tabName).'">
-				<p>'.$tabBody.'</p>
-			</div>';
+		$tab = "<div class='tabbertab' title='" . htmlspecialchars($tabName) . "'>
+					<p>{$tabBody}</p>
+				</div>";
 
 		return $tab;
 	}
