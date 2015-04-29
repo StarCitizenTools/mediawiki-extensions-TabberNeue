@@ -38,16 +38,13 @@
 	};
 
 	$('.tabbernav li a').click(function() {
-		tabShow($(this).attr('title'));
-	})
-
-	function tabShow(tabberIndex) {
+		var title = $(this).attr('title');
 		location.hash = '#' + title;
 		$('.tabbertab').hide();
 		$('.tabberactive').removeClass('tabberactive');
 		$('.tabbertab[title="' + title + '"]').show();
 		$('.tabbernav li a[title="' + title + '"]').addClass('tabberactive');
-	}
+	});
 })(jQuery);
 
 $(document).ready(function() {
