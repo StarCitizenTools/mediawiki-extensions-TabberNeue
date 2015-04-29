@@ -1,39 +1,42 @@
 <?php
 /**
  * Tabber
+ * Tabber Main File
  *
- * @author		Eric Fortin, Alexia E. Smith, Kris Blair
+ * @author		Eric Fortin, Alexia E. Smith
  * @license		GPL
  * @package		Tabber
  * @link		https://www.mediawiki.org/wiki/Extension:Tabber
- */
+ *
+**/
 
-/*****************************************/
-/*                Credits                */
-/*****************************************/
+/******************************************/
+/* Credits                                */
+/******************************************/
 $credits = [
 	'path'				=> __FILE__,
 	'name'				=> 'Tabber',
-	'author'			=> ['Eric Fortin', 'Alexia E. Smith', 'Curse Inc. Wiki Platform Team', 'Kris Blair'],
+	'author'			=> ['Eric Fortin', 'Alexia E. Smith', 'Curse Inc. Wiki Platform Team'],
 	'url'				=> 'https://www.mediawiki.org/wiki/Extension:Tabber',
 	'descriptionmsg'	=> 'tabber-desc',
-	'version'			=> '2.1'
+	'version'			=> '2.2'
 ];
 $wgExtensionCredits['parserhook'][] = $credits;
 
-/*****************************************/
-/* Language Strings, Page Aliases, Hooks */
-/*****************************************/
-$extDir = __DIR__ . '/';
 
-$wgMessagesDirs['Tabber']			= "{$extDir}/i18n";
-$wgExtensionMessagesFiles['Tabber']	= "{$extDir}/Tabber.i18n.php";
+/******************************************/
+/* Language Strings, Page Aliases, Hooks  */
+/******************************************/
+$extDir = __DIR__.'/';
 
-$wgAutoloadClasses['TabberHooks']	= "{$extDir}/Tabber.hooks.php";
+$wgMessagesDirs['Tabber']					= "{$extDir}/i18n";
+$wgExtensionMessagesFiles['Tabber']			= "{$extDir}/Tabber.i18n.php";
 
-$wgHooks['ParserFirstCallInit'][]	= 'TabberHooks::onParserFirstCallInit';
+$wgAutoloadClasses['TabberHooks']			= "{$extDir}/Tabber.hooks.php";
 
-$wgResourceModules['ext.Tabber']	= [
+$wgHooks['ParserFirstCallInit'][]			= 'TabberHooks::onParserFirstCallInit';
+
+$wgResourceModules['ext.Tabber']			= [
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'Tabber',
 	'styles'		=> ['css/tabber.css'],

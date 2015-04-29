@@ -1,13 +1,4 @@
-/**
- * Tabber JS
- *
- * @author		Alexia E. Smith, Kris Blair
- * @license		GPL
- * @package		Tabber
- * @link		https://www.mediawiki.org/wiki/Extension:Tabber
- */
- 
- (function($) {
+(function($) {
 	$.fn.tabber = function() {
 		return this.each(function() {
 			// create tabs
