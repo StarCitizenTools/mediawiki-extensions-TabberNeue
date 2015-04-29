@@ -11,7 +11,8 @@
 	$.fn.tabber = function() {
 		return this.each(function() {
 			// create tabs
-			var $this = $(this), tabContent = $this.find('.tabbertab'),
+			var $this = $(this),
+			    tabContent = $this.find('.tabbertab'),
 			    nav = $('<ul>').addClass('tabbernav');
 			tabContent.each(function() {
 				var anchor = $('<a>').text(this.title).attr('title', this.title).attr('href', 'javascript:void(0);');
