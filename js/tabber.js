@@ -8,46 +8,49 @@
  */
  
  (function($) {
-	var tabs = {};
-
 	$.fn.tabber = function() {
-		var nav = $('<ul>');
-		this.each(function() {
-			var navli = $('<li>'),
-				nava = $('<a>'),
-				title = $(this).attr('title');
-			nava.text(title)
-				.attr('href', 'javascript:void(null);')
-				.title = title;
-			navli.append(nava);
-			nav.append(navli);
+		return this.each(function() {
+			// create tabs
+			var $this = $(this),
+			    tabContent = $this.find('.tabbertab'),
+			    nav = $('<ul>').addClass('tabbernav');
+			tabContent.each(function() {
+				var anchor = $('<a>').text(this.title).attr('title', this.title).attr('href', 'javascript:void(0);');
+				$('<li>').append(anchor).appendTo(nav);
+			});
+			$this.prepend(nav);
+
+			/**
+			 * Internal helper function for showing content
+			 * @param  string title to show, matching only 1 tab
+			 * @return true if matching tab could be shown
+			 */
+			function showContent(title) {
+				var content = tabContent.filter('[title="' + title + '"]');
+				if (content.length !== 1) return false;
+				tabContent.hide();
+				content.show();
+				nav.find('.tabberactive').removeClass('tabberactive');
+				nav.find('a[title="' + title + '"]').parent().addClass('tabberactive');
+				return true;
+			}
+			// setup initial state
+			var loc = location.hash.replace('#', '');
+			if ( loc == '' || !showContent(loc) ) {
+				showContent(tabContent.first().attr('title'));
+			}
+
+			// Repond to clicks on the nav tabs
+			nav.on('click', 'a', function(e) {
+				var title = $(this).attr('title');
+				e.preventDefault();
+				location.hash = '#' + title;
+				showContent( title );
+			});
+
+			$this.addClass('tabberlive');
 		});
-		nav.addClass('tabbernav');
-		$('.tabber').append(nav);
-		$('.tabbertab').first().show();
-		if (document.hash != '' && document.hash != '#') {
-			var display = document.hash.replace('#', '');
-			$('.tabbertab[title="' + display + '"]').show();
-			$('.tabbernav li a[title="' + display + '"]').addClass('tabberactive');
-		} else {
-			var display = $('.tabbertab');
-			display.first().show();
-			$('.tabbernav li [title="' + display.attr('title') + '"]').first().addClass('tabberactive');
-		}
-		return this;
 	};
-
-	$('.tabbernav li a').click(function() {
-		tabShow($(this).attr('title'));
-	})
-
-	function tabShow(tabberIndex) {
-		location.hash = '#' + title;
-		$('.tabbertab').hide();
-		$('.tabberactive').removeClass('tabberactive');
-		$('.tabbertab[title="' + title + '"]').show();
-		$('.tabbernav li a[title="' + title + '"]').addClass('tabberactive');
-	}
 })(jQuery);
 
 $(document).ready(function() {
