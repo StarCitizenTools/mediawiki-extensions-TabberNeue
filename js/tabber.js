@@ -11,10 +11,10 @@
 	var tabs = {};
 
 	$.fn.tabber = function() {
-		var nav = $('ul');
+		var nav = $('<ul>');
 		this.each(function() {
-			var navli = $('li'),
-				nava = $('a'),
+			var navli = $('<li>'),
+				nava = $('<a>'),
 				title = $(this).attr('title');
 			nava.text(title)
 				.attr('href', 'javascript:void(null);')
@@ -23,8 +23,8 @@
 			nav.append(navli);
 		});
 		nav.addClass('tabbernav');
-		$('tabber').append(nav);
-		$('tabbertab').first().show();
+		$('.tabber').append(nav);
+		$('.tabbertab').first().show();
 		if (document.hash != '' && document.hash != '#') {
 			var display = document.hash.replace('#', '');
 			$('.tabbertab[title="' + display + '"]').show();
@@ -32,12 +32,12 @@
 		} else {
 			var display = $('.tabbertab');
 			display.first().show();
-			$('tabbernav li [title="' + display.attr('title') + '"]').first().addClass('tabberactive');
+			$('.tabbernav li [title="' + display.attr('title') + '"]').first().addClass('tabberactive');
 		}
 		return this;
 	};
 
-	$('tabbernav li a').click(function() {
+	$('.tabbernav li a').click(function() {
 		tabShow($(this).attr('title'));
 	})
 
