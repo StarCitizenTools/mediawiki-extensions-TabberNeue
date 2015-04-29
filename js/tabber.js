@@ -25,8 +25,8 @@
 		nav.addClass('tabbernav');
 		$('.tabber').append(nav);
 		$('.tabbertab').first().show();
-		if (document.hash != '' && document.hash != '#') {
-			var display = document.hash.replace('#', '');
+		if (location.hash != '' && location.hash != '#') {
+			var display = location.hash.replace('#', '');
 			$('.tabbertab[title="' + display + '"]').show();
 			$('.tabbernav li a[title="' + display + '"]').addClass('tabberactive');
 		} else {
