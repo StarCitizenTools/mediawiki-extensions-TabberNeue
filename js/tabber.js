@@ -8,42 +8,41 @@
  */
  
  (function($) {
-	var tabs = {};
-
 	$.fn.tabber = function() {
-		var nav = $('<ul>');
-		this.each(function() {
-			var navli = $('<li>'),
-				nava = $('<a>'),
-				title = $(this).attr('title');
-			nava.text(title)
-				.attr('href', 'javascript:void(null);')
-				.title = title;
-			navli.append(nava);
-			nav.append(navli);
+		// create tabs
+		var tabContent = this.find('.tabbertab'),
+		    nav = $('<ul>').addClass('tabbernav');
+		tabContent.each(function() {
+			var title = $(this).attr('title'),
+			    anchor = $('<a>').text(title).attr('title', title).attr('href', 'javascript:void(0);');
+			$('<li>').append(anchor).appendTo(nav);
 		});
-		nav.addClass('tabbernav');
-		$('.tabber').append(nav);
-		$('.tabbertab').first().show();
-		if (location.hash != '' && location.hash != '#') {
-			var display = location.hash.replace('#', '');
-			$('.tabbertab[title="' + display + '"]').show();
-			$('.tabbernav li a[title="' + display + '"]').addClass('tabberactive');
+		this.prepend(nav);
+
+		// setup initial state
+		var displayedContent, loc = location.hash.replace('#', '');;
+		tabContent.hide();
+		if (loc != '') {
+			displayedContent = tabContent.filter('[title="'+loc+'"]')
 		} else {
-			var display = $('.tabbertab');
-			display.first().show();
-			$('.tabbernav li [title="' + display.attr('title') + '"]').first().addClass('tabberactive');
+			displayedContent = tabContent.first();
 		}
+		displayedContent.show();
+		nav.find('a[title="'+displayedContent.attr('title')+'"]').parent().addClass('tabberactive');
+
+		this.addClass('tabberlive');
 		return this;
 	};
 
-	$('.tabbernav li a').click(function() {
+	// Repond to clicks on the nav tabs
+	$(document).on('click', '.tabbernav li a', function(e) {
 		var title = $(this).attr('title');
+		e.preventDefault();
 		location.hash = '#' + title;
 		$('.tabbertab').hide();
 		$('.tabberactive').removeClass('tabberactive');
 		$('.tabbertab[title="' + title + '"]').show();
-		$('.tabbernav li a[title="' + title + '"]').addClass('tabberactive');
+		$('.tabbernav li a[title="' + title + '"]').parent().addClass('tabberactive');
 	});
 })(jQuery);
 
