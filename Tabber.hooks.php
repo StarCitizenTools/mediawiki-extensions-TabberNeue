@@ -1,7 +1,7 @@
 <?php
 /**
  * Tabber
- * Tabber Main File
+ * Tabber Hooks Class
  *
  * @author		Eric Fortin, Alexia E. Smith
  * @license		GPL
