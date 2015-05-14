@@ -37,12 +37,13 @@ class TabberHooks {
 	static public function renderTabber($input, array $args, Parser $parser, PPFrame $frame) {
 		$parser->getOutput()->addModules('ext.Tabber');
 
+		$key = md5($input);
 		$arr = explode("|-|", $input);
 		foreach ($arr as $tab) {
 			$htmlTabs .= self::buildTab($tab, $parser);
 		}
 
-		$HTML = '<div class="tabber">'.$htmlTabs."</div>";
+		$HTML = '<div id="tabber-'.$key.'" class="tabber">'.$htmlTabs."</div>";
 
 		return $HTML;
 	}

@@ -3,7 +3,7 @@
 		return this.each(function() {
 			// create tabs
 			var $this = $(this),
-			    tabContent = $this.find('.tabbertab'),
+			    tabContent = $this.children('.tabbertab'),
 			    nav = $('<ul>').addClass('tabbernav');
 			tabContent.each(function() {
 				var anchor = $('<a>').text(this.title).attr('title', this.title).attr('href', 'javascript:void(0);');

@@ -19,7 +19,7 @@ $credits = array(
 	'author'			=> array('Eric Fortin', 'Alexia E. Smith', 'Curse Inc. Wiki Platform Team'),
 	'url'				=> 'https://www.mediawiki.org/wiki/Extension:Tabber',
 	'descriptionmsg'	=> 'tabber-desc',
-	'version'			=> '2.2'
+	'version'			=> '2.3'
 );
 $wgExtensionCredits['parserhook'][] = $credits;
 
