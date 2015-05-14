@@ -39,6 +39,6 @@ $wgHooks['ParserFirstCallInit'][]			= 'TabberHooks::onParserFirstCallInit';
 $wgResourceModules['ext.Tabber']			= [
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'Tabber',
-	'styles'		=> array('css/tabber.css'),
-	'scripts'		=> array('js/tabber.js')
+	'styles'		=> ['css/tabber.css'],
+	'scripts'		=> ['js/tabber.js']
 ];
