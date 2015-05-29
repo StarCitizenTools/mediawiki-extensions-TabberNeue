@@ -39,6 +39,7 @@ class TabberHooks {
 
 		$key = md5($input);
 		$arr = explode("|-|", $input);
+		$htmlTabs = '';
 		foreach ($arr as $tab) {
 			$htmlTabs .= self::buildTab($tab, $parser);
 		}
