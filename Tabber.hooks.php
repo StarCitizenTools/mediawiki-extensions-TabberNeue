@@ -41,7 +41,7 @@ class TabberHooks {
 		$arr = explode("|-|", $input);
 		$htmlTabs = '';
 		foreach ($arr as $tab) {
-			$htmlTabs .= self::buildTab($tab, $parser);
+			$htmlTabs .= self::buildTab($tab, $parser, $frame);
 		}
 
 		$HTML = '<div id="tabber-'.$key.'" class="tabber">'.$htmlTabs."</div>";
@@ -55,17 +55,17 @@ class TabberHooks {
 	 * @access	private
 	 * @param	string	Tab information
 	 * @param	object	Mediawiki Parser Object
+	 * @param	object	Mediawiki PPFrame Object
 	 * @return	string	HTML
 	 */
-	static private function buildTab($tab = '', Parser $parser) {
+	static private function buildTab($tab = '', Parser $parser, PPFrame $frame) {
 		$tab = trim($tab);
 		if (empty($tab)) {
 			return $tab;
 		}
 
-		$args = explode('=', $tab);
-		$tabName = array_shift($args);
-		$tabBody = $parser->recursiveTagParse(implode('=', $args));
+		list($tabName, $tabBody) = explode('=', $tab, 2);
+		$tabBody = $parser->recursiveTagParse($tabBody, $frame);
 
 		$tab = '
 			<div class="tabbertab" title="'.htmlspecialchars($tabName).'">
