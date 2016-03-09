@@ -16,10 +16,10 @@
 $credits = [
 	'path'				=> __FILE__,
 	'name'				=> 'Tabber',
-	'author'			=> ['Eric Fortin', 'Alexia E. Smith', 'Curse Inc. Wiki Platform Team'],
+	'author'			=> ['Eric Fortin', 'Alexia E. Smith'],
 	'url'				=> 'https://www.mediawiki.org/wiki/Extension:Tabber',
 	'descriptionmsg'	=> 'tabber-desc',
-	'version'			=> '2.3'
+	'version'			=> '2.4'
 ];
 $wgExtensionCredits['parserhook'][] = $credits;
 
