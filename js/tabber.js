@@ -34,7 +34,7 @@
 				showContent(tabContent.first().attr('title'));
 			}
 
-			// Repond to clicks on the nav tabs
+			// Respond to clicks on the nav tabs
 			nav.on('click', 'a', function(e) {
 				var title = $(this).attr('title');
 				e.preventDefault();

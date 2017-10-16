@@ -1,0 +1,30 @@
+{
+  "name": "tabber",
+  "version": "2.4.0",
+  "description": "Allows to create tabs within a page",
+  "main": "js/tabber.js",
+  "scripts": {
+    "lint": "eslint js/**/*",
+    "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HydraWiki/Tabber.git"
+  },
+  "author": "Eric Fortin, Alexia E. Smith",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/HydraWiki/Tabber/issues"
+  },
+  "homepage": "https://github.com/HydraWiki/Tabber#readme",
+  "devDependencies": {
+    "eslint": "^4.9.0",
+    "eslint-config-wikimedia": "^0.5.0",
+    "istanbul": "^0.4.5",
+    "jasmine": "^2.8.0",
+    "karma": "^1.7.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage": "^1.1.1",
+    "karma-jasmine": "^1.1.0"
+  }
+}
