@@ -5,7 +5,8 @@
   "main": "js/tabber.js",
   "scripts": {
     "lint": "eslint js/**/*",
-    "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js"
+    "fix-lint": "eslint js/**/* --fix",
+    "test": "npm run lint && karma start --single-run --browsers ChromeHeadless karma.conf.js"
   },
   "repository": {
     "type": "git",
