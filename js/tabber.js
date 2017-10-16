@@ -8,6 +8,9 @@
 			tabContent.each(function() {
 				var anchor = $('<a>').text(this.title).attr('title', this.title).attr('href', 'javascript:void(0);');
 				$('<li>').append(anchor).appendTo(nav);
+
+				// Append a manual word break point after each tab
+				nav.append($('<wbr>'));
 			});
 			$this.prepend(nav);
 
