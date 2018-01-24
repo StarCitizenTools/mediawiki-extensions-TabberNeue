@@ -44,11 +44,25 @@
 				e.preventDefault();
 				if ( history.pushState ) {
 					history.pushState( null, null, '#' + title );
+					switchTab(title);
 				} else {
 					location.hash = '#' + title;
 				}
-				showContent( title );
 			} );
+
+			$(window).on('hashchange', function(event) {
+				switchTab(event);
+			});
+
+			function switchTab(event) {
+				var tab = location.hash.replace('#', '');
+				if (!tab.length) {
+					showContent(tabContent.first().attr('title'));
+				}
+				if (nav.find('a[title="'+tab+'"]').length) {
+					showContent(tab);
+				}
+			}
 
 			$this.addClass( 'tabberlive' );
 		} );

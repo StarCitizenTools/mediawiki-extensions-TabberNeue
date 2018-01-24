@@ -1,6 +1,6 @@
 {
 	"name": "Tabber",
-	"version": "2.4",
+	"version": "2.4.1",
 	"author": [
 		"Eric Fortin",
 		"Alexia E. Smith"
@@ -14,7 +14,7 @@
 		]
 	},
 	"AutoloadClasses": {
-		"TabberHooks": "/Tabber.hooks.php"
+		"TabberHooks": "Tabber.hooks.php"
 	},
 	"ResourceModules": {
 		"ext.Tabber": {
@@ -23,6 +23,10 @@
 			],
 			"scripts": [
 				"js/tabber.js"
+			],
+			"targets": [
+				"desktop",
+				"mobile"
 			]
 		}
 	},
