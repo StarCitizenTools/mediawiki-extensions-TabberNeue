@@ -1,6 +1,6 @@
 {
   "name": "tabber",
-  "version": "2.4.0",
+  "version": "2.4.2",
   "description": "Allows to create tabs within a page",
   "main": "js/tabber.js",
   "scripts": {
