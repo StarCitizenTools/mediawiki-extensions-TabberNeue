@@ -43,10 +43,10 @@
 				var title = $(this).attr('title');
 				e.preventDefault();
 				if (history.pushState) {
-					history.pushState(null, null, '#' + title);
+					history.pushState(null, null, '#' + encodeURIComponent(title));
 					switchTab(title);
 				} else {
-					location.hash = '#' + title;
+					location.hash = '#' + encodeURIComponent(title);
 				}
 			});
 
@@ -55,7 +55,7 @@
 			});
 
 			function switchTab(event) {
-				var tab = decodeURI(location.hash.replace('#', ''));
+				var tab = decodeURIComponent(location.hash.replace('#', ''));
 				if (!tab.length) {
 					showContent(tabContent.first().attr('title'));
 				}
