@@ -1,6 +1,7 @@
-.svn
-*~
 *.kate-swp
+*~
 .*.swp
 .DS_Store
-node_modules/
+.svn
+/vendor
+composer.lock

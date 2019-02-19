@@ -8,6 +8,10 @@
 	"url": "https://www.mediawiki.org/wiki/Extension:Tabber",
 	"descriptionmsg": "tabber-desc",
 	"type": "parserhook",
+	"license-name": "GPL-3.0-only",
+	"requires": {
+		"MediaWiki": ">= 1.29.0"
+	},
 	"MessagesDirs": {
 		"Tabber": [
 			"/i18n"
