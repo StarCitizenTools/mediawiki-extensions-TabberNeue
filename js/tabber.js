@@ -33,7 +33,7 @@
 			}
 
 			// setup initial state
-			var tab = decodeURI(location.hash.replace('#', ''));
+			var tab = decodeURIComponent(location.hash.replace(/\./g,"%").replace(/_/g," ").replace('#', ''));
 			if (tab === '' || !showContent(tab)) {
 				showContent(tabContent.first().attr('title'));
 			}
@@ -55,7 +55,7 @@
 			});
 
 			function switchTab(event) {
-				var tab = decodeURIComponent(location.hash.replace('#', ''));
+				var tab = decodeURIComponent(location.hash.replace(/\./g,"%").replace(/_/g," ").replace('#', ''));
 				if (!tab.length) {
 					showContent(tabContent.first().attr('title'));
 				}
