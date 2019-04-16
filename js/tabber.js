@@ -8,7 +8,8 @@
 				loc;
 
 			tabContent.each(function() {
-				var anchor = $('<a>').text(this.title).attr('title', this.title).attr('href', '#');
+				$(this).attr('data-hash', mw.util.escapeIdForAttribute(this.title));
+				var anchor = $('<a>').text(this.title).attr('title',this.title).attr('data-hash', $(this).attr('data-hash')).attr('href', '#');
 				$('<li>').append(anchor).appendTo(nav);
 
 				// Append a manual word break point after each tab
@@ -23,43 +24,43 @@
 			 * @return {bool} true if matching tab could be shown
 			 */
 			function showContent(title) {
-				var content = tabContent.filter('[title="' + title + '"]');
+				var content = tabContent.filter('[data-hash="' + title + '"]');
 				if (content.length !== 1) { return false; }
 				tabContent.hide();
 				content.show();
 				nav.find('.tabberactive').removeClass('tabberactive');
-				nav.find('a[title="' + title + '"]').parent().addClass('tabberactive');
+				nav.find('a[data-hash="' + title + '"]').parent().addClass('tabberactive');
 				return true;
 			}
 
 			// setup initial state
-			var tab = decodeURIComponent(location.hash.replace(/\./g,"%").replace(/_/g," ").replace('#', ''));
+			var tab = new mw.Uri(location.href).fragment;
 			if (tab === '' || !showContent(tab)) {
-				showContent(tabContent.first().attr('title'));
+				showContent(tabContent.first().attr('data-hash'));
 			}
 
 			// Respond to clicks on the nav tabs
 			nav.on('click', 'a', function(e) {
-				var title = $(this).attr('title');
+				var title = $(this).attr('data-hash');
 				e.preventDefault();
 				if (history.pushState) {
-					history.pushState(null, null, '#' + encodeURIComponent(title));
-					switchTab(title);
+					history.pushState(null, null, '#' + title);
+					switchTab();
 				} else {
-					location.hash = '#' + encodeURIComponent(title);
+					location.hash = '#' + title;
 				}
 			});
 
 			$(window).on('hashchange', function(event) {
-				switchTab(event);
+				switchTab();
 			});
 
-			function switchTab(event) {
-				var tab = decodeURIComponent(location.hash.replace(/\./g,"%").replace(/_/g," ").replace('#', ''));
+			function switchTab() {
+				var tab = new mw.Uri(location.href).fragment;
 				if (!tab.length) {
-					showContent(tabContent.first().attr('title'));
+					showContent(tabContent.first().attr('data-hash'));
 				}
-				if (nav.find('a[title="'+tab+'"]').length) {
+				if (nav.find('a[data-hash="'+tab+'"]').length) {
 					showContent(tab);
 				}
 			}
