@@ -18,7 +18,7 @@
 		]
 	},
 	"AutoloadClasses": {
-		"TabberHooks": "Tabber.hooks.php"
+		"Tabber\\TabberHooks": "TabberHooks.php"
 	},
 	"ResourceModules": {
 		"ext.Tabber": {
@@ -40,7 +40,7 @@
 	},
 	"Hooks": {
 		"ParserFirstCallInit": [
-			"TabberHooks::onParserFirstCallInit"
+			"Tabber\\TabberHooks::onParserFirstCallInit"
 		]
 	},
 	"manifest_version": 1
