@@ -4,7 +4,7 @@
 
       // Create tabs
       var $this = $(this),
-        tabContent = $this.children('.tabbertab'),
+        tabContent = $this.children('.tabbercontent'),
         loc;
       var tabcount = 0;
       var index = new OO.ui.IndexLayout();
@@ -16,14 +16,18 @@
 
       $('.tabber').append(index.$element);
 
+      // Add fallback class for styling
+      $('.tabber').addClass('tabberlive');
+      $('.oo-ui-tabSelectWidget').addClass('tabbernav');
+
       function CreateTab(title, count) {
 
-        var content = $('.tabbertab[title="' + title + '"]');
-        //var content = tabContent.filter('[data-hash="' + title + '"]');
+        var content = $('.tabbercontent[title="' + title + '"]');
 
         function TabPanelLayout(name, config) {
           TabPanelLayout.super.call(this, name, config);
           this.$element.attr('title', title).attr('data-hash', mw.util.escapeIdForAttribute(title));
+          this.$element.addClass('tabbertab'); // Add fallback class for styling
           this.$element.append(content);
         }
 
