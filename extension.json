@@ -1,6 +1,6 @@
 {
 	"name": "Tabber",
-	"version": "2.4.4",
+	"version": "2.4.5",
 	"author": [
 		"Eric Fortin",
 		"Alexia E. Smith"
@@ -10,7 +10,7 @@
 	"type": "parserhook",
 	"license-name": "GPL-3.0-only",
 	"requires": {
-		"MediaWiki": ">= 1.29.0"
+		"MediaWiki": ">= 1.31.0"
 	},
 	"MessagesDirs": {
 		"Tabber": [
@@ -23,14 +23,18 @@
 	"ResourceModules": {
 		"ext.Tabber": {
 			"styles": [
-				"css/tabber.css"
+				"resources/ext.tabber.styles.less"
 			],
 			"scripts": [
-				"js/tabber.js"
+				"resources/ext.tabber.js"
 			],
 			"targets": [
 				"desktop",
 				"mobile"
+			],
+			"dependencies": [
+				"oojs-ui-core",
+				"oojs-ui-widgets"
 			]
 		}
 	},
