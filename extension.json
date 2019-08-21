@@ -28,6 +28,10 @@
 			"scripts": [
 				"js/tabber.js"
 			],
+			"dependencies": [
+				"mediawiki.Uri",
+				"mediawiki.util"
+			],
 			"targets": [
 				"desktop",
 				"mobile"
