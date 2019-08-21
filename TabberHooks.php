@@ -74,7 +74,7 @@ class TabberHooks {
 		$tabBody = $parser->recursiveTagParse($tabBody, $frame);
 
 		$tab = '
-			<div class="tabbercontent" title="' . htmlspecialchars($tabName) . '">
+			<div class="tabbertab" title="' . htmlspecialchars($tabName) . '">
 				<p>' . $tabBody . '</p>
 			</div>';
 
