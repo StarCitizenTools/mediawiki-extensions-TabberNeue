@@ -1,6 +1,6 @@
 {
 	"name": "Tabber",
-	"version": "2.4.4",
+	"version": "2.4.5",
 	"author": [
 		"Eric Fortin",
 		"Alexia E. Smith"
@@ -27,6 +27,10 @@
 			],
 			"scripts": [
 				"js/tabber.js"
+			],
+			"dependencies": [
+				"mediawiki.Uri",
+				"mediawiki.util"
 			],
 			"targets": [
 				"desktop",
