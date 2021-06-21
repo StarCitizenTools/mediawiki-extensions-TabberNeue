@@ -1,12 +1,12 @@
 <?php
 /**
- * Tabber
- * Tabber Hooks Class
+ * TabberNeue
+ * TabberNeue Hooks Class
  *
- * @package Tabber
+ * @package TabberNeue
  * @author  Eric Fortin, Alexia E. Smith
- * @license GPL-3.0-only
- * @link    https://www.mediawiki.org/wiki/Extension:Tabber
+ * @license GPL-3.0-or-later
+ * @link    https://www.mediawiki.org/wiki/Extension:TabberNeue
 **/
 
 namespace TabberNeue;
