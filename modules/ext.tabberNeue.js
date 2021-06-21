@@ -8,7 +8,7 @@ function initTabber( tabber ) {
 		tabPanels = tabber.querySelectorAll( '.tabber__panel' );
 
 	const container = document.createElement( 'header' ),
-		tablist = document.createElement( 'nav' ),
+		tabList = document.createElement( 'nav' ),
 		prevButton = document.createElement( 'div' ),
 		nextButton = document.createElement( 'div' );
 
@@ -30,20 +30,21 @@ function initTabber( tabber ) {
 			tab.setAttribute( 'role', 'tab' );
 			tab.setAttribute( 'href', '#' + hash );
 			tab.setAttribute( 'id', 'tab-' + hash );
+			tab.setAttribute( 'aria-select', 'false' );
 			tab.setAttribute( 'aria-controls', hash );
 
 			fragment.append( tab );
 		} );
 
-		tablist.append( fragment );
+		tabList.append( fragment );
 
 		container.classList.add( 'tabber__header' );
-		tablist.classList.add( 'tabber__nav' );
-		tablist.setAttribute( 'role', 'tablist' );
+		tabList.classList.add( 'tabber__nav' );
+		tabList.setAttribute( 'role', 'tablist' );
 		prevButton.classList.add( 'tabber__header__prev' );
 		nextButton.classList.add( 'tabber__header__next' );
 
-		container.append( prevButton, tablist, nextButton );
+		container.append( prevButton, tabList, nextButton );
 	};
 
 	buildTabs();
@@ -56,17 +57,17 @@ function initTabber( tabber ) {
 
 		/* eslint-disable mediawiki/class-doc */
 		const scrollTabs = ( offset ) => {
-			const scrollLeft = tablist.scrollLeft + offset;
+			const scrollLeft = tabList.scrollLeft + offset;
 
 			// Scroll to the start
 			if ( scrollLeft <= 0 ) {
-				tablist.scrollLeft = 0;
+				tabList.scrollLeft = 0;
 				container.classList.remove( PREVCLASS );
 				container.classList.add( NEXTCLASS );
 			} else {
-				tablist.scrollLeft = scrollLeft;
+				tabList.scrollLeft = scrollLeft;
 				// Scroll to the end
-				if ( scrollLeft + tablist.offsetWidth >= tablist.scrollWidth ) {
+				if ( scrollLeft + tabList.offsetWidth >= tabList.scrollWidth ) {
 					container.classList.remove( NEXTCLASS );
 					container.classList.add( PREVCLASS );
 				} else {
@@ -77,7 +78,7 @@ function initTabber( tabber ) {
 		};
 
 		const setupButtons = () => {
-			const isScrollable = ( tablist.scrollWidth > container.offsetWidth );
+			const isScrollable = ( tabList.scrollWidth > container.offsetWidth );
 
 			if ( isScrollable ) {
 				const scrollOffset = container.offsetWidth / 2;
@@ -121,10 +122,11 @@ function initTabber( tabber ) {
 
 		/* eslint-disable mediawiki/class-doc */
 		if ( activePanel ) {
-			const activeTab = tablist.querySelector( '.' + ACTIVETABCLASS );
+			const activeTab = tabList.querySelector( '.' + ACTIVETABCLASS );
 
 			if ( activeTab ) {
 				activeTab.classList.remove( ACTIVETABCLASS );
+				activeTab.setAttribute( 'aria-selected', 'false' );
 			}
 
 			activePanel.classList.remove( ACTIVEPANELCLASS );
@@ -137,6 +139,7 @@ function initTabber( tabber ) {
 
 		// Add active class to the tab item
 		targetTab.classList.add( ACTIVETABCLASS );
+		targetTab.setAttribute( 'aria-selected', 'true' );
 		targetPanel.classList.add( ACTIVEPANELCLASS );
 		targetPanel.setAttribute( 'aria-hidden', 'false' );
 
@@ -155,8 +158,8 @@ function initTabber( tabber ) {
 		let targetHash = new mw.Uri( location.href ).fragment;
 
 		// Switch to the first tab if no targetHash or no tab is detected
-		if ( !targetHash || !tablist.querySelector( '#tab-' + targetHash ) ) {
-			targetHash = tablist.firstElementChild.getAttribute( 'id' ).substring( 4 );
+		if ( !targetHash || !tabList.querySelector( '#tab-' + targetHash ) ) {
+			targetHash = tabList.firstElementChild.getAttribute( 'id' ).substring( 4 );
 		}
 
 		showPanel( targetHash );
@@ -172,7 +175,7 @@ function initTabber( tabber ) {
 	// window.addEventListener( 'hashchange', switchTab, false );
 
 	// Respond to clicks on the nav tabs
-	[ ...tablist.children ].forEach( ( tab ) => {
+	[ ...tabList.children ].forEach( ( tab ) => {
 		tab.addEventListener( 'click', ( event ) => {
 			const targetHash = tab.getAttribute( 'href' ).substring( 1 );
 			event.preventDefault();
