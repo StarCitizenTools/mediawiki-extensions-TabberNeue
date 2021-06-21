@@ -13,11 +13,7 @@ function initTabber( tabber ) {
 		nextButton = document.createElement( 'div' );
 
 	const buildTabs = () => {
-		container.classList.add( 'tabber__header' );
-		tablist.classList.add( 'tabber__nav' );
-		tablist.setAttribute( 'role', 'tablist' );
-		prevButton.classList.add( 'tabber__header__prev' );
-		nextButton.classList.add( 'tabber__header__next' );
+		const fragment = new DocumentFragment();
 
 		[ ...tabPanels ].forEach( ( tabPanel ) => {
 			const hash = mw.util.escapeIdForAttribute( tabPanel.title ) + '-' + key,
@@ -36,8 +32,16 @@ function initTabber( tabber ) {
 			tab.setAttribute( 'id', 'tab-' + hash );
 			tab.setAttribute( 'aria-controls', hash );
 
-			tablist.append( tab );
+			fragment.append( tab );
 		} );
+
+		tablist.append( fragment );
+
+		container.classList.add( 'tabber__header' );
+		tablist.classList.add( 'tabber__nav' );
+		tablist.setAttribute( 'role', 'tablist' );
+		prevButton.classList.add( 'tabber__header__prev' );
+		nextButton.classList.add( 'tabber__header__next' );
 
 		container.append( prevButton, tablist, nextButton );
 	};
