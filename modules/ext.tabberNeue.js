@@ -12,80 +12,46 @@
 			const $this = $( this ),
 				key = $this.attr( 'id' ).substring( 7 ),
 				tabSection = $this.children( '.tabber__section' ),
-				tabPanel = tabSection.children( '.tabber__panel' ),
-				nav = $( '<nav>' ).addClass( 'tabber__nav' ),
-				header = $( '<header>' ).addClass( 'tabber__header' ),
-				arrowLeft = $( '<div>' ).addClass( 'tabber__header__prev' ),
-				arrowRight = $( '<div>' ).addClass( 'tabber__header__next' );
+				tabPanels = tabSection.children( '.tabber__panel' );
 
-			let hash;
+			const container = document.createElement( 'header' ),
+				tablist = document.createElement( 'nav' ),
+				prevButton = document.createElement( 'div' ),
+				nextButton = document.createElement( 'div' );
 
-			nav.attr( 'role', 'tablist' );
+			container.classList.add( 'tabber__header' );
+			tablist.classList.add( 'tabber__nav' );
+			tablist.setAttribute( 'role', 'tablist' );
+			prevButton.classList.add( 'tabber__header__prev' );
+			nextButton.classList.add( 'tabber__header__next' );
 
-			tabPanel.each( function () {
-				hash = mw.util.escapeIdForAttribute( this.title ) + '-' + key;
-				$( this ).attr( 'id', hash );
-				$( this ).attr( 'role', 'tabpanel' );
-				$( this ).attr( 'aria-labelledby', 'tab-' + hash );
-				$( this ).attr( 'aria-hidden', 'true' );
+			[ ...tabPanels ].forEach( ( tabPanel ) => {
+				const hash = mw.util.escapeIdForAttribute( tabPanel.title ) + '-' + key,
+					tab = document.createElement( 'a' );
 
-				const anchor = $( '<a>' ).text( this.title ).attr( 'title', this.title );
-				anchor.addClass( 'tabber__item' );
-				anchor.attr( 'role', 'tab' );
-				anchor.attr( 'href', '#' + hash );
-				anchor.attr( 'id', 'tab-' + hash );
-				anchor.attr( 'aria-controls', hash );
-				anchor.appendTo( nav );
+				tabPanel.setAttribute( 'id', hash );
+				tabPanel.setAttribute( 'role', 'tabpanel' );
+				tabPanel.setAttribute( 'aria-labelledby', 'tab-' + hash );
+				tabPanel.setAttribute( 'aria-hidden', 'true' );
+
+				tab.innerText = tabPanel.title;
+				tab.classList.add( 'tabber__item' );
+				tab.setAttribute( 'title', tabPanel.title );
+				tab.setAttribute( 'role', 'tab' );
+				tab.setAttribute( 'href', '#' + hash );
+				tab.setAttribute( 'id', 'tab-' + hash );
+				tab.setAttribute( 'aria-controls', hash );
+
+				tablist.append( tab );
 			} );
 
-			arrowLeft.appendTo( header );
-			nav.appendTo( header );
-			arrowRight.appendTo( header );
+			container.append( prevButton, tablist, nextButton );
 
-			$this.prepend( header );
+			$this.prepend( container );
 
-			const tabber = document.getElementById( 'tabber-' + key ),
-				tablist = tabber.querySelector( '.tabber__nav' );
-
-			/**
-			 * Internal helper function for showing panel
-			 *
-			 * @param  {string} targetHash to show, matching only 1 tab
-			 * @return {bool} true if matching tab could be shown
-			 */
-			function showPanel( targetHash ) {
-				const ACTIVEITEMCLASS = 'tabber__item--active',
-					ACTIVEPANELCLASS = 'tabber__panel--active',
-					targetPanel = document.getElementById( targetHash ),
-					targetTab = document.getElementById( 'tab-' + targetHash ),
-					section = targetPanel.parentElement,
-					activePanel = section.querySelector( '.' + ACTIVEPANELCLASS );
-
-				/* eslint-disable mediawiki/class-doc */
-				if ( activePanel ) {
-					const activeTab = tablist.querySelector( '.' + ACTIVEITEMCLASS );
-					activeTab.classList.remove( ACTIVEITEMCLASS );
-					activePanel.classList.remove( ACTIVEPANELCLASS );
-					activePanel.setAttribute( 'aria-hidden', 'true' );
-					section.style.height = activePanel.offsetHeight + 'px';
-					section.style.height = targetPanel.offsetHeight + 'px';
-				} else {
-					section.style.height = targetPanel.offsetHeight + 'px';
-				}
-
-				// Add active class to the tab item
-				targetTab.classList.add( ACTIVEITEMCLASS );
-				targetPanel.classList.add( ACTIVEPANELCLASS );
-				targetPanel.setAttribute( 'aria-hidden', 'false' );
-
-				// Scroll to tab
-				section.scrollLeft = targetPanel.offsetLeft;
-				/* eslint-enable mediawiki/class-doc */
-			}
-
-			function initButtons() {
-				const container = tabber.querySelector( '.tabber__header' ),
-					PREVCLASS = 'tabber__header--prev-visible',
+			// Initalize previous and next buttons
+			const initButtons = () => {
+				const PREVCLASS = 'tabber__header--prev-visible',
 					NEXTCLASS = 'tabber__header--next-visible';
 
 				/* eslint-disable mediawiki/class-doc */
@@ -114,9 +80,7 @@
 					const isScrollable = ( tablist.scrollWidth > container.offsetWidth );
 
 					if ( isScrollable ) {
-						const prevButton = container.querySelector( '.tabber__header__prev' ),
-							nextButton = container.querySelector( '.tabber__header__next' ),
-							scrollOffset = container.offsetWidth / 2;
+						const scrollOffset = container.offsetWidth / 2;
 
 						// Just to add the right classes
 						scrollTabs( 0 );
@@ -140,28 +104,66 @@
 				window.addEventListener( 'resize', () => {
 					mw.util.debounce( 250, setupButtons() );
 				} );
+			};
+
+			/**
+			 * Internal helper function for showing panel
+			 *
+			 * @param {string} targetHash
+			 */
+			function showPanel( targetHash ) {
+				const ACTIVETABCLASS = 'tabber__item--active',
+					ACTIVEPANELCLASS = 'tabber__panel--active',
+					targetPanel = document.getElementById( targetHash ),
+					targetTab = document.getElementById( 'tab-' + targetHash ),
+					section = targetPanel.parentElement,
+					activePanel = section.querySelector( '.' + ACTIVEPANELCLASS );
+
+				/* eslint-disable mediawiki/class-doc */
+				if ( activePanel ) {
+					const activeTab = tablist.querySelector( '.' + ACTIVETABCLASS );
+
+					if ( activeTab ) {
+						activeTab.classList.remove( ACTIVETABCLASS );
+					}
+
+					activePanel.classList.remove( ACTIVEPANELCLASS );
+					activePanel.setAttribute( 'aria-hidden', 'true' );
+					section.style.height = activePanel.offsetHeight + 'px';
+					section.style.height = targetPanel.offsetHeight + 'px';
+				} else {
+					section.style.height = targetPanel.offsetHeight + 'px';
+				}
+
+				// Add active class to the tab item
+				targetTab.classList.add( ACTIVETABCLASS );
+				targetPanel.classList.add( ACTIVEPANELCLASS );
+				targetPanel.setAttribute( 'aria-hidden', 'false' );
+
+				// Scroll to tab
+				section.scrollLeft = targetPanel.offsetLeft;
+				/* eslint-enable mediawiki/class-doc */
 			}
 
 			function switchTab() {
-				const targetHash = new mw.Uri( location.href ).fragment;
+				let targetHash = new mw.Uri( location.href ).fragment;
 
-				if ( targetHash ) {
-					if ( nav.find( 'a[href="#' + targetHash + '"]' ).length ) {
-						showPanel( targetHash );
-					}
-				} else {
-					showPanel( tabPanel.first().attr( 'id' ) );
+				// Switch to the first tab if no targetHash or no tab is detected
+				if ( !targetHash || !tablist.querySelector( '#tab-' + targetHash ) ) {
+					targetHash = tablist.firstElementChild.getAttribute( 'id' ).substring( 4 );
 				}
+
+				showPanel( targetHash );
 			}
 
 			switchTab();
 
 			// Only run if client is not a touch device
 			if ( matchMedia( '(hover: hover)' ).matches ) {
-				initButtons( tabber );
+				initButtons();
 			}
 
-			window.addEventListener( 'hashchange', switchTab, false );
+			// window.addEventListener( 'hashchange', switchTab, false );
 
 			// Respond to clicks on the nav tabs
 			[ ...tablist.children ].forEach( ( tab ) => {
