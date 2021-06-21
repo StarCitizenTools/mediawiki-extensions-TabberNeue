@@ -154,7 +154,9 @@
 	}
 }
 
-@media ( prefers-reduced-motion: no-preference ) {
+// Smooth scrolling through a large number of panels hurt performance on mobile
+// Also it will trigger unnessecary lazyloading as lazyload content show up momentarily
+@media ( prefers-reduced-motion: no-preference ) and ( min-width: 720px ) {
 	.tabber {
 		&__header,
 		&__section,
