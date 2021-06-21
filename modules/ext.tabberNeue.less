@@ -1,162 +1,163 @@
 .tabber {
-    display: flex;
-    flex-direction: column;
+	position: relative;
+	display: flex;
 
-    /* establish primary containing box */
-    overflow: hidden;
-    position: relative;
+	/* establish primary containing box */
+	overflow: hidden;
+	flex-direction: column;
 
-    &__header {
-        /* defend against <section> needing 100% */
-        flex-shrink: 0;
-        /* fixes cross browser quarks */
-        min-block-size: fit-content;
-        display: flex;
-        position: relative;
+	&__nav {
+		display: flex;
+		overflow: auto hidden;
+		box-shadow: inset 0 -1px 0 0 #a2a9b1;
+		scrollbar-width: none;
 
-        &__prev {
-            left: 0;
-        }
+		&::-webkit-scrollbar {
+			width: 0;
+			height: 0;
+		}
+	}
 
-        &__next {
-            right: 0;
-        }
+	&__section {
+		display: grid;
+		overflow: hidden;
+		block-size: 100%;
+		grid-auto-columns: 100%;
+		grid-auto-flow: column;
+	}
 
-        &__prev,
-        &__next {
-            top: 0;
-            bottom: 0;
-            position: absolute;
-            width: 20px;
-            cursor: pointer;
-            display: none;
-            z-index: 1;
+	&__header {
+		position: relative;
+		display: flex;
+		/* defend against <section> needing 100% */
+		flex-shrink: 0;
+		/* fixes cross browser quarks */
+		min-block-size: fit-content;
 
-            &:after {
-                content: "";
-                top: 0;
-                bottom: 0;
-                position: absolute;
-                width: inherit;
-                background-size: 14px;
-                background-position: center;
-                background-repeat: no-repeat;
-            }
-        }
+		&__prev {
+			left: 0;
+		}
 
-        &--prev-visible .tabber__nav {
-            mask-image: linear-gradient( 90deg, transparent, #000 20% );
-            -webkit-mask-image: linear-gradient( 90deg, transparent, #000 20% );
-        }
+		&__next {
+			right: 0;
+		}
 
-        &--next-visible .tabber__nav {
-            mask-image: linear-gradient( 90deg, #000 80%, transparent );
-            -webkit-mask-image: linear-gradient( 90deg, #000 80%, transparent );
-        }
+		&__prev,
+		&__next {
+			position: absolute;
+			z-index: 1;
+			top: 0;
+			bottom: 0;
+			display: none;
+			width: 20px;
+			cursor: pointer;
 
-        &--prev-visible.tabber__header--next-visible  .tabber__nav {
-            mask-image: linear-gradient( 90deg, transparent, #000 20%, #000 80%, transparent );
-            -webkit-mask-image: linear-gradient( 90deg, transparent, #000 20%, #000 80%, transparent );
-        }
+			&:after {
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				width: inherit;
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: 14px;
+				content: '';
+			}
+		}
 
-        &--prev-visible .tabber__header__prev,
-        &--next-visible .tabber__header__next {
-            display: block;
-        }
-    }
+		&--prev-visible .tabber__nav {
+			-webkit-mask-image: linear-gradient( 90deg, transparent, #000 20% );
+			mask-image: linear-gradient( 90deg, transparent, #000 20% );
+		}
 
-    &__header,
-    &__section {
-        /* prevent scroll chaining on x scroll */
-        overscroll-behavior-x: contain;
-        /* scrolling should snap children on x */
-        scroll-snap-type: x mandatory;
-    }
+		&--next-visible .tabber__nav {
+			-webkit-mask-image: linear-gradient( 90deg, #000 80%, transparent );
+			mask-image: linear-gradient( 90deg, #000 80%, transparent );
+		}
 
-    &__header,
-    &__section,
-    &__nav {
-        scrollbar-width: none;
+		&--prev-visible.tabber__header--next-visible .tabber__nav {
+			-webkit-mask-image: linear-gradient( 90deg, transparent, #000 20%, #000 80%, transparent );
+			mask-image: linear-gradient( 90deg, transparent, #000 20%, #000 80%, transparent );
+		}
 
-        &::-webkit-scrollbar {
-            width: 0;
-            height: 0;
-        }
-    }
+		&--prev-visible .tabber__header__prev,
+		&--next-visible .tabber__header__next {
+			display: block;
+		}
+	}
 
-    &__nav {
-        display: flex;
-        overflow: auto hidden;
-        box-shadow: inset 0 -1px 0 0 #a2a9b1;
-    }
+	&__header,
+	&__section {
+		/* prevent scroll chaining on x scroll */
+		overscroll-behavior-x: contain;
+		/* scrolling should snap children on x */
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
 
-    &__item {
-        scroll-snap-align: start;
-        display: inline-flex;
-        align-items: center;
-        white-space: nowrap;
-        padding: 5px 12px;
-        color: #54595d;
-        text-decoration: none;
-        font-weight: bold;
+		&::-webkit-scrollbar {
+			width: 0;
+			height: 0;
+		}
+	}
 
-        &:visited {
-            color: #54595d;
-        }
+	&__item {
+		display: inline-flex;
+		align-items: center;
+		padding: 5px 12px;
+		color: #54595d;
+		font-weight: bold;
+		scroll-snap-align: start;
+		text-decoration: none;
+		white-space: nowrap;
 
-        &:hover,
-        &:active,
-        &:focus {
-            text-decoration: none;
-        }
+		&:visited {
+			color: #54595d;
+		}
 
-        &--active,
-        &--active:visited {
-            color: #36c;
-            box-shadow: inset 0 -2px 0 0 #36c;
-        }
-    }
+		&:hover,
+		&:active,
+		&:focus {
+			text-decoration: none;
+		}
 
-    &__section {
-        overflow: hidden;
-        block-size: 100%;
-        display: grid;
-        grid-auto-flow: column;
-        grid-auto-columns: 100%;
-    }
+		&--active,
+		&--active:visited {
+			box-shadow: inset 0 -2px 0 0 #36c;
+			color: #36c;
+		}
+	}
 
-    &__panel {
-        /* be pushy about consuming all space */
-        block-size: 100%;
-        scroll-snap-align: start;
-        overflow-y: auto;
-        overscroll-behavior-y: contain;
-        height: max-content;
-    }
+	&__panel {
+		height: max-content;
+		/* be pushy about consuming all space */
+		block-size: 100%;
+		overflow-y: auto;
+		overscroll-behavior-y: contain;
+		scroll-snap-align: start;
+	}
 }
 
-@media (hover: hover) {
-    .tabber {
-        &__item {
-            &:hover {
-                color: #447ff5;
-                box-shadow: inset 0 -2px 0 0 #447ff5;
-            }
+@media ( hover: hover ) {
+	.tabber {
+		&__item {
+			&:hover {
+				box-shadow: inset 0 -2px 0 0 #447ff5;
+				color: #447ff5;
+			}
 
-            &:active {
-                color: #2a4b8d;
-                box-shadow: inset 0 -2px 0 0 #2a4b8d;
-            }
-        }
-    }
+			&:active {
+				box-shadow: inset 0 -2px 0 0 #2a4b8d;
+				color: #2a4b8d;
+			}
+		}
+	}
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .tabber {
-        &__header,
-        &__section,
-        &__nav {
-            scroll-behavior: smooth;
-        }
-    }
+@media ( prefers-reduced-motion: no-preference ) {
+	.tabber {
+		&__header,
+		&__section,
+		&__nav {
+			scroll-behavior: smooth;
+		}
+	}
 }
