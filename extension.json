@@ -1,32 +1,33 @@
 {
-	"name": "Tabber",
-	"version": "2.4.5",
+	"name": "TabberNeue",
+	"version": "0.0.1",
 	"author": [
+		"alistair3149",
 		"Eric Fortin",
 		"Alexia E. Smith"
 	],
-	"url": "https://www.mediawiki.org/wiki/Extension:Tabber",
-	"descriptionmsg": "tabber-desc",
+	"url": "https://www.mediawiki.org/wiki/Extension:TabberNeue",
+	"descriptionmsg": "tabberneue-desc",
 	"type": "parserhook",
-	"license-name": "GPL-3.0-only",
+	"license-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.29.0"
+		"MediaWiki": ">= 1.35.0"
 	},
 	"MessagesDirs": {
-		"Tabber": [
+		"TabberNeue": [
 			"/i18n"
 		]
 	},
 	"AutoloadClasses": {
-		"Tabber\\TabberHooks": "TabberHooks.php"
+		"TabberNeue\\TabberNeueHooks": "includes/TabberNeueHooks.php"
 	},
 	"ResourceModules": {
-		"ext.Tabber": {
+		"ext.tabberNeue": {
 			"styles": [
-				"css/tabber.css"
+				"ext.tabberNeue.less"
 			],
 			"scripts": [
-				"js/tabber.js"
+				"ext.tabberNeue.js"
 			],
 			"dependencies": [
 				"mediawiki.Uri",
@@ -36,15 +37,33 @@
 				"desktop",
 				"mobile"
 			]
+		},
+		"ext.tabberNeue.icons": {
+			"class": "ResourceLoaderImageModule",
+			"selector": ".tabber__header__{name}:after",
+			"images": {
+				"next": {
+					"file": {
+						"ltr": "ext.tabberNeue.icons/next-ltr.svg",
+						"rtl": "ext.tabberNeue.icons/next-rtl.svg"
+					}
+				},
+				"prev": {
+					"file": {
+						"ltr": "ext.tabberNeue.icons/previous-ltr.svg",
+						"rtl": "ext.tabberNeue.icons/previous-rtl.svg"
+					}
+				}
+			}
 		}
 	},
 	"ResourceFileModulePaths": {
-		"localBasePath": "",
-		"remoteExtPath": "Tabber"
+		"localBasePath": "modules",
+		"remoteExtPath": "TabberNeue/modules"
 	},
 	"Hooks": {
 		"ParserFirstCallInit": [
-			"Tabber\\TabberHooks::onParserFirstCallInit"
+			"TabberNeue\\TabberNeueHooks::onParserFirstCallInit"
 		]
 	},
 	"manifest_version": 1

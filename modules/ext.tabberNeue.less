@@ -1,0 +1,162 @@
+.tabber {
+    display: flex;
+    flex-direction: column;
+
+    /* establish primary containing box */
+    overflow: hidden;
+    position: relative;
+
+    &__header {
+        /* defend against <section> needing 100% */
+        flex-shrink: 0;
+        /* fixes cross browser quarks */
+        min-block-size: fit-content;
+        display: flex;
+        position: relative;
+
+        &__prev {
+            left: 0;
+        }
+
+        &__next {
+            right: 0;
+        }
+
+        &__prev,
+        &__next {
+            top: 0;
+            bottom: 0;
+            position: absolute;
+            width: 20px;
+            cursor: pointer;
+            display: none;
+            z-index: 1;
+
+            &:after {
+                content: "";
+                top: 0;
+                bottom: 0;
+                position: absolute;
+                width: inherit;
+                background-size: 14px;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+        }
+
+        &--prev-visible .tabber__nav {
+            mask-image: linear-gradient( 90deg, transparent, #000 20% );
+            -webkit-mask-image: linear-gradient( 90deg, transparent, #000 20% );
+        }
+
+        &--next-visible .tabber__nav {
+            mask-image: linear-gradient( 90deg, #000 80%, transparent );
+            -webkit-mask-image: linear-gradient( 90deg, #000 80%, transparent );
+        }
+
+        &--prev-visible.tabber__header--next-visible  .tabber__nav {
+            mask-image: linear-gradient( 90deg, transparent, #000 20%, #000 80%, transparent );
+            -webkit-mask-image: linear-gradient( 90deg, transparent, #000 20%, #000 80%, transparent );
+        }
+
+        &--prev-visible .tabber__header__prev,
+        &--next-visible .tabber__header__next {
+            display: block;
+        }
+    }
+
+    &__header,
+    &__section {
+        /* prevent scroll chaining on x scroll */
+        overscroll-behavior-x: contain;
+        /* scrolling should snap children on x */
+        scroll-snap-type: x mandatory;
+    }
+
+    &__header,
+    &__section,
+    &__nav {
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+    }
+
+    &__nav {
+        display: flex;
+        overflow: auto hidden;
+        box-shadow: inset 0 -1px 0 0 #a2a9b1;
+    }
+
+    &__item {
+        scroll-snap-align: start;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        padding: 5px 12px;
+        color: #54595d;
+        text-decoration: none;
+        font-weight: bold;
+
+        &:visited {
+            color: #54595d;
+        }
+
+        &:hover,
+        &:active,
+        &:focus {
+            text-decoration: none;
+        }
+
+        &--active,
+        &--active:visited {
+            color: #36c;
+            box-shadow: inset 0 -2px 0 0 #36c;
+        }
+    }
+
+    &__section {
+        overflow: hidden;
+        block-size: 100%;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 100%;
+    }
+
+    &__panel {
+        /* be pushy about consuming all space */
+        block-size: 100%;
+        scroll-snap-align: start;
+        overflow-y: auto;
+        overscroll-behavior-y: contain;
+        height: max-content;
+    }
+}
+
+@media (hover: hover) {
+    .tabber {
+        &__item {
+            &:hover {
+                color: #447ff5;
+                box-shadow: inset 0 -2px 0 0 #447ff5;
+            }
+
+            &:active {
+                color: #2a4b8d;
+                box-shadow: inset 0 -2px 0 0 #2a4b8d;
+            }
+        }
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .tabber {
+        &__header,
+        &__section,
+        &__nav {
+            scroll-behavior: smooth;
+        }
+    }
+}

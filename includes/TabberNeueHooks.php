@@ -9,12 +9,12 @@
  * @link    https://www.mediawiki.org/wiki/Extension:Tabber
 **/
 
-namespace Tabber;
+namespace TabberNeue;
 
 use Parser;
 use PPFrame;
 
-class TabberHooks {
+class TabberNeueHooks {
 	/**
 	 * Sets up this extension's parser functions.
 	 *
@@ -23,8 +23,7 @@ class TabberHooks {
 	 * @return boolean	true
 	 */
 	public static function onParserFirstCallInit(Parser &$parser) {
-		$parser->setHook("tabber", "Tabber\\TabberHooks::renderTabber");
-
+		$parser->setHook('tabber', 'TabberNeue\\TabberNeueHooks::renderTabber');
 		return true;
 	}
 
@@ -39,18 +38,19 @@ class TabberHooks {
 	 * @return string	HTML
 	 */
 	public static function renderTabber($input, array $args, Parser $parser, PPFrame $frame) {
-		$parser->getOutput()->addModules('ext.Tabber');
+		$parser->getOutput()->addModules('ext.tabberNeue');
 
-		$key = md5($input);
+		$key = substr(md5($input), 0, 6);
 		$arr = explode("|-|", $input);
 		$htmlTabs = '';
 		foreach ($arr as $tab) {
 			$htmlTabs .= self::buildTab($tab, $parser, $frame);
 		}
 
-		$HTML = '<div id="tabber-' . $key . '" class="tabber">' . $htmlTabs . "</div>";
+		$html = '<div id="tabber-' . $key . '" class="tabber">' . 
+			'<section class="tabber__section">' . $htmlTabs . "</section></div>";
 
-		return $HTML;
+		return $html;
 	}
 
 	/**
@@ -73,10 +73,9 @@ class TabberHooks {
 
 		$tabBody = $parser->recursiveTagParse($tabBody, $frame);
 
-		$tab = '
-			<div class="tabbertab" title="' . htmlspecialchars($tabName) . '">
-				<p>' . $tabBody . '</p>
-			</div>';
+		$tab = '<article class="tabber__panel" title="' . htmlspecialchars($tabName) . 
+			'"><p>' . $tabBody . '</p></article>';
+
 
 		return $tab;
 	}
