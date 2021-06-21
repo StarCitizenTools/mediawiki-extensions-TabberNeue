@@ -22,7 +22,7 @@ function initTabber( tabber ) {
 			tabPanel.setAttribute( 'id', hash );
 			tabPanel.setAttribute( 'role', 'tabpanel' );
 			tabPanel.setAttribute( 'aria-labelledby', 'tab-' + hash );
-			tabPanel.setAttribute( 'aria-hidden', 'true' );
+			tabPanel.setAttribute( 'aria-hidden', true );
 
 			tab.innerText = tabPanel.title;
 			tab.classList.add( 'tabber__item' );
@@ -30,7 +30,7 @@ function initTabber( tabber ) {
 			tab.setAttribute( 'role', 'tab' );
 			tab.setAttribute( 'href', '#' + hash );
 			tab.setAttribute( 'id', 'tab-' + hash );
-			tab.setAttribute( 'aria-select', 'false' );
+			tab.setAttribute( 'aria-select', false );
 			tab.setAttribute( 'aria-controls', hash );
 
 			fragment.append( tab );
@@ -126,11 +126,11 @@ function initTabber( tabber ) {
 
 			if ( activeTab ) {
 				activeTab.classList.remove( ACTIVETABCLASS );
-				activeTab.setAttribute( 'aria-selected', 'false' );
+				activeTab.setAttribute( 'aria-selected', false );
 			}
 
 			activePanel.classList.remove( ACTIVEPANELCLASS );
-			activePanel.setAttribute( 'aria-hidden', 'true' );
+			activePanel.setAttribute( 'aria-hidden', true );
 			section.style.height = activePanel.offsetHeight + 'px';
 			section.style.height = targetPanel.offsetHeight + 'px';
 		} else {
@@ -139,9 +139,9 @@ function initTabber( tabber ) {
 
 		// Add active class to the tab item
 		targetTab.classList.add( ACTIVETABCLASS );
-		targetTab.setAttribute( 'aria-selected', 'true' );
+		targetTab.setAttribute( 'aria-selected', true );
 		targetPanel.classList.add( ACTIVEPANELCLASS );
-		targetPanel.setAttribute( 'aria-hidden', 'false' );
+		targetPanel.setAttribute( 'aria-hidden', false );
 
 		// Scroll to tab
 		section.scrollLeft = targetPanel.offsetLeft;
