@@ -6,7 +6,7 @@
 	overflow: hidden;
 	flex-direction: column;
 
-	&__nav {
+	&__tabs {
 		display: flex;
 		overflow: auto hidden;
 		box-shadow: inset 0 -1px 0 0 #a2a9b1;
@@ -64,17 +64,17 @@
 			}
 		}
 
-		&--prev-visible .tabber__nav {
+		&--prev-visible .tabber__tabs {
 			-webkit-mask-image: linear-gradient( 90deg, transparent, #000 20% );
 			mask-image: linear-gradient( 90deg, transparent, #000 20% );
 		}
 
-		&--next-visible .tabber__nav {
+		&--next-visible .tabber__tabs {
 			-webkit-mask-image: linear-gradient( 90deg, #000 80%, transparent );
 			mask-image: linear-gradient( 90deg, #000 80%, transparent );
 		}
 
-		&--prev-visible.tabber__header--next-visible .tabber__nav {
+		&--prev-visible.tabber__header--next-visible .tabber__tabs {
 			-webkit-mask-image: linear-gradient( 90deg, transparent, #000 20%, #000 80%, transparent );
 			mask-image: linear-gradient( 90deg, transparent, #000 20%, #000 80%, transparent );
 		}
@@ -99,7 +99,7 @@
 		}
 	}
 
-	&__item {
+	&__tab {
 		display: inline-flex;
 		align-items: center;
 		padding: 5px 12px;
@@ -140,7 +140,7 @@
 
 @media ( hover: hover ) {
 	.tabber {
-		&__item {
+		&__tab {
 			&:hover {
 				box-shadow: inset 0 -2px 0 0 #447ff5;
 				color: #447ff5;
@@ -160,7 +160,7 @@
 	.tabber {
 		&__header,
 		&__section,
-		&__nav {
+		&__tabs {
 			scroll-behavior: smooth;
 		}
 	}

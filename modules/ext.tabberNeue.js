@@ -25,7 +25,7 @@ function initTabber( tabber ) {
 			tabPanel.setAttribute( 'aria-hidden', true );
 
 			tab.innerText = tabPanel.title;
-			tab.classList.add( 'tabber__item' );
+			tab.classList.add( 'tabber__tab' );
 			tab.setAttribute( 'title', tabPanel.title );
 			tab.setAttribute( 'role', 'tab' );
 			tab.setAttribute( 'href', '#' + hash );
@@ -39,7 +39,7 @@ function initTabber( tabber ) {
 		tabList.append( fragment );
 
 		container.classList.add( 'tabber__header' );
-		tabList.classList.add( 'tabber__nav' );
+		tabList.classList.add( 'tabber__tabs' );
 		tabList.setAttribute( 'role', 'tablist' );
 		prevButton.classList.add( 'tabber__header__prev' );
 		nextButton.classList.add( 'tabber__header__next' );
@@ -113,7 +113,7 @@ function initTabber( tabber ) {
 	 * @param {string} targetHash
 	 */
 	function showPanel( targetHash ) {
-		const ACTIVETABCLASS = 'tabber__item--active',
+		const ACTIVETABCLASS = 'tabber__tab--active',
 			ACTIVEPANELCLASS = 'tabber__panel--active',
 			targetPanel = document.getElementById( targetHash ),
 			targetTab = document.getElementById( 'tab-' + targetHash ),
@@ -137,7 +137,7 @@ function initTabber( tabber ) {
 			section.style.height = targetPanel.offsetHeight + 'px';
 		}
 
-		// Add active class to the tab item
+		// Add active class to the tab
 		targetTab.classList.add( ACTIVETABCLASS );
 		targetTab.setAttribute( 'aria-selected', true );
 		targetPanel.classList.add( ACTIVEPANELCLASS );
