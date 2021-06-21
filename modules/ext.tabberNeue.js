@@ -54,28 +54,33 @@
 			 * @return {bool} true if matching tab could be shown
 			 */
 			function showPanel( targetHash ) {
-				const targetPanel = document.getElementById( targetHash ),
+				const ACTIVEITEMCLASS = 'tabber__item--active',
+					ACTIVEPANELCLASS = 'tabber__panel--active',
+					targetPanel = document.getElementById( targetHash ),
+					targetTab = document.getElementById( 'tab-' + targetHash ),
 					section = targetPanel.parentElement,
-					currentPanel = section.querySelector( '.tabber__panel--active' );
+					activePanel = section.querySelector( '.' + ACTIVEPANELCLASS );
 
-				if ( currentPanel ) {
-					// jQuery
-					nav.find( '.tabber__item--active' ).removeClass( 'tabber__item--active' );
-					currentPanel.classList.remove( 'tabber__panel--active' );
-					currentPanel.setAttribute( 'aria-hidden', 'true' );
-					section.style.height = currentPanel.offsetHeight + 'px';
+				/* eslint-disable mediawiki/class-doc */
+				if ( activePanel ) {
+					const activeTab = tablist.querySelector( '.' + ACTIVEITEMCLASS );
+					activeTab.classList.remove( ACTIVEITEMCLASS );
+					activePanel.classList.remove( ACTIVEPANELCLASS );
+					activePanel.setAttribute( 'aria-hidden', 'true' );
+					section.style.height = activePanel.offsetHeight + 'px';
 					section.style.height = targetPanel.offsetHeight + 'px';
 				} else {
 					section.style.height = targetPanel.offsetHeight + 'px';
 				}
 
 				// Add active class to the tab item
-				nav.find( 'a[href="#' + targetHash + '"]' ).addClass( 'tabber__item--active' );
-				targetPanel.classList.add( 'tabber__panel--active' );
+				targetTab.classList.add( ACTIVEITEMCLASS );
+				targetPanel.classList.add( ACTIVEPANELCLASS );
 				targetPanel.setAttribute( 'aria-hidden', 'false' );
 
 				// Scroll to tab
 				section.scrollLeft = targetPanel.offsetLeft;
+				/* eslint-enable mediawiki/class-doc */
 			}
 
 			function initButtons() {
@@ -156,18 +161,17 @@
 				initButtons( tabber );
 			}
 
-			$( window ).on( 'hashchange', function ( event ) {
-				switchTab();
-			} );
+			window.addEventListener( 'hashchange', switchTab, false );
 
 			// Respond to clicks on the nav tabs
-			nav.on( 'click', 'a', function ( e ) {
-				const targetHash = $( this ).attr( 'href' ).substring( 1 );
-				// Prevent vertical scroll while maintaining the anchor behavior
-				e.preventDefault();
-				// Add hash to the end of the URL
-				history.pushState( null, null, '#' + targetHash );
-				showPanel( targetHash );
+			[ ...tablist.children ].forEach( ( tab ) => {
+				tab.addEventListener( 'click', ( event ) => {
+					const targetHash = tab.getAttribute( 'href' ).substring( 1 );
+					event.preventDefault();
+					// Add hash to the end of the URL
+					history.pushState( null, null, '#' + targetHash );
+					showPanel( targetHash );
+				} );
 			} );
 
 			$this.addClass( 'tabber--live' );
