@@ -4,7 +4,7 @@
  * TabberNeue Hooks Class
  *
  * @package TabberNeue
- * @author  Eric Fortin, Alexia E. Smith
+ * @author  alistair3149, Eric Fortin, Alexia E. Smith
  * @license GPL-3.0-or-later
  * @link    https://www.mediawiki.org/wiki/Extension:TabberNeue
 **/
