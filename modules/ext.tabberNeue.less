@@ -127,7 +127,9 @@
 	}
 
 	&__panel {
-		height: max-content;
+		// Somehow it breaks without important
+		/* stylelint-disable-next-line declaration-no-important */
+		height: max-content !important;
 		/* be pushy about consuming all space */
 		block-size: 100%;
 		overflow-y: auto;
