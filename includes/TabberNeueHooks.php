@@ -18,13 +18,10 @@ class TabberNeueHooks {
 	/**
 	 * Sets up this extension's parser functions.
 	 *
-	 * @param Parser &$parser Parser object passed as a reference.
-	 *
-	 * @return bool true
+	 * @param Parser $parser Parser object passed as a reference.
 	 */
-	public static function onParserFirstCallInit( Parser &$parser ) {
-		$parser->setHook( 'tabber', 'TabberNeue\\TabberNeueHooks::renderTabber' );
-		return true;
+	public static function onParserFirstCallInit( Parser $parser ) {
+		$parser->setHook( 'tabber', [ __CLASS__, 'renderTabber' ] );
 	}
 
 	/**
