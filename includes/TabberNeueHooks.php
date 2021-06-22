@@ -18,7 +18,7 @@ class TabberNeueHooks {
 	/**
 	 * Sets up this extension's parser functions.
 	 *
-	 * @param object &$parser Parser object passed as a reference.
+	 * @param Parser &$parser Parser object passed as a reference.
 	 *
 	 * @return bool true
 	 */
@@ -32,8 +32,8 @@ class TabberNeueHooks {
 	 *
 	 * @param string $input The input URL between the beginning and ending tags.
 	 * @param array $args Array of attribute arguments on that beginning tag.
-	 * @param object $parser Mediawiki Parser Object
-	 * @param object $frame Mediawiki PPFrame Object
+	 * @param Parser $parser Mediawiki Parser Object
+	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 */
@@ -57,8 +57,8 @@ class TabberNeueHooks {
 	 * Build individual tab.
 	 *
 	 * @param string $tab Tab information
-	 * @param object $parser Mediawiki Parser Object
-	 * @param object $frame Mediawiki PPFrame Object
+	 * @param Parser $parser Mediawiki Parser Object
+	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 */
