@@ -1,4 +1,5 @@
 # TabberNeue
+![](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/workflows/MediaWiki%20CI/badge.svg)
 
 The TabberNeue extension allows wikis to create tabs within a page. It is a rewritten and forked version of [Extension:Tabber](https://www.mediawiki.org/wiki/Extension:Tabber). It includes multiple improvements such as responsive layout support, ARIA support, and conform to Wikimedia UI. **TabberNeue is not compatible with Tabber, please disable or remove Tabber before installing TabberNeue.**
 
