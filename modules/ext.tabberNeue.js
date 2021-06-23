@@ -118,15 +118,19 @@ function initTabber( tabber ) {
 			targetPanel = document.getElementById( targetHash ),
 			targetTab = document.getElementById( 'tab-' + targetHash ),
 			section = targetPanel.parentElement,
-			activePanel = section.querySelector( '.' + ACTIVEPANELCLASS );
+			activePanel = section.querySelector( ':scope > .' + ACTIVEPANELCLASS );
 
 		/* eslint-disable mediawiki/class-doc */
 		if ( activePanel ) {
-			const activeTab = tabList.querySelector( '.' + ACTIVETABCLASS );
+			// Just to be safe since there can be multiple active classes
+			// even if there shouldn't be
+			const activeTabs = tabList.querySelectorAll( '.' + ACTIVETABCLASS );
 
-			if ( activeTab ) {
-				activeTab.classList.remove( ACTIVETABCLASS );
-				activeTab.setAttribute( 'aria-selected', false );
+			if ( activeTabs.length > 0 ) {
+				activeTabs.forEach( ( activeTab ) => {
+					activeTab.classList.remove( ACTIVETABCLASS );
+					activeTab.setAttribute( 'aria-selected', false );
+				} );
 			}
 
 			activePanel.classList.remove( ACTIVEPANELCLASS );
