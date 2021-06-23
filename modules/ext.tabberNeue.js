@@ -5,7 +5,7 @@
  */
 function initTabber( tabber ) {
 	const key = tabber.getAttribute( 'id' ).substring( 7 ),
-		tabPanels = tabber.querySelectorAll( '.tabber__panel' );
+		tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
 
 	const container = document.createElement( 'header' ),
 		tabList = document.createElement( 'nav' ),
