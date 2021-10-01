@@ -21,13 +21,20 @@
 	"AutoloadClasses": {
 		"TabberNeue\\TabberNeueHooks": "includes/TabberNeueHooks.php"
 	},
+	"ConfigRegistry": {
+		"TabberNeue": "GlobalVarConfig::newInstance"
+	},
 	"ResourceModules": {
 		"ext.tabberNeue": {
+			"packageFiles": [
+				"ext.tabberNeue.js",
+				{
+					"name": "config.json",
+					"callback": "TabberNeue\\TabberNeueHooks::getTabberNeueResourceLoaderConfig"
+				}
+			],
 			"styles": [
 				"ext.tabberNeue.less"
-			],
-			"scripts": [
-				"ext.tabberNeue.js"
 			],
 			"dependencies": [
 				"mediawiki.Uri",
@@ -60,6 +67,15 @@
 	"ResourceFileModulePaths": {
 		"localBasePath": "modules",
 		"remoteExtPath": "TabberNeue/modules"
+	},
+	"config_prefix": "wgTabberNeue",
+	"config": {
+		"MD5Hash": {
+			"value": true,
+			"description": "Enable or disable appending unique MD5 hash key to tabs",
+			"descriptionmsg": "tabberneue-config-md5hash",
+			"public": true
+		}
 	},
 	"Hooks": {
 		"ParserFirstCallInit": [

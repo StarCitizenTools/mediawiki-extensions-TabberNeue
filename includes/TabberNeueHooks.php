@@ -9,10 +9,14 @@
  * @link    https://www.mediawiki.org/wiki/Extension:TabberNeue
  */
 
+declare( strict_types=1 );
+
 namespace TabberNeue;
 
+use Config;
 use Parser;
 use PPFrame;
+use ResourceLoaderContext;
 
 class TabberNeueHooks {
 	/**
@@ -74,5 +78,20 @@ class TabberNeueHooks {
 			'">' . $tabBody . '</article>';
 
 		return $tab;
+	}
+
+	/**
+	 * Passes config variables to ext.tabberNeue ResourceLoader module.
+	 * @param ResourceLoaderContext $context
+	 * @param Config $config
+	 * @return array
+	 */
+	public static function getTabberNeueResourceLoaderConfig(
+		ResourceLoaderContext $context,
+		Config $config
+	) {
+		return [
+			'wgTabberNeueMD5Hash' => $config->get( 'MD5Hash' ),
+		];
 	}
 }

@@ -4,8 +4,7 @@
  * @param {HTMLElement} tabber
  */
 function initTabber( tabber ) {
-	const key = tabber.getAttribute( 'id' ).substring( 7 ),
-		tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
+	const tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
 
 	const container = document.createElement( 'header' ),
 		tabList = document.createElement( 'nav' ),
@@ -16,8 +15,17 @@ function initTabber( tabber ) {
 		const fragment = new DocumentFragment();
 
 		[ ...tabPanels ].forEach( ( tabPanel ) => {
-			const hash = mw.util.escapeIdForAttribute( tabPanel.title ) + '-' + key,
+			const isMD5 = require( './config.json' ).wgTabberNeueMD5Hash.value,
 				tab = document.createElement( 'a' );
+
+			// Prepend with tab so that it does not collide with article heading
+			let hash = 'tab-' + mw.util.escapeIdForAttribute( tabPanel.title ).slice( 0, -1 );
+
+			// If MD5 Hash is enabled
+			if ( isMD5 ) {
+				const key = tabber.getAttribute( 'id' ).substring( 7 );
+				hash += '-' + key;
+			}
 
 			tabPanel.setAttribute( 'id', hash );
 			tabPanel.setAttribute( 'role', 'tabpanel' );
