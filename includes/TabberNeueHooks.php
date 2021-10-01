@@ -68,10 +68,10 @@ class TabberNeueHooks {
 		// Use array_pad to make sure at least 2 array values are always returned
 		list( $tabName, $tabBody ) = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
-		$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
+		$tabBody = $parser->recursiveTagParseFully( $tabBody, $frame );
 
 		$tab = '<article class="tabber__panel" title="' . htmlspecialchars( $tabName ) .
-			'"><p>' . $tabBody . '</p></article>';
+			'">' . $tabBody . '</article>';
 
 		return $tab;
 	}
