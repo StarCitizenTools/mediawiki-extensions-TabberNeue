@@ -55,4 +55,4 @@ Tab2={{{2|}}}
 ## Configurations
 Name | Description | Values | Default
 :--- | :--- | :--- | :---
-`$wgTabberNeueMD5Hash` | Enable or disable appending unique MD5 hash key to tabs. Disable if you need permalink to specific tabs. | `true`; `false` | `true`
+`$wgTabberNeueEnableMD5Hash` | Enable or disable appending unique MD5 hash key to tabs. Disable if you need permalink to specific tabs. | `true`; `false` | `true`
