@@ -120,6 +120,25 @@ function initTabber( tabber ) {
 			section = targetPanel.parentElement,
 			activePanel = section.querySelector( ':scope > .' + ACTIVEPANELCLASS );
 
+		const getHeight = ( el ) => {
+			if ( el.offsetHeight !== 0 ) {
+				return el.offsetHeight;
+			}
+
+			// Sometimes the tab is hidden by one of its parent elements
+			// and you can only get the actual height by cloning the element
+			const clone = el.cloneNode( true );
+			// Hide the cloned element
+			clone.style.cssText = 'position:absolute;visibility:hidden;';
+			// Add cloned element to body
+			document.body.appendChild( clone );
+			// Measure the height of the clone
+			const height = clone.clientHeight;
+			// Remove the cloned element
+			clone.parentNode.removeChild( clone );
+			return height;
+		};
+
 		/* eslint-disable mediawiki/class-doc */
 		if ( activePanel ) {
 			// Just to be safe since there can be multiple active classes
@@ -135,10 +154,10 @@ function initTabber( tabber ) {
 
 			activePanel.classList.remove( ACTIVEPANELCLASS );
 			activePanel.setAttribute( 'aria-hidden', true );
-			section.style.height = activePanel.offsetHeight + 'px';
-			section.style.height = targetPanel.offsetHeight + 'px';
+			section.style.height = getHeight( activePanel ) + 'px';
+			section.style.height = getHeight( targetPanel ) + 'px';
 		} else {
-			section.style.height = targetPanel.offsetHeight + 'px';
+			section.style.height = getHeight( targetPanel ) + 'px';
 		}
 
 		// Add active class to the tab
