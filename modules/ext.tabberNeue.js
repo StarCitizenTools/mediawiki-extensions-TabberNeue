@@ -15,7 +15,7 @@ function initTabber( tabber ) {
 		const fragment = new DocumentFragment();
 
 		[ ...tabPanels ].forEach( ( tabPanel ) => {
-			const isMD5 = require( './config.json' ).wgTabberNeueMD5Hash.value,
+			const isMD5 = require( './config.json' ).wgTabberNeueEnableMD5Hash.value,
 				tab = document.createElement( 'a' );
 
 			// Prepend with tab so that it does not collide with article heading

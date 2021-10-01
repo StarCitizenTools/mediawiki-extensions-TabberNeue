@@ -91,7 +91,7 @@ class TabberNeueHooks {
 		Config $config
 	) {
 		return [
-			'wgTabberNeueMD5Hash' => $config->get( 'MD5Hash' ),
+			'wgTabberNeueEnableMD5Hash' => $config->get( 'EnableMD5Hash' ),
 		];
 	}
 }

@@ -70,7 +70,7 @@
 	},
 	"config_prefix": "wgTabberNeue",
 	"config": {
-		"MD5Hash": {
+		"EnableMD5Hash": {
 			"value": true,
 			"description": "Enable or disable appending unique MD5 hash key to tabs",
 			"descriptionmsg": "tabberneue-config-md5hash",
