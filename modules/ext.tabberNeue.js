@@ -2,8 +2,9 @@
  * Initialize Tabber
  *
  * @param {HTMLElement} tabber
+ * @param {number} count
  */
-function initTabber( tabber ) {
+function initTabber( tabber, count ) {
 	const tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
 
 	const container = document.createElement( 'header' ),
@@ -15,17 +16,8 @@ function initTabber( tabber ) {
 		const fragment = new DocumentFragment();
 
 		[ ...tabPanels ].forEach( ( tabPanel ) => {
-			const isMD5 = require( './config.json' ).wgTabberNeueEnableMD5Hash.value,
+			const hash = mw.util.escapeIdForAttribute( tabPanel.title ) + '-' + count,
 				tab = document.createElement( 'a' );
-
-			// Prepend with tab so that it does not collide with article heading
-			let hash = 'tab-' + mw.util.escapeIdForAttribute( tabPanel.title );
-
-			// If MD5 Hash is enabled
-			if ( isMD5 ) {
-				const key = tabber.getAttribute( 'id' ).substring( 7 );
-				hash += '-' + key;
-			}
 
 			tabPanel.setAttribute( 'id', hash );
 			tabPanel.setAttribute( 'role', 'tabpanel' );
@@ -223,9 +215,11 @@ function main() {
 	const tabbers = document.querySelectorAll( '.tabber' );
 
 	if ( tabbers ) {
+		let count = 0;
 		mw.loader.load( 'ext.tabberNeue.icons' );
 		tabbers.forEach( ( tabber ) => {
-			initTabber( tabber );
+			initTabber( tabber, count );
+			count++;
 		} );
 	}
 }

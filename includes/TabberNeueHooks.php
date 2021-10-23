@@ -13,10 +13,8 @@ declare( strict_types=1 );
 
 namespace TabberNeue;
 
-use Config;
 use Parser;
 use PPFrame;
-use ResourceLoaderContext;
 
 class TabberNeueHooks {
 	/**
@@ -40,15 +38,13 @@ class TabberNeueHooks {
 	 */
 	public static function renderTabber( $input, array $args, Parser $parser, PPFrame $frame ) {
 		$parser->getOutput()->addModules( 'ext.tabberNeue' );
-
-		$key = substr( md5( $input ), 0, 6 );
 		$arr = explode( "|-|", $input );
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {
 			$htmlTabs .= self::buildTab( $tab, $parser, $frame );
 		}
 
-		$html = '<div id="tabber-' . $key . '" class="tabber">' .
+		$html = '<div class="tabber">' .
 			'<section class="tabber__section">' . $htmlTabs . "</section></div>";
 
 		return $html;
@@ -78,20 +74,5 @@ class TabberNeueHooks {
 			'">' . $tabBody . '</article>';
 
 		return $tab;
-	}
-
-	/**
-	 * Passes config variables to ext.tabberNeue ResourceLoader module.
-	 * @param ResourceLoaderContext $context
-	 * @param Config $config
-	 * @return array
-	 */
-	public static function getTabberNeueResourceLoaderConfig(
-		ResourceLoaderContext $context,
-		Config $config
-	) {
-		return [
-			'wgTabberNeueEnableMD5Hash' => $config->get( 'EnableMD5Hash' ),
-		];
 	}
 }
