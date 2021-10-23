@@ -19,7 +19,7 @@ function initTabber( tabber ) {
 				tab = document.createElement( 'a' );
 
 			// Prepend with tab so that it does not collide with article heading
-			let hash = 'tab-' + mw.util.escapeIdForAttribute( tabPanel.title ).slice( 0, -1 );
+			let hash = 'tab-' + mw.util.escapeIdForAttribute( tabPanel.title );
 
 			// If MD5 Hash is enabled
 			if ( isMD5 ) {
