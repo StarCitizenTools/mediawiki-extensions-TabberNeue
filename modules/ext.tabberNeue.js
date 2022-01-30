@@ -4,7 +4,7 @@
  * @param {HTMLElement} tabber
  * @param {number} count
  */
- function initTabber( tabber, count ) {
+function initTabber( tabber, count ) {
 	const tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
 
 	const container = document.createElement( 'header' ),
