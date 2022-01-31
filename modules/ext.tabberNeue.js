@@ -62,10 +62,19 @@ function initTabber( tabber, count ) {
 			// Scroll to the start
 			if ( scrollLeft <= 0 ) {
 				tabList.scrollLeft = 0;
+			} else {
+				tabList.scrollLeft = scrollLeft;
+			}
+		};
+
+		const updateButtons = () => {
+			const scrollLeft = tabList.scrollLeft;
+
+			// Scroll to the start
+			if ( scrollLeft <= 0 ) {
 				container.classList.remove( PREVCLASS );
 				container.classList.add( NEXTCLASS );
 			} else {
-				tabList.scrollLeft = scrollLeft;
 				// Scroll to the end
 				if ( scrollLeft + tabList.offsetWidth >= tabList.scrollWidth ) {
 					container.classList.remove( NEXTCLASS );
@@ -84,7 +93,7 @@ function initTabber( tabber, count ) {
 				const scrollOffset = container.offsetWidth / 2;
 
 				// Just to add the right classes
-				scrollTabs( 0 );
+				updateButtons();
 				prevButton.addEventListener( 'click', () => {
 					scrollTabs( -scrollOffset );
 				}, false );
@@ -100,6 +109,12 @@ function initTabber( tabber, count ) {
 		/* eslint-enable mediawiki/class-doc */
 
 		setupButtons();
+
+		// Listen for scroll event on header
+		// Also triggered by side-scrolling using other means other than the buttons
+		tabList.addEventListener( 'scroll', () => {
+			updateButtons();
+		} );
 
 		// Listen for window resize
 		window.addEventListener( 'resize', () => {
