@@ -196,7 +196,7 @@ function initTabber( tabber, count ) {
 		let targetHash = new mw.Uri( location.href ).fragment;
 
 		// Switch to the first tab if no targetHash or no tab is detected
-		if ( !targetHash || !document.getElementById( 'tab-' + targetHash ) ) {
+		if ( !targetHash || !tabList.querySelector( '#tab-' + CSS.escape( targetHash ) ) ) {
 			targetHash = tabList.firstElementChild.getAttribute( 'id' ).substring( 4 );
 		}
 
