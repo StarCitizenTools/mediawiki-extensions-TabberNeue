@@ -47,6 +47,39 @@ function initTabber( tabber, count ) {
 		container.append( prevButton, tabList, nextButton );
 	};
 
+	var updateSectionHeight = function( section, activePanel ) {
+		var height = activePanel.offsetHeight;
+		if ( height === 0 ) {
+			// Sometimes the tab is hidden by one of its parent elements
+			// and you can only get the actual height by cloning the element
+			var clone = activePanel.cloneNode( true );
+			// Hide the cloned element
+			clone.style.cssText = 'position:absolute;visibility:hidden;';
+			// Add cloned element to body
+			document.body.appendChild( clone );
+			// Measure the height of the clone
+			height = clone.clientHeight;
+			// Remove the cloned element
+			clone.parentNode.removeChild( clone );
+		}
+		section.style.height = String( height ) + 'px';
+		// Scroll to tab
+		section.scrollLeft = activePanel.offsetLeft;
+	};
+
+	var onElementResize = function( entries, observer) {
+		if ( entries && entries.length > 0 ) {
+			var targetPanel = entries[0].target;
+			var section = targetPanel.parentElement;
+			updateSectionHeight( section, targetPanel );
+		}
+	};
+
+	var resizeObserver = null;
+	if ( window.ResizeObserver ) {
+		resizeObserver = new ResizeObserver( mw.util.debounce( 250, onElementResize ) );
+	}
+
 	buildTabs();
 	tabber.prepend( container );
 
@@ -117,9 +150,7 @@ function initTabber( tabber, count ) {
 		} );
 
 		// Listen for window resize
-		window.addEventListener( 'resize', function() {
-			mw.util.debounce( 250, setupButtons() );
-		} );
+		window.addEventListener( 'resize', mw.util.debounce( 250, setupButtons ) );
 	};
 
 	/**
@@ -135,25 +166,6 @@ function initTabber( tabber, count ) {
 			section = targetPanel.parentElement,
 			activePanel = section.querySelector( ':scope > .' + ACTIVEPANELCLASS );
 
-		var getHeight = function( el ) {
-			if ( el.offsetHeight !== 0 ) {
-				return el.offsetHeight;
-			}
-
-			// Sometimes the tab is hidden by one of its parent elements
-			// and you can only get the actual height by cloning the element
-			var clone = el.cloneNode( true );
-			// Hide the cloned element
-			clone.style.cssText = 'position:absolute;visibility:hidden;';
-			// Add cloned element to body
-			document.body.appendChild( clone );
-			// Measure the height of the clone
-			var height = clone.clientHeight;
-			// Remove the cloned element
-			clone.parentNode.removeChild( clone );
-			return height;
-		};
-
 		/* eslint-disable mediawiki/class-doc */
 		if ( activePanel ) {
 			// Just to be safe since there can be multiple active classes
@@ -167,12 +179,12 @@ function initTabber( tabber, count ) {
 				} );
 			}
 
+			if ( resizeObserver ) {
+				resizeObserver.unobserve( activePanel );
+			}
+
 			activePanel.classList.remove( ACTIVEPANELCLASS );
 			activePanel.setAttribute( 'aria-hidden', true );
-			section.style.height = getHeight( activePanel ) + 'px';
-			section.style.height = getHeight( targetPanel ) + 'px';
-		} else {
-			section.style.height = getHeight( targetPanel ) + 'px';
 		}
 
 		// Add active class to the tab
@@ -181,8 +193,22 @@ function initTabber( tabber, count ) {
 		targetPanel.classList.add( ACTIVEPANELCLASS );
 		targetPanel.setAttribute( 'aria-hidden', false );
 
-		// Scroll to tab
-		section.scrollLeft = targetPanel.offsetLeft;
+		updateSectionHeight( section, targetPanel );
+
+		// If we're inside another tab, trigger its logic to recalc its height
+		parentSection = section;
+		// ResizeObserver should take care of the recursivity already
+		while ( !resizeObserver ) {
+			parentPanel = parentSection.closest( '.' + ACTIVEPANELCLASS );
+			if ( !parentPanel ) {
+				break;
+			}
+			parentSection = parentPanel.parentElement;
+			updateSectionHeight( parentSection, parentPanel );
+		}
+		if ( resizeObserver ) {
+			resizeObserver.observe( targetPanel );
+		}
 		/* eslint-enable mediawiki/class-doc */
 	}
 
