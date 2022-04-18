@@ -5,18 +5,18 @@
  * @param {number} count
  */
 function initTabber( tabber, count ) {
-	const tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
+	var tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
 
-	const container = document.createElement( 'header' ),
+	var container = document.createElement( 'header' ),
 		tabList = document.createElement( 'nav' ),
 		prevButton = document.createElement( 'div' ),
 		nextButton = document.createElement( 'div' );
 
-	const buildTabs = () => {
-		const fragment = new DocumentFragment();
+	var buildTabs = function() {
+		var fragment = new DocumentFragment();
 
-		[ ...tabPanels ].forEach( ( tabPanel ) => {
-			const hash = mw.util.escapeIdForAttribute( tabPanel.title ) + '-' + count,
+		tabPanels.forEach( function( tabPanel ) {
+			var hash = mw.util.escapeIdForAttribute( tabPanel.title ) + '-' + count,
 				tab = document.createElement( 'a' );
 
 			tabPanel.setAttribute( 'id', hash );
@@ -51,13 +51,13 @@ function initTabber( tabber, count ) {
 	tabber.prepend( container );
 
 	// Initalize previous and next buttons
-	const initButtons = () => {
-		const PREVCLASS = 'tabber__header--prev-visible',
+	var initButtons = function() {
+		var PREVCLASS = 'tabber__header--prev-visible',
 			NEXTCLASS = 'tabber__header--next-visible';
 
 		/* eslint-disable mediawiki/class-doc */
-		const scrollTabs = ( offset ) => {
-			const scrollLeft = tabList.scrollLeft + offset;
+		var scrollTabs = function( offset ) {
+			var scrollLeft = tabList.scrollLeft + offset;
 
 			// Scroll to the start
 			if ( scrollLeft <= 0 ) {
@@ -67,8 +67,8 @@ function initTabber( tabber, count ) {
 			}
 		};
 
-		const updateButtons = () => {
-			const scrollLeft = tabList.scrollLeft;
+		var updateButtons = function() {
+			var scrollLeft = tabList.scrollLeft;
 
 			// Scroll to the start
 			if ( scrollLeft <= 0 ) {
@@ -86,19 +86,19 @@ function initTabber( tabber, count ) {
 			}
 		};
 
-		const setupButtons = () => {
-			const isScrollable = ( tabList.scrollWidth > container.offsetWidth );
+		var setupButtons = function() {
+			var isScrollable = ( tabList.scrollWidth > container.offsetWidth );
 
 			if ( isScrollable ) {
-				const scrollOffset = container.offsetWidth / 2;
+				var scrollOffset = container.offsetWidth / 2;
 
 				// Just to add the right classes
 				updateButtons();
-				prevButton.addEventListener( 'click', () => {
+				prevButton.addEventListener( 'click', function() {
 					scrollTabs( -scrollOffset );
 				}, false );
 
-				nextButton.addEventListener( 'click', () => {
+				nextButton.addEventListener( 'click', function() {
 					scrollTabs( scrollOffset );
 				}, false );
 			} else {
@@ -112,12 +112,12 @@ function initTabber( tabber, count ) {
 
 		// Listen for scroll event on header
 		// Also triggered by side-scrolling using other means other than the buttons
-		tabList.addEventListener( 'scroll', () => {
+		tabList.addEventListener( 'scroll', function() {
 			updateButtons();
 		} );
 
 		// Listen for window resize
-		window.addEventListener( 'resize', () => {
+		window.addEventListener( 'resize', function() {
 			mw.util.debounce( 250, setupButtons() );
 		} );
 	};
@@ -128,27 +128,27 @@ function initTabber( tabber, count ) {
 	 * @param {string} targetHash
 	 */
 	function showPanel( targetHash ) {
-		const ACTIVETABCLASS = 'tabber__tab--active',
+		var ACTIVETABCLASS = 'tabber__tab--active',
 			ACTIVEPANELCLASS = 'tabber__panel--active',
 			targetPanel = document.getElementById( targetHash ),
 			targetTab = document.getElementById( 'tab-' + targetHash ),
 			section = targetPanel.parentElement,
 			activePanel = section.querySelector( ':scope > .' + ACTIVEPANELCLASS );
 
-		const getHeight = ( el ) => {
+		var getHeight = function( el ) {
 			if ( el.offsetHeight !== 0 ) {
 				return el.offsetHeight;
 			}
 
 			// Sometimes the tab is hidden by one of its parent elements
 			// and you can only get the actual height by cloning the element
-			const clone = el.cloneNode( true );
+			var clone = el.cloneNode( true );
 			// Hide the cloned element
 			clone.style.cssText = 'position:absolute;visibility:hidden;';
 			// Add cloned element to body
 			document.body.appendChild( clone );
 			// Measure the height of the clone
-			const height = clone.clientHeight;
+			var height = clone.clientHeight;
 			// Remove the cloned element
 			clone.parentNode.removeChild( clone );
 			return height;
@@ -158,10 +158,10 @@ function initTabber( tabber, count ) {
 		if ( activePanel ) {
 			// Just to be safe since there can be multiple active classes
 			// even if there shouldn't be
-			const activeTabs = tabList.querySelectorAll( '.' + ACTIVETABCLASS );
+			var activeTabs = tabList.querySelectorAll( '.' + ACTIVETABCLASS );
 
 			if ( activeTabs.length > 0 ) {
-				activeTabs.forEach( ( activeTab ) => {
+				activeTabs.forEach( function( activeTab ) {
 					activeTab.classList.remove( ACTIVETABCLASS );
 					activeTab.setAttribute( 'aria-selected', false );
 				} );
@@ -193,7 +193,7 @@ function initTabber( tabber, count ) {
 	 * @param {HTMLElement} tabber
 	 */
 	function switchTab() {
-		let targetHash = new mw.Uri( location.href ).fragment;
+		var targetHash = new mw.Uri( location.href ).fragment;
 
 		// Switch to the first tab if no targetHash or no tab is detected
 		if ( !targetHash || !tabList.querySelector( '#tab-' + CSS.escape( targetHash ) ) ) {
@@ -213,9 +213,9 @@ function initTabber( tabber, count ) {
 	// window.addEventListener( 'hashchange', switchTab, false );
 
 	// Respond to clicks on the nav tabs
-	[ ...tabList.children ].forEach( ( tab ) => {
-		tab.addEventListener( 'click', ( event ) => {
-			const targetHash = tab.getAttribute( 'href' ).substring( 1 );
+	Array.prototype.forEach.call( tabList.children, function( tab ) {
+		tab.addEventListener( 'click', function( event ) {
+			var targetHash = tab.getAttribute( 'href' ).substring( 1 );
 			event.preventDefault();
 			// Add hash to the end of the URL
 			history.pushState( null, null, '#' + targetHash );
@@ -227,12 +227,12 @@ function initTabber( tabber, count ) {
 }
 
 function main() {
-	const tabbers = document.querySelectorAll( '.tabber' );
+	var tabbers = document.querySelectorAll( '.tabber' );
 
 	if ( tabbers ) {
-		let count = 0;
+		var count = 0;
 		mw.loader.load( 'ext.tabberNeue.icons' );
-		tabbers.forEach( ( tabber ) => {
+		tabbers.forEach( function( tabber ) {
 			initTabber( tabber, count );
 			count++;
 		} );
