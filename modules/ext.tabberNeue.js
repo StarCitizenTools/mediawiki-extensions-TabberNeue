@@ -15,7 +15,7 @@ function initTabber( tabber, count ) {
 	var buildTabs = function() {
 		var fragment = new DocumentFragment();
 
-		tabPanels.forEach( function( tabPanel ) {
+		Array.prototype.forEach.call( tabPanels, function( tabPanel ) {
 			var hash = mw.util.escapeIdForAttribute( tabPanel.title ) + '-' + count,
 				tab = document.createElement( 'a' );
 
@@ -161,7 +161,7 @@ function initTabber( tabber, count ) {
 			var activeTabs = tabList.querySelectorAll( '.' + ACTIVETABCLASS );
 
 			if ( activeTabs.length > 0 ) {
-				activeTabs.forEach( function( activeTab ) {
+				Array.prototype.forEach.call( activeTabs, function( activeTab ) {
 					activeTab.classList.remove( ACTIVETABCLASS );
 					activeTab.setAttribute( 'aria-selected', false );
 				} );
@@ -232,7 +232,7 @@ function main() {
 	if ( tabbers ) {
 		var count = 0;
 		mw.loader.load( 'ext.tabberNeue.icons' );
-		tabbers.forEach( function( tabber ) {
+		Array.prototype.forEach.call( tabbers, function( tabber ) {
 			initTabber( tabber, count );
 			count++;
 		} );
