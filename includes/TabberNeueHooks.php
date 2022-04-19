@@ -42,6 +42,9 @@ class TabberNeueHooks {
 	 */
 	public static function renderTabber( $input, array $args, Parser $parser, PPFrame $frame ) {
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
+		if ( is_null( $input ) ) {
+			return;
+		}
 		$arr = explode( "|-|", $input );
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {
@@ -94,6 +97,9 @@ class TabberNeueHooks {
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
 		$selected = true;
 
+		if ( is_null( $input ) ) {
+			return;
+		}
 		$arr = explode( "\n", $input );
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {
