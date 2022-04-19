@@ -1,3 +1,5 @@
+@width-bounce-dot: 12px;
+
 .tabber {
 	position: relative;
 	display: flex;
@@ -136,6 +138,55 @@
 		overflow-y: auto;
 		overscroll-behavior-y: contain;
 		scroll-snap-align: start;
+	}
+
+	&__transclusion {
+		/*
+		 * Animation based on dots indicators from Wikimedia
+		 * T266028
+		 */
+		&--loading {
+			margin: 0.5em 0; // based on Vector
+			text-align: center;
+			white-space: nowrap;
+
+			.tabber__loading-indicator,
+			&:before,
+			&:after {
+				display: inline-block;
+				width: @width-bounce-dot;
+				height: @width-bounce-dot;
+				animation: bounce-delay 1600ms infinite ease-in-out both;
+				animation-delay: -160ms;
+				background-color: #36c;
+				border-radius: 100%;
+				content: '';
+			}
+
+			&:before {
+				margin-right: @width-bounce-dot / 4;
+				animation-delay: -330ms;
+			}
+
+			&:after {
+				margin-left: @width-bounce-dot / 4;
+				animation-delay: 0ms;
+			}
+		}
+	}
+}
+
+// Animations
+@keyframes bounce-delay {
+	0%,
+	50%,
+	100% {
+		transform: scale( 0.625 );
+	}
+
+	20% {
+		opacity: 0.87;
+		transform: scale( 1 );
 	}
 }
 

@@ -150,7 +150,7 @@ class TabberNeueHooks {
 				// Add a link placeholder, as a fallback if JavaScript doesn't execute
 				$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 				$tabBody = sprintf(
-					'<div class="tabber__ajaxplaceholder">%s</div>',
+					'<div class="tabber__transclusion">%s</div>',
 					$linkRenderer->makeLink( $title, null, [ 'rel' => 'nofollow' ] )
 				);
 				$dataProps['pending-load'] = '1';
@@ -164,9 +164,9 @@ class TabberNeueHooks {
 				$dataProps['load-url'] = wfExpandUrl( wfScript( 'api' ) . $query,  PROTO_CANONICAL );
 				$oldTabBody = $tabBody;
 				// Allow extensions to update the lazy loaded tab
-				Hooks::run( 'TabberTranscludeRenderLazyLoadedTab', [ &$tabBody, &$dataProps, $parser, $frame ] );
+				Hooks::run( 'TabberNeueRenderLazyLoadedTab', [ &$tabBody, &$dataProps, $parser, $frame ] );
 				if ( $oldTabBody != $tabBody ) {
-					$parser->getOutput()->recordOption( 'tabbertranscludelazyupdated' );
+					$parser->getOutput()->recordOption( 'tabberneuelazyupdated' );
 				}
 			}
 			// Register as a template

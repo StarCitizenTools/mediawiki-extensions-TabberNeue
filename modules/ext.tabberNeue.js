@@ -199,9 +199,12 @@ function initTabber( tabber, count ) {
 			parentPanel, parentSection;
 
 		if ( allowRemoteLoad && targetPanel.dataset.tabberPendingLoad && targetPanel.dataset.tabberLoadUrl ) {
-			var loading = document.createElement( 'div' );
-			loading.setAttribute( 'class', 'tabber__loading' );
-			loading.appendChild( document.createTextNode( mw.message( 'tabberneue-loading' ).text() ) );
+			var loading = document.createElement( 'div' ),
+				indicator = document.createElement( 'div' );
+
+			loading.setAttribute( 'class', 'tabber__transclusion--loading' );
+			indicator.setAttribute( 'class', 'tabber__loading-indicator' );
+			loading.appendChild( indicator );
 			targetPanel.textContent = '';
 			targetPanel.appendChild( loading );
 			loadPage( targetPanel, targetPanel.dataset.tabberLoadUrl );
@@ -260,7 +263,7 @@ function initTabber( tabber, count ) {
 		var targetPanel = currentRequest.targetPanel;
 		if ( xhr.status != 200 ) {
 			var err = document.createElement( 'div' );
-			err.setAttribute( 'class', 'tabber__error' );
+			err.setAttribute( 'class', 'tabber__transclusion--error' );
 			err.appendChild( document.createTextNode( mw.message( 'tabberneue-error' ).text() ) );
 			targetPanel.textContent = '';
 			targetPanel.appendChild( err );

@@ -5,6 +5,5 @@
 		]
 	},
 	"tabberneue-desc": "{{desc|name=TabberNeue|url=http://www.mediawiki.org/wiki/Extension:TabberNeue}}",
-	"tabberneue-loading": "Placeholder loading message for the tab content",
     "tabberneue-error": "Error message shown loading tab content"
 }
