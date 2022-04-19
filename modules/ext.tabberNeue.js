@@ -245,7 +245,7 @@ function initTabber( tabber, count ) {
 			var targetHash = tab.getAttribute( 'href' ).substring( 1 );
 			event.preventDefault();
 			// Add hash to the end of the URL
-			history.pushState( null, null, '#' + targetHash );
+			history.replaceState( null, null, '#' + targetHash );
 			showPanel( targetHash );
 		} );
 	} );
