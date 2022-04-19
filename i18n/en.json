@@ -2,8 +2,11 @@
     "@metadata": {
         "authors": [
             "alistair3149",
-            "Eric Fortin"
+            "Eric Fortin",
+            "Ciencia Al Poder"
         ]
     },
-    "tabberneue-desc": "Allows to create tabs within a page. Forked from [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber]."
+    "tabberneue-desc": "Allows to create tabs within a page. Forked from [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
+    "tabberneue-loading": "Loading...",
+    "tabberneue-error": "Error."
 }

@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Armando-Martin"
+			"Ciencia Al Poder"
 		]
 	},
-	"tabberneue-desc": "Permite para fichas dentro de una página"
+	"tabberneue-desc": "Permite usar pestañas dentro de una página.",
+	"tabberneue-loading": "Cargando...",
+	"tabberneue-error": "Error."
 }
