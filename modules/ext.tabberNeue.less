@@ -138,6 +138,12 @@
 		overflow-y: auto;
 		overscroll-behavior-y: contain;
 		scroll-snap-align: start;
+
+		// Hide edit buttons for non-transclusion tabs since they don't work
+		/* stylelint-disable-next-line selector-class-pattern */
+		&:not( [ data-tabber-page-title ] ) .mw-editsection {
+			display: none;
+		}
 	}
 
 	&__transclusion {

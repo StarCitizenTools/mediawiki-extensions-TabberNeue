@@ -72,9 +72,7 @@ class TabberNeueHooks {
 		// Use array_pad to make sure at least 2 array values are always returned
 		list( $tabName, $tabBody ) = array_pad( array_map( 'trim', explode( '=', $tab, 2 ) ), 2, '' );
 
-		// Append __NOEDITSECTION__ to prevent section edit links from being added by the parser
-		// since section edit links do not work inside a tabber body
-		$tabBody = $parser->recursiveTagParseFully( '__NOEDITSECTION__' . $tabBody, $frame );
+		$tabBody = $parser->recursiveTagParseFully( $tabBody, $frame );
 
 		$tab = '<article class="tabber__panel" title="' . htmlspecialchars( $tabName ) .
 			'">' . $tabBody . '</article>';
