@@ -130,14 +130,7 @@
 	}
 
 	&__panel {
-		// Somehow it breaks without important
-		/* stylelint-disable-next-line declaration-no-important */
-		height: max-content !important;
-		/* be pushy about consuming all space */
-		block-size: 100%;
-		overflow-y: auto;
-		overscroll-behavior-y: contain;
-		scroll-snap-align: start;
+		height: max-content;
 
 		// Hide edit buttons for non-transclusion tabs since they don't work
 		/* stylelint-disable-next-line selector-class-pattern */
