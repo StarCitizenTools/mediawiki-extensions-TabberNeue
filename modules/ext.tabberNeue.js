@@ -198,10 +198,12 @@ function initTabber( tabber, count ) {
 			activePanel = section.querySelector( ':scope > .' + ACTIVEPANELCLASS ),
 			parentPanel, parentSection;
 
-		if ( allowRemoteLoad && targetPanel.dataset.tabberPendingLoad && targetPanel.dataset.tabberLoadUrl ) {
+		var loadTransclusion = function() {
 			var loading = document.createElement( 'div' ),
 				indicator = document.createElement( 'div' );
 
+			targetPanel.setAttribute( 'aria-live', 'polite' );
+			targetPanel.setAttribute( 'aria-busy', 'true' );
 			loading.setAttribute( 'class', 'tabber__transclusion--loading' );
 			indicator.setAttribute( 'class', 'tabber__loading-indicator' );
 			loading.appendChild( indicator );
@@ -236,6 +238,11 @@ function initTabber( tabber, count ) {
 		targetTab.setAttribute( 'aria-selected', true );
 		targetPanel.classList.add( ACTIVEPANELCLASS );
 		targetPanel.setAttribute( 'aria-hidden', false );
+
+		// Lazyload transclusion if needed
+		if ( allowRemoteLoad && targetPanel.dataset.tabberPendingLoad && targetPanel.dataset.tabberLoadUrl ) {
+			loadTransclusion();
+		}
 
 		updateSectionHeight( section, targetPanel );
 
@@ -274,6 +281,7 @@ function initTabber( tabber, count ) {
 			mw.hook( 'wikipage.content' ).fire( $( targetPanel ) );
 			delete targetPanel.dataset.tabberPendingLoad;
 			delete targetPanel.dataset.tabberLoadUrl;
+			targetPanel.setAttribute( 'aria-busy', 'false' );
 		}
 
 		var ACTIVEPANELCLASS = 'tabber__panel--active',
