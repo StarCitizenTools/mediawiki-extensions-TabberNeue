@@ -4,6 +4,5 @@
 			"Shirayuki"
 		]
 	},
-	"tabberneue-desc": "{{desc|name=TabberNeue|url=http://www.mediawiki.org/wiki/Extension:TabberNeue}}",
-    "tabberneue-error": "Error message shown loading tab content"
+	"tabberneue-desc": "{{desc|name=TabberNeue|url=http://www.mediawiki.org/wiki/Extension:TabberNeue}}"
 }

@@ -34,7 +34,7 @@
 				}
 			],
 			"messages": [
-				"tabberneue-error"
+				"error"
 			],
 			"styles": [
 				"ext.tabberNeue.less"

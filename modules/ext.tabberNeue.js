@@ -269,9 +269,11 @@ function initTabber( tabber, count ) {
 	function onLoadEndPage() {
 		var targetPanel = currentRequest.targetPanel;
 		if ( xhr.status != 200 ) {
-			var err = document.createElement( 'div' );
-			err.setAttribute( 'class', 'tabber__transclusion--error' );
-			err.appendChild( document.createTextNode( mw.message( 'tabberneue-error' ).text() ) );
+			var err = document.createElement( 'div' ),
+				errMsg = mw.message( 'error' ).text() + ': HTTP ' + xhr.status;
+
+			err.setAttribute( 'class', 'tabber__transclusion--error error' );
+			err.appendChild( document.createTextNode( errMsg ) );
 			targetPanel.textContent = '';
 			targetPanel.appendChild( err );
 		} else {
