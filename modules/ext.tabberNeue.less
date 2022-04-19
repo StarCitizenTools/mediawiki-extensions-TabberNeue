@@ -196,6 +196,22 @@
 	}
 }
 
+@media ( hover: none ) {
+	// Need extra specificity to override
+	.tabber {
+		.tabber__header {
+			&__prev,
+			&__next {
+				pointer-events: none; // Disable arrow button
+
+				&:after {
+					background-image: none; // Remove arrow icon
+				}
+			}
+		}
+	}
+}
+
 @media ( hover: hover ) {
 	.tabber {
 		&__tab {

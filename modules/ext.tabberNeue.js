@@ -128,13 +128,17 @@ function initTabber( tabber, count ) {
 
 				// Just to add the right classes
 				updateButtons();
-				prevButton.addEventListener( 'click', function() {
-					scrollTabs( -scrollOffset );
-				}, false );
 
-				nextButton.addEventListener( 'click', function() {
-					scrollTabs( scrollOffset );
-				}, false );
+				// Button only shows on pointer devices
+				if ( matchMedia( '(hover: hover)' ).matches ) {
+					prevButton.addEventListener( 'click', function() {
+						scrollTabs( -scrollOffset );
+					}, false );
+
+					nextButton.addEventListener( 'click', function() {
+						scrollTabs( scrollOffset );
+					}, false );
+				}
 			} else {
 				container.classList.remove( NEXTCLASS );
 				container.classList.remove( PREVCLASS );
@@ -328,10 +332,7 @@ function initTabber( tabber, count ) {
 
 	switchTab();
 
-	// Only run if client is not a touch device
-	if ( matchMedia( '(hover: hover)' ).matches ) {
-		initButtons();
-	}
+	initButtons();
 
 	// window.addEventListener( 'hashchange', switchTab, false );
 
