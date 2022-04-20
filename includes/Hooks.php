@@ -21,7 +21,7 @@ class Hooks implements ExtensionModule, ParserFirstCallInitHook {
 
 	/**
 	 * Return information about this Parsoid extension module
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getConfig(): array {

@@ -63,7 +63,7 @@ class TabberParsoid extends ExtensionTagHandler {
 		// Use array_pad to make sure at least 2 array values are always returned
 		list( $tabName, $tabBody ) = array_pad( array_map( 'trim', explode( '=', $tab, 2 ) ), 2, '' );
 
-		//$tabBody = $extApi->wikitextToDOM( $tabBody );
+		// $tabBody = $extApi->wikitextToDOM( $tabBody );
 
 		$tabBody = $extApi->domToHTML(
 				$extApi->wikitextToDOM(
