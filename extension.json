@@ -87,5 +87,6 @@
 			"class": "TabberNeue\\Hooks"
 		}
 	},
+	"ParsoidModules": [ "TabberNeue\\Hooks" ],
 	"manifest_version": 2
 }
