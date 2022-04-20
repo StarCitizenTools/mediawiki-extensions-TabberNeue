@@ -20,9 +20,8 @@ use Wikimedia\Parsoid\Ext\ParsoidExtensionAPI;
 class TabberParsoid extends ExtensionTagHandler {
 	/** @inheritDoc */
 	public function sourceToDom( ParsoidExtensionAPI $extApi, string $src, array $extArgs ) {
-		$tabber = new TabberParsoid();
 		$extApi->addModuleStyles( [ 'ext.tabberNeue' ] );
-		$html = $tabber->render( $src, $extApi );
+		$html = self::render( $extApi, $src );
 		return $extApi->htmlToDom( $html );
 	}
 
@@ -38,7 +37,7 @@ class TabberParsoid extends ExtensionTagHandler {
 		$arr = explode( "|-|", $src );
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {
-			$htmlTabs .= self::buildTab( $tab, $extApi );
+			$htmlTabs .= self::buildTab( $extApi, $tab );
 		}
 
 		$html = '<div class="tabber">' .
@@ -50,12 +49,12 @@ class TabberParsoid extends ExtensionTagHandler {
 	/**
 	 * Build individual tab.
 	 *
-	 * @param string $tab Tab information
 	 * @param PParsoidExtensionAPI $extApi
+	 * @param string $tab Tab information
 	 *
 	 * @return string HTML
 	 */
-	private static function buildTab( $tab, ParsoidExtensionAPI $extApi ) {
+	private static function buildTab( ParsoidExtensionAPI $extApi, string $tab ) {
 		$tab = trim( $tab );
 		if ( empty( $tab ) ) {
 			return $tab;
@@ -64,7 +63,20 @@ class TabberParsoid extends ExtensionTagHandler {
 		// Use array_pad to make sure at least 2 array values are always returned
 		list( $tabName, $tabBody ) = array_pad( array_map( 'trim', explode( '=', $tab, 2 ) ), 2, '' );
 
-		$tabBody = $extApi->wikitextToDOM( $tabBody );
+		//$tabBody = $extApi->wikitextToDOM( $tabBody );
+
+		$tabBody = $extApi->domToHTML(
+				$extApi->wikitextToDOM(
+					$tabBody,
+					[
+						'parseOpts' => [
+							'extTag' => 'tabber',
+							'context' => 'inline',
+						]
+					],
+					true // sol
+				)
+			);
 
 		$tab = '<article class="tabber__panel" title="' . htmlspecialchars( $tabName ) .
 			'">' . $tabBody . '</article>';
