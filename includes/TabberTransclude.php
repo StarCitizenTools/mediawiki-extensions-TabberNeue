@@ -22,22 +22,36 @@ use Title;
 
 class TabberTransclude {
 	/**
+	 * Parser callback for <tabbertransclude> tag
+	 * 
+	 * @param string $input
+	 * @param array $args
+	 * @param Parser $parser Mediawiki Parser Object
+	 * @param PPFrame $frame Mediawiki PPFrame Object
+	 * 
+	 * @return string
+	 */
+	public static function parserHook( string $input, array $args, Parser $parser, PPFrame $frame ) {
+		$tabberTransclude = new TabberTransclude();
+		$result = $tabberTransclude->render( $input, $parser, $frame );
+		if ( $input === null ) {
+			return;
+		}
+		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
+		return $result;
+	}
+
+	/**
 	 * Renders the necessary HTML for a <tabbertransclude> tag.
 	 *
 	 * @param string $input The input URL between the beginning and ending tags.
-	 * @param array $args Array of attribute arguments on that beginning tag.
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 */
-	public static function renderTabberTransclude( $input, array $args, Parser $parser, PPFrame $frame ) {
-		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
+	public static function render( $input, Parser $parser, PPFrame $frame ) {
 		$selected = true;
-
-		if ( $input === null ) {
-			return;
-		}
 		$arr = explode( "\n", $input );
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {

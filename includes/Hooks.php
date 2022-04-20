@@ -14,7 +14,7 @@ class Hooks implements ParserFirstCallInitHook {
 	 * @param Parser $parser
 	 */
 	public function onParserFirstCallInit( $parser ) {
-		$parser->setHook( 'tabber', Tabber::class . '::renderTabber' );
-		$parser->setHook( 'tabbertransclude', TabberTransclude::class . '::renderTabberTransclude' );
+		$parser->setHook( 'tabber', Tabber::class . '::parserHook' );
+		$parser->setHook( 'tabbertransclude', TabberTransclude::class . '::parserHook' );
 	}
 }

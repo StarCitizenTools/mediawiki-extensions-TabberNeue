@@ -19,20 +19,35 @@ use PPFrame;
 
 class Tabber {
 	/**
+	 * Parser callback for <tabber> tag
+	 * 
+	 * @param string $input
+	 * @param array $args
+	 * @param Parser $parser Mediawiki Parser Object
+	 * @param PPFrame $frame Mediawiki PPFrame Object
+	 * 
+	 * @return string
+	 */
+	public static function parserHook( string $input, array $args, Parser $parser, PPFrame $frame ) {
+		$tabber = new Tabber();
+		$result = $tabber->render( $input, $parser, $frame );
+		if ( $input === null ) {
+			return;
+		}
+		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
+		return $result;
+	}
+
+	/**
 	 * Renders the necessary HTML for a <tabber> tag.
 	 *
 	 * @param string $input The input URL between the beginning and ending tags.
-	 * @param array $args Array of attribute arguments on that beginning tag.
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 */
-	public static function renderTabber( $input, array $args, Parser $parser, PPFrame $frame ) {
-		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
-		if ( $input === null ) {
-			return;
-		}
+	public static function render( $input, Parser $parser, PPFrame $frame ) {
 		$arr = explode( "|-|", $input );
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {
