@@ -20,8 +20,8 @@ use Wikimedia\Parsoid\Ext\ParsoidExtensionAPI;
 class TabberParsoid extends ExtensionTagHandler {
 	/** @inheritDoc */
 	public function sourceToDom( ParsoidExtensionAPI $extApi, string $src, array $extArgs ) {
-		$extApi->addModuleStyles( [ 'ext.tabberNeue' ] );
 		$html = self::render( $extApi, $src );
+		$extApi->addModules( [ 'ext.tabberNeue' ] );
 		return $extApi->htmlToDom( $html );
 	}
 
