@@ -80,9 +80,12 @@
 		}
 	},
 	"Hooks": {
-		"ParserFirstCallInit": [
-			"TabberNeue\\Hooks::onParserFirstCallInit"
-		]
+		"ParserFirstCallInit": "parser"
+	},
+	"HookHandlers": {
+		"parser": {
+			"class": "TabberNeue\\Hooks"
+		}
 	},
 	"manifest_version": 2
 }

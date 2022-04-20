@@ -4,15 +4,16 @@ declare( strict_types=1 );
 
 namespace TabberNeue;
 
+use MediaWiki\Hook\ParserFirstCallInitHook;
 use Parser;
 
-class Hooks {
+class Hooks implements ParserFirstCallInitHook {
 	/**
-	 * Sets up this extension's parser functions.
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ParserFirstCallInit
 	 *
-	 * @param Parser $parser Parser object passed as a reference.
+	 * @param Parser $parser
 	 */
-	public static function onParserFirstCallInit( Parser $parser ) {
+	public function onParserFirstCallInit( $parser ) {
 		$parser->setHook( 'tabber', Tabber::class . '::renderTabber' );
 		$parser->setHook( 'tabbertransclude', TabberTransclude::class . '::renderTabberTransclude' );
 	}
