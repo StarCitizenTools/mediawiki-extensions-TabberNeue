@@ -48,6 +48,24 @@
 				"mobile"
 			]
 		},
+		"ext.tabberNeue.visualEditor": {
+			"scripts": [
+				"ve-tabberNeue/ve.dm.MWTabberNode.js",
+				"ve-tabberNeue/ve.ce.MWTabberNode.js",
+				"ve-tabberNeue/ve.ui.MWTabberInspector.js",
+				"ve-tabberNeue/ve.ui.MWTabberInspectorTool.js"
+			],
+			"dependencies": [
+				"ext.visualEditor.mwcore"
+			],
+			"messages": [
+				"tabberneue-visualeditor-mwtabberinspector-title"
+			],
+			"targets": [
+				"desktop",
+				"mobile"
+			]
+		},
 		"ext.tabberNeue.icons": {
 			"class": "ResourceLoaderImageModule",
 			"selector": ".tabber__header__{name}:after",
@@ -85,6 +103,13 @@
 	"HookHandlers": {
 		"parser": {
 			"class": "TabberNeue\\Hooks"
+		}
+	},
+	"attributes": {
+		"VisualEditor": {
+			"PluginModules": [
+				"ext.tabberNeue.visualEditor"
+			]
 		}
 	},
 	"ParsoidModules": [ "TabberNeue\\Hooks" ],
