@@ -1,7 +1,7 @@
 <?php
 /**
  * TabberNeue
- * TabberNeue Hooks Class
+ * TabberNeue Class
  *
  * @package TabberNeue
  * @author  alistair3149, Eric Fortin, Alexia E. Smith, Ciencia Al Poder
@@ -19,17 +19,7 @@ use Parser;
 use PPFrame;
 use Title;
 
-class TabberNeueHooks {
-	/**
-	 * Sets up this extension's parser functions.
-	 *
-	 * @param Parser $parser Parser object passed as a reference.
-	 */
-	public static function onParserFirstCallInit( Parser $parser ) {
-		$parser->setHook( 'tabber', [ __CLASS__, 'renderTabber' ] );
-		$parser->setHook( 'tabbertransclude', [ __CLASS__, 'renderTabberTransclude' ] );
-	}
-
+class TabberNeue {
 	/**
 	 * Renders the necessary HTML for a <tabber> tag.
 	 *

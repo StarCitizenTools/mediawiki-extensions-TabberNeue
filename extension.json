@@ -19,8 +19,8 @@
 			"/i18n"
 		]
 	},
-	"AutoloadClasses": {
-		"TabberNeue\\TabberNeueHooks": "includes/TabberNeueHooks.php"
+	"AutoloadNamespaces": {
+		"TabberNeue\\": "includes/"
 	},
 	"ResourceModules": {
 		"ext.tabberNeue": {
@@ -81,7 +81,7 @@
 	},
 	"Hooks": {
 		"ParserFirstCallInit": [
-			"TabberNeue\\TabberNeueHooks::onParserFirstCallInit"
+			"TabberNeue\\Hooks::onParserFirstCallInit"
 		]
 	},
 	"manifest_version": 2
