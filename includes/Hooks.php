@@ -19,6 +19,9 @@ class Hooks implements ExtensionModule, ParserFirstCallInitHook {
 		$parser->setHook( 'tabbertransclude', TabberTransclude::class . '::parserHook' );
 	}
 
+	/**
+	 * Return information about this Parsoid extension module
+	 */
 	public function getConfig(): array {
 		return [
 			'name' => 'TabberNeue',
