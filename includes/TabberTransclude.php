@@ -23,22 +23,22 @@ use Title;
 class TabberTransclude {
 	/**
 	 * Parser callback for <tabbertransclude> tag
-	 * 
+	 *
 	 * @param string $input
 	 * @param array $args
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
-	 * 
-	 * @return string
+	 *
+	 * @return string HTML
 	 */
 	public static function parserHook( string $input, array $args, Parser $parser, PPFrame $frame ) {
 		$tabberTransclude = new TabberTransclude();
-		$result = $tabberTransclude->render( $input, $parser, $frame );
+		$html = $tabberTransclude->render( $input, $parser, $frame );
 		if ( $input === null ) {
 			return;
 		}
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
-		return $result;
+		return $html;
 	}
 
 	/**

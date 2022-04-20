@@ -20,22 +20,22 @@ use PPFrame;
 class Tabber {
 	/**
 	 * Parser callback for <tabber> tag
-	 * 
+	 *
 	 * @param string $input
 	 * @param array $args
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
-	 * 
-	 * @return string
+	 *
+	 * @return string HTML
 	 */
 	public static function parserHook( string $input, array $args, Parser $parser, PPFrame $frame ) {
 		$tabber = new Tabber();
-		$result = $tabber->render( $input, $parser, $frame );
+		$html = $tabber->render( $input, $parser, $frame );
 		if ( $input === null ) {
 			return;
 		}
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
-		return $result;
+		return $html;
 	}
 
 	/**
