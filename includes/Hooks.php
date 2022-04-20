@@ -13,7 +13,7 @@ class Hooks {
 	 * @param Parser $parser Parser object passed as a reference.
 	 */
 	public static function onParserFirstCallInit( Parser $parser ) {
-		$parser->setHook( 'tabber', TabberNeue::class . '::renderTabber' );
-		$parser->setHook( 'tabbertransclude', TabberNeue::class . '::renderTabberTransclude' );
+		$parser->setHook( 'tabber', Tabber::class . '::renderTabber' );
+		$parser->setHook( 'tabbertransclude', TabberTransclude::class . '::renderTabberTransclude' );
 	}
 }
