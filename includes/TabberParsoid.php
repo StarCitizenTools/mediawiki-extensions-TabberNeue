@@ -29,8 +29,8 @@ class TabberParsoid extends ExtensionTagHandler {
 	/**
 	 * Renders the necessary HTML for a <tabber> tag.
 	 *
-	 * @param string $src The input URL between the beginning and ending tags.
 	 * @param PParsoidExtensionAPI $extApi
+	 * @param string $src The input URL between the beginning and ending tags.
 	 *
 	 * @return string HTML
 	 */
