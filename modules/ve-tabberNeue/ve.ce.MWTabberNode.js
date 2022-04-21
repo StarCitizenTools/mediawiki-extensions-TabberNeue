@@ -26,9 +26,7 @@ ve.ce.MWTabberNode.static.name = 'mwTabber';
 
 ve.ce.MWTabberNode.static.tagName = 'div';
 
-ve.ce.MWTabberNode.static.primaryCommandName = 'tabber';
-
-ve.ce.MWTabberNode.static.iconWhenInvisible = 'tabber';
+ve.ce.MWTabberNode.static.primaryCommandName = 'mwTabber';
 
 /* Registration */
 

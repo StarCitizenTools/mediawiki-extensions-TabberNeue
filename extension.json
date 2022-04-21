@@ -50,17 +50,21 @@
 		},
 		"ext.tabberNeue.visualEditor": {
 			"scripts": [
-				"ve-tabberNeue/ve.dm.MWTabberNode.js",
 				"ve-tabberNeue/ve.ce.MWTabberNode.js",
+				"ve-tabberNeue/ve.dm.MWTabberNode.js",
+				"ve-tabberNeue/ve.ui.MWTabberContextItem.js",
 				"ve-tabberNeue/ve.ui.MWTabberDialog.js",
 				"ve-tabberNeue/ve.ui.MWTabberDialogTool.js"
+			],
+			"styles": [
+				"ve-tabberNeue/ve.ui.MWTabberDialog.less"
 			],
 			"dependencies": [
 				"ext.visualEditor.mwcore",
 				"ext.tabberNeue"
 			],
 			"messages": [
-				"tabberneue-visualeditor-mwtabberinspector-title"
+				"tabberneue-visualeditor-mwtabberdialog-title"
 			],
 			"targets": [
 				"desktop",

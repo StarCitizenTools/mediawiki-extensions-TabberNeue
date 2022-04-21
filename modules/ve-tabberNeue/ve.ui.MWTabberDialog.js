@@ -1,5 +1,5 @@
 /**
- * VisualEditor user interface MWTabberDialog class.
+ * VisualEditor UserInterface MWTabberDialog class.
  *
  * @class
  * @extends ve.ui.MWExtensionPreviewDialog
@@ -18,14 +18,16 @@ OO.inheritClass( ve.ui.MWTabberDialog, ve.ui.MWExtensionPreviewDialog );
 
 /* Static properties */
 
-ve.ui.MWTabberDialog.static.name = 'tabber';
+ve.ui.MWTabberDialog.static.name = 'mwTabber';
 
 ve.ui.MWTabberDialog.static.title =
-	OO.ui.deferMsg( 'tabberneue-visualeditor-mwtabberinspector-title' );
+	OO.ui.deferMsg( 'tabberneue-visualeditor-mwtabberdialog-title' );
 
 ve.ui.MWTabberDialog.static.modelClasses = [ ve.dm.MWTabberNode ];
 
 ve.ui.MWTabberDialog.static.dir = 'ltr';
+
+ve.ui.MWTabberDialog.static.size = 'larger';
 
 /* Methods */
 
@@ -40,18 +42,26 @@ ve.ui.MWTabberDialog.prototype.initialize = function () {
         rows: 10,
         maxRows: 25,
         autosize: true
-    } ).setLanguage( 'mediawiki' );
+    } )
+        .setLanguage( 'mediawiki' )
+        .toggleLineNumbers( false );
 
     this.input.connect( this, { resize: 'updateSize' } );
 
     var inputField = new OO.ui.FieldLayout( this.input, {
-        align: 'top',
-        label: ve.msg( 'raw-input' )
+        align: 'top'
     } );
+
+    var panel = new OO.ui.PanelLayout( {
+        expanded: false,
+        padded: true
+    } );
+
+    panel.$element.append( inputField.$element );
 
     this.$body
             .addClass( 've-ui-mwTabberDialog-content' )
-            .append( inputField.$element );
+            .append( panel.$element );
 };
 
 
