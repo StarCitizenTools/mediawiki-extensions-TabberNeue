@@ -27,8 +27,6 @@ ve.ui.MWTabberDialog.static.modelClasses = [ ve.dm.MWTabberNode ];
 
 ve.ui.MWTabberDialog.static.dir = 'ltr';
 
-ve.ui.MWTabberDialog.static.size = 'larger';
-
 /* Methods */
 
 /**
@@ -39,8 +37,12 @@ ve.ui.MWTabberDialog.prototype.initialize = function () {
     ve.ui.MWTabberDialog.super.prototype.initialize.call( this );
 
     this.input = new ve.ui.MWAceEditorWidget( {
-        rows: 20,
+        rows: 10,
+        maxRows: 25,
+        autosize: true
     } ).setLanguage( 'mediawiki' );
+
+    this.input.connect( this, { resize: 'updateSize' } );
 
     var inputField = new OO.ui.FieldLayout( this.input, {
         align: 'top',
