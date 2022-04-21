@@ -111,6 +111,11 @@
 		}
 	},
 	"attributes": {
+		"CodeMirror": {
+			"TagModes": {
+				"tabber": "text/mediawiki"
+			}
+		},
 		"VisualEditor": {
 			"PluginModules": [
 				"ext.tabberNeue.visualEditor"
