@@ -4,5 +4,6 @@
 			"Shirayuki"
 		]
 	},
-	"tabberneue-desc": "{{desc|name=TabberNeue|url=http://www.mediawiki.org/wiki/Extension:TabberNeue}}"
+	"tabberneue-desc": "{{desc|name=TabberNeue|url=http://www.mediawiki.org/wiki/Extension:TabberNeue}}",
+	"tabberneue-visualeditor-mwtabberdialog-title": "Title for the dialog to edit <nowiki><tabber></nowiki> Tabber blocks."
 }

@@ -6,5 +6,6 @@
             "Ciencia Al Poder"
         ]
     },
-    "tabberneue-desc": "Allows to create tabs within a page. Forked from [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber]."
+    "tabberneue-desc": "Allows to create tabs within a page. Forked from [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
+    "tabberneue-visualeditor-mwtabberdialog-title": "Tabber"
 }
