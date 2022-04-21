@@ -20,7 +20,7 @@ OO.inheritClass( ve.dm.MWTabberNode, ve.dm.MWBlockExtensionNode );
 
 ve.dm.MWTabberNode.static.name = 'mwTabber';
 
-ve.dm.MWTabberNode.static.tagName = 'table';
+ve.dm.MWTabberNode.static.tagName = 'div';
 
 ve.dm.MWTabberNode.static.extensionName = 'tabber';
 

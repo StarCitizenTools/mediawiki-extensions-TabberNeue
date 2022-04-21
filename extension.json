@@ -52,11 +52,12 @@
 			"scripts": [
 				"ve-tabberNeue/ve.dm.MWTabberNode.js",
 				"ve-tabberNeue/ve.ce.MWTabberNode.js",
-				"ve-tabberNeue/ve.ui.MWTabberInspector.js",
-				"ve-tabberNeue/ve.ui.MWTabberInspectorTool.js"
+				"ve-tabberNeue/ve.ui.MWTabberDialog.js",
+				"ve-tabberNeue/ve.ui.MWTabberDialogTool.js"
 			],
 			"dependencies": [
-				"ext.visualEditor.mwcore"
+				"ext.visualEditor.mwcore",
+				"ext.tabberNeue"
 			],
 			"messages": [
 				"tabberneue-visualeditor-mwtabberinspector-title"
