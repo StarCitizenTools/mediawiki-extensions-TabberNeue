@@ -353,7 +353,7 @@ function initTabber( tabber, count ) {
 }
 
 function main() {
-	var tabbers = document.querySelectorAll( '.tabber' );
+	var tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' );
 
 	if ( tabbers ) {
 		var count = 0;
