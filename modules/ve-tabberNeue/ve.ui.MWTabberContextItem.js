@@ -26,7 +26,7 @@ ve.ui.MWTabberContextItem.static.icon = 'tabber';
 
 ve.ui.MWTabberContextItem.static.label = OO.ui.deferMsg( 'tabberneue-visualeditor-mwtabberdialog-title' );
 
-ve.ui.MWTabberContextItem.static.modelClasses = [ ve.dm.MWInlineMapsNode, ve.dm.MWTabberNode ];
+ve.ui.MWTabberContextItem.static.modelClasses = [ ve.dm.MWTabberNode ];
 
 ve.ui.MWTabberContextItem.static.commandName = 'mwTabber';
 

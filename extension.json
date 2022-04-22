@@ -54,7 +54,12 @@
 				"ve-tabberNeue/ve.dm.MWTabberNode.js",
 				"ve-tabberNeue/ve.ui.MWTabberContextItem.js",
 				"ve-tabberNeue/ve.ui.MWTabberDialog.js",
-				"ve-tabberNeue/ve.ui.MWTabberDialogTool.js"
+				"ve-tabberNeue/ve.ui.MWTabberDialogTool.js",
+				"ve-tabberNeue/ve.ce.MWTabberTranscludeNode.js",
+				"ve-tabberNeue/ve.dm.MWTabberTranscludeNode.js",
+				"ve-tabberNeue/ve.ui.MWTabberTranscludeContextItem.js",
+				"ve-tabberNeue/ve.ui.MWTabberTranscludeInspector.js",
+				"ve-tabberNeue/ve.ui.MWTabberTranscludeInspectorTool.js"
 			],
 			"styles": [
 				"ve-tabberNeue/ve.ui.MWTabberDialog.less",
