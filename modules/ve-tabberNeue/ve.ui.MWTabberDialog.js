@@ -64,6 +64,14 @@ ve.ui.MWTabberDialog.prototype.initialize = function () {
             .append( panel.$element );
 };
 
+/**
+ * @inheritdoc
+ */
+ve.ui.MWTabberDialog.prototype.updateMwData = function ( mwData ) {
+    // Parent method
+    ve.ui.MWTabberDialog.super.prototype.updateMwData.call( this, mwData );
+};
+
 
 /* Registration */
 

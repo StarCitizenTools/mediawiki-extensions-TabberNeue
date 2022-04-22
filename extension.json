@@ -60,8 +60,7 @@
 				"ve-tabberNeue/ve.ui.MWTabberDialog.less"
 			],
 			"dependencies": [
-				"ext.visualEditor.mwcore",
-				"ext.tabberNeue"
+				"ext.visualEditor.mwcore"
 			],
 			"messages": [
 				"tabberneue-visualeditor-mwtabberdialog-title"
