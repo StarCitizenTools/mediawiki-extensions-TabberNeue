@@ -21,7 +21,7 @@ ve.ui.MWTabberDialogTool.static.name = 'mwTabber';
 
 ve.ui.MWTabberDialogTool.static.group = 'object';
 
-ve.ui.MWTabberDialogTool.static.icon = 'listBullet';
+ve.ui.MWTabberDialogTool.static.icon = 'tabber';
 
 ve.ui.MWTabberDialogTool.static.title =
 	OO.ui.deferMsg( 'tabberneue-visualeditor-mwtabberdialog-title' );

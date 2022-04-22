@@ -22,7 +22,7 @@ OO.inheritClass( ve.ui.MWTabberContextItem, ve.ui.LinearContextItem );
 
 ve.ui.MWTabberContextItem.static.name = 'mwTabber';
 
-ve.ui.MWTabberContextItem.static.icon = 'listBullet';
+ve.ui.MWTabberContextItem.static.icon = 'tabber';
 
 ve.ui.MWTabberContextItem.static.label = OO.ui.deferMsg( 'tabberneue-visualeditor-mwtabberdialog-title' );
 

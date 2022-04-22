@@ -57,7 +57,8 @@
 				"ve-tabberNeue/ve.ui.MWTabberDialogTool.js"
 			],
 			"styles": [
-				"ve-tabberNeue/ve.ui.MWTabberDialog.less"
+				"ve-tabberNeue/ve.ui.MWTabberDialog.less",
+				"ve-tabberNeue/ve.ui.MWTabberIcons.less"
 			],
 			"dependencies": [
 				"ext.visualEditor.mwcore"
