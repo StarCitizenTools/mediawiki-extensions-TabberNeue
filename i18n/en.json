@@ -7,5 +7,8 @@
         ]
     },
     "tabberneue-desc": "Allows to create tabs within a page. Forked from [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
-    "tabberneue-visualeditor-mwtabberdialog-title": "Tabber"
+    "tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
+    "tabberneue-visualeditor-mwtabberdialog-desc": "See the [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documentation] for usage.",
+    "tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (transclusion)",
+    "tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "See the [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation] for usage."
 }

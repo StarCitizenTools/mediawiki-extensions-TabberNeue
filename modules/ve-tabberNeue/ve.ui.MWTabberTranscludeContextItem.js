@@ -24,7 +24,7 @@ ve.ui.MWTabberTranscludeContextItem.static.name = 'mwTabberTransclude';
 
 ve.ui.MWTabberTranscludeContextItem.static.icon = 'tabber';
 
-ve.ui.MWTabberTranscludeContextItem.static.label = OO.ui.deferMsg( 'tabberneue-visualeditor-mwtabberdialog-title' );
+ve.ui.MWTabberTranscludeContextItem.static.label = OO.ui.deferMsg( 'tabberneue-visualeditor-mwtabbertranscludeinspector-title' );
 
 ve.ui.MWTabberTranscludeContextItem.static.modelClasses = [ ve.dm.MWTabberTranscludeNode ];
 
@@ -36,7 +36,14 @@ ve.ui.MWTabberTranscludeContextItem.static.commandName = 'mwTabberTransclude';
  * @inheritdoc
  */
 ve.ui.MWTabberTranscludeContextItem.prototype.getDescription = function () {
-	return '';
+	return mw.message( 'tabberneue-visualeditor-mwtabbertranscludeinspector-desc' ).parse();
+};
+
+/**
+ * @inheritdoc
+ */
+ve.ui.MWTabberTranscludeContextItem.prototype.renderBody = function () {
+	this.$body.empty().append( this.getDescription() );
 };
 
 /* Registration */

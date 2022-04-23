@@ -21,7 +21,7 @@ OO.inheritClass( ve.ui.MWTabberTranscludeInspector, ve.ui.MWLiveExtensionInspect
 ve.ui.MWTabberTranscludeInspector.static.name = 'mwTabberTransclude';
 
 ve.ui.MWTabberTranscludeInspector.static.title =
-	OO.ui.deferMsg( 'tabberneue-visualeditor-mwtabberdialog-title' );
+	OO.ui.deferMsg( 'tabberneue-visualeditor-mwtabbertranscludeinspector-title' );
 
 ve.ui.MWTabberTranscludeInspector.static.modelClasses = [ ve.dm.MWTabberTranscludeNode ];
 

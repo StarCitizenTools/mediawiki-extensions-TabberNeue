@@ -24,7 +24,7 @@ ve.ui.MWTabberTranscludeInspectorTool.static.group = 'object';
 ve.ui.MWTabberTranscludeInspectorTool.static.icon = 'tabber';
 
 ve.ui.MWTabberTranscludeInspectorTool.static.title =
-	OO.ui.deferMsg( 'tabberneue-visualeditor-mwtabberdialog-title' );
+	OO.ui.deferMsg( 'tabberneue-visualeditor-mwtabbertranscludeinspector-title' );
 
 ve.ui.MWTabberTranscludeInspectorTool.static.modelClasses = [ ve.dm.MWTabberTranscludeNode ];
 

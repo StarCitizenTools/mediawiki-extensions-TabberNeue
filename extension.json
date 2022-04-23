@@ -69,7 +69,10 @@
 				"ext.visualEditor.mwcore"
 			],
 			"messages": [
-				"tabberneue-visualeditor-mwtabberdialog-title"
+				"tabberneue-visualeditor-mwtabberdialog-title",
+				"tabberneue-visualeditor-mwtabberdialog-desc",
+				"tabberneue-visualeditor-mwtabbertranscludeinspector-title",
+				"tabberneue-visualeditor-mwtabbertranscludeinspector-desc"
 			],
 			"targets": [
 				"desktop",

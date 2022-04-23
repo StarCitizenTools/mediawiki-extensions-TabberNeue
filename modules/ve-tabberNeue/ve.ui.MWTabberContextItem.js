@@ -36,7 +36,14 @@ ve.ui.MWTabberContextItem.static.commandName = 'mwTabber';
  * @inheritdoc
  */
 ve.ui.MWTabberContextItem.prototype.getDescription = function () {
-	return '';
+	return mw.message( 'tabberneue-visualeditor-mwtabberdialog-desc' ).parse();
+};
+
+/**
+ * @inheritdoc
+ */
+ve.ui.MWTabberContextItem.prototype.renderBody = function () {
+	this.$body.empty().append( this.getDescription() );
 };
 
 /* Registration */
