@@ -13,10 +13,10 @@ function initTabber( tabber, count ) {
 		prevButton = document.createElement( 'div' ),
 		nextButton = document.createElement( 'div' );
 
-	var buildTabs = function() {
+	var buildTabs = function () {
 		var fragment = new DocumentFragment();
 
-		Array.prototype.forEach.call( tabPanels, function( tabPanel ) {
+		Array.prototype.forEach.call( tabPanels, function ( tabPanel ) {
 			var hash = mw.util.escapeIdForAttribute( tabPanel.title ) + '-' + count,
 				tab = document.createElement( 'a' );
 
@@ -48,7 +48,7 @@ function initTabber( tabber, count ) {
 		container.append( prevButton, tabList, nextButton );
 	};
 
-	var updateSectionHeight = function( section, activePanel ) {
+	var updateSectionHeight = function ( section, activePanel ) {
 		var height = activePanel.offsetHeight;
 		if ( height === 0 ) {
 			// Sometimes the tab is hidden by one of its parent elements
@@ -68,10 +68,10 @@ function initTabber( tabber, count ) {
 		section.scrollLeft = activePanel.offsetLeft;
 	};
 
-	var onElementResize = function( entries, observer) {
+	var onElementResize = function ( entries ) {
 		if ( entries && entries.length > 0 ) {
-			var targetPanel = entries[0].target;
-			var section = targetPanel.parentElement;
+			var targetPanel = entries[ 0 ].target;
+			var section = targetPanel.parentNode;
 			updateSectionHeight( section, targetPanel );
 		}
 	};
@@ -85,12 +85,12 @@ function initTabber( tabber, count ) {
 	tabber.prepend( container );
 
 	// Initalize previous and next buttons
-	var initButtons = function() {
+	var initButtons = function () {
 		var PREVCLASS = 'tabber__header--prev-visible',
 			NEXTCLASS = 'tabber__header--next-visible';
 
 		/* eslint-disable mediawiki/class-doc */
-		var scrollTabs = function( offset ) {
+		var scrollTabs = function ( offset ) {
 			var scrollLeft = tabList.scrollLeft + offset;
 
 			// Scroll to the start
@@ -101,7 +101,7 @@ function initTabber( tabber, count ) {
 			}
 		};
 
-		var updateButtons = function() {
+		var updateButtons = function () {
 			var scrollLeft = tabList.scrollLeft;
 
 			// Scroll to the start
@@ -120,7 +120,7 @@ function initTabber( tabber, count ) {
 			}
 		};
 
-		var setupButtons = function() {
+		var setupButtons = function () {
 			var isScrollable = ( tabList.scrollWidth > container.offsetWidth );
 
 			if ( isScrollable ) {
@@ -131,11 +131,11 @@ function initTabber( tabber, count ) {
 
 				// Button only shows on pointer devices
 				if ( matchMedia( '(hover: hover)' ).matches ) {
-					prevButton.addEventListener( 'click', function() {
+					prevButton.addEventListener( 'click', function () {
 						scrollTabs( -scrollOffset );
 					}, false );
 
-					nextButton.addEventListener( 'click', function() {
+					nextButton.addEventListener( 'click', function () {
 						scrollTabs( scrollOffset );
 					}, false );
 				}
@@ -150,7 +150,7 @@ function initTabber( tabber, count ) {
 
 		// Listen for scroll event on header
 		// Also triggered by side-scrolling using other means other than the buttons
-		tabList.addEventListener( 'scroll', function() {
+		tabList.addEventListener( 'scroll', function () {
 			updateButtons();
 		} );
 
@@ -168,8 +168,8 @@ function initTabber( tabber, count ) {
 	/**
 	 * Loads page contents into tab
 	 *
-	 * @param {HTMLElement} tab panel
-	 * @param {string} api URL
+	 * @param {HTMLElement} targetPanel
+	 * @param {string} url
 	 */
 	function loadPage( targetPanel, url ) {
 		var requestData = {
@@ -177,7 +177,7 @@ function initTabber( tabber, count ) {
 			targetPanel: targetPanel
 		};
 		if ( currentRequest ) {
-			if ( currentRequest.url != requestData.url ) {
+			if ( currentRequest.url !== requestData.url ) {
 				nextRequest = requestData;
 			}
 			// busy
@@ -192,17 +192,18 @@ function initTabber( tabber, count ) {
 	 * Show panel based on target hash
 	 *
 	 * @param {string} targetHash
+	 * @param {boolean} allowRemoteLoad
 	 */
 	function showPanel( targetHash, allowRemoteLoad ) {
 		var ACTIVETABCLASS = 'tabber__tab--active',
 			ACTIVEPANELCLASS = 'tabber__panel--active',
 			targetPanel = document.getElementById( targetHash ),
 			targetTab = document.getElementById( 'tab-' + targetHash ),
-			section = targetPanel.parentElement,
+			section = targetPanel.parentNode,
 			activePanel = section.querySelector( ':scope > .' + ACTIVEPANELCLASS ),
 			parentPanel, parentSection;
 
-		var loadTransclusion = function() {
+		var loadTransclusion = function () {
 			var loading = document.createElement( 'div' ),
 				indicator = document.createElement( 'div' );
 
@@ -214,7 +215,7 @@ function initTabber( tabber, count ) {
 			targetPanel.textContent = '';
 			targetPanel.appendChild( loading );
 			loadPage( targetPanel, targetPanel.dataset.tabberLoadUrl );
-		}
+		};
 
 		/* eslint-disable mediawiki/class-doc */
 		if ( activePanel ) {
@@ -223,7 +224,7 @@ function initTabber( tabber, count ) {
 			var activeTabs = tabList.querySelectorAll( '.' + ACTIVETABCLASS );
 
 			if ( activeTabs.length > 0 ) {
-				Array.prototype.forEach.call( activeTabs, function( activeTab ) {
+				Array.prototype.forEach.call( activeTabs, function ( activeTab ) {
 					activeTab.classList.remove( ACTIVETABCLASS );
 					activeTab.setAttribute( 'aria-selected', false );
 				} );
@@ -244,7 +245,10 @@ function initTabber( tabber, count ) {
 		targetPanel.setAttribute( 'aria-hidden', false );
 
 		// Lazyload transclusion if needed
-		if ( allowRemoteLoad && targetPanel.dataset.tabberPendingLoad && targetPanel.dataset.tabberLoadUrl ) {
+		if ( allowRemoteLoad &&
+			targetPanel.dataset.tabberPendingLoad &&
+			targetPanel.dataset.tabberLoadUrl
+		) {
 			loadTransclusion();
 		}
 
@@ -253,12 +257,13 @@ function initTabber( tabber, count ) {
 		// If we're inside another tab, trigger its logic to recalc its height
 		parentSection = section;
 		// ResizeObserver should take care of the recursivity already
+		/* eslint-disable-next-line no-unmodified-loop-condition */
 		while ( !resizeObserver ) {
 			parentPanel = parentSection.closest( '.' + ACTIVEPANELCLASS );
 			if ( !parentPanel ) {
 				break;
 			}
-			parentSection = parentPanel.parentElement;
+			parentSection = parentPanel.parentNode;
 			updateSectionHeight( parentSection, parentPanel );
 		}
 		if ( resizeObserver ) {
@@ -272,7 +277,7 @@ function initTabber( tabber, count ) {
 	 */
 	function onLoadEndPage() {
 		var targetPanel = currentRequest.targetPanel;
-		if ( xhr.status != 200 ) {
+		if ( xhr.status !== 200 ) {
 			var err = document.createElement( 'div' ),
 				errMsg = mw.message( 'error' ).text() + ': HTTP ' + xhr.status;
 
@@ -284,6 +289,7 @@ function initTabber( tabber, count ) {
 			var result = JSON.parse( xhr.responseText );
 			targetPanel.innerHTML = result.parse.text;
 			// wikipage.content hook requires a jQuery object
+			/* eslint-disable-next-line no-undef */
 			mw.hook( 'wikipage.content' ).fire( $( targetPanel ) );
 			delete targetPanel.dataset.tabberPendingLoad;
 			delete targetPanel.dataset.tabberLoadUrl;
@@ -292,7 +298,7 @@ function initTabber( tabber, count ) {
 
 		var ACTIVEPANELCLASS = 'tabber__panel--active',
 			targetHash = targetPanel.getAttribute( 'id' ),
-			section = targetPanel.parentElement,
+			section = targetPanel.parentNode,
 			activePanel = section.querySelector( ':scope > .' + ACTIVEPANELCLASS );
 
 		if ( nextRequest ) {
@@ -337,8 +343,8 @@ function initTabber( tabber, count ) {
 	// window.addEventListener( 'hashchange', switchTab, false );
 
 	// Respond to clicks on the nav tabs
-	Array.prototype.forEach.call( tabList.children, function( tab ) {
-		tab.addEventListener( 'click', function( event ) {
+	Array.prototype.forEach.call( tabList.children, function ( tab ) {
+		tab.addEventListener( 'click', function ( event ) {
 			var targetHash = tab.getAttribute( 'href' ).substring( 1 );
 			event.preventDefault();
 			if ( !config || config.updateLocationOnTabChange ) {
@@ -358,7 +364,7 @@ function main() {
 	if ( tabbers ) {
 		var count = 0;
 		mw.loader.load( 'ext.tabberNeue.icons' );
-		Array.prototype.forEach.call( tabbers, function( tabber ) {
+		Array.prototype.forEach.call( tabbers, function ( tabber ) {
 			initTabber( tabber, count );
 			count++;
 		} );

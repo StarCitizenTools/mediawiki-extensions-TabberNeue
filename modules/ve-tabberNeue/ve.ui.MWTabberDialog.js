@@ -35,33 +35,33 @@ ve.ui.MWTabberDialog.static.size = 'larger';
  * @inheritdoc
  */
 ve.ui.MWTabberDialog.prototype.initialize = function () {
-    // Parent method
-    ve.ui.MWTabberDialog.super.prototype.initialize.call( this );
+	// Parent method
+	ve.ui.MWTabberDialog.super.prototype.initialize.call( this );
 
-    this.input = new ve.ui.MWAceEditorWidget( {
-        rows: 10,
-        maxRows: 25,
-        autosize: true
-    } )
-        .setLanguage( 'mediawiki' )
-        .toggleLineNumbers( false );
+	this.input = new ve.ui.MWAceEditorWidget( {
+		rows: 10,
+		maxRows: 25,
+		autosize: true
+	} )
+		.setLanguage( 'mediawiki' )
+		.toggleLineNumbers( false );
 
-    this.input.connect( this, { resize: 'updateSize' } );
+	this.input.connect( this, { resize: 'updateSize' } );
 
-    var inputField = new OO.ui.FieldLayout( this.input, {
-        align: 'top'
-    } );
+	var inputField = new OO.ui.FieldLayout( this.input, {
+		align: 'top'
+	} );
 
-    var panel = new OO.ui.PanelLayout( {
-        expanded: false,
-        padded: true
-    } );
+	var panel = new OO.ui.PanelLayout( {
+		expanded: false,
+		padded: true
+	} );
 
-    panel.$element.append( inputField.$element );
+	panel.$element.append( inputField.$element );
 
-    this.$body
-            .addClass( 've-ui-mwTabberDialog-content' )
-            .append( panel.$element );
+	this.$body
+		.addClass( 've-ui-mwTabberDialog-content' )
+		.append( panel.$element );
 };
 
 /* Registration */
