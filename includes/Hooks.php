@@ -6,9 +6,8 @@ namespace TabberNeue;
 
 use MediaWiki\Hook\ParserFirstCallInitHook;
 use Parser;
-use Wikimedia\Parsoid\Ext\ExtensionModule;
 
-class Hooks implements ExtensionModule, ParserFirstCallInitHook {
+class Hooks implements ParserFirstCallInitHook {
 	/**
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ParserFirstCallInit
 	 *
@@ -17,22 +16,5 @@ class Hooks implements ExtensionModule, ParserFirstCallInitHook {
 	public function onParserFirstCallInit( $parser ) {
 		$parser->setHook( 'tabber', Tabber::class . '::parserHook' );
 		$parser->setHook( 'tabbertransclude', TabberTransclude::class . '::parserHook' );
-	}
-
-	/**
-	 * Return information about this Parsoid extension module
-	 *
-	 * @return array
-	 */
-	public function getConfig(): array {
-		return [
-			'name' => 'TabberNeue',
-			'tags' => [
-				[
-					'name' => 'tabber',
-					'handler' => TabberParsoid::class
-				]
-			]
-		];
 	}
 }
