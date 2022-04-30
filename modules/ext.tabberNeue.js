@@ -31,7 +31,7 @@ function initTabber( tabber, count ) {
 			tab.setAttribute( 'role', 'tab' );
 			tab.setAttribute( 'href', '#' + hash );
 			tab.setAttribute( 'id', 'tab-' + hash );
-			tab.setAttribute( 'aria-select', false );
+			tab.setAttribute( 'aria-selected', false );
 			tab.setAttribute( 'aria-controls', hash );
 
 			fragment.append( tab );
