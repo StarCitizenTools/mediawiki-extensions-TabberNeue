@@ -38,6 +38,7 @@ class TabberTransclude {
 			return;
 		}
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
+		$parser->addTrackingCategory( 'tabberneue-tabbertransclude-category' );
 		return $html;
 	}
 

@@ -22,6 +22,10 @@
 	"AutoloadNamespaces": {
 		"TabberNeue\\": "includes/"
 	},
+	"TrackingCategories": [
+		"tabberneue-tabber-category",
+		"tabberneue-tabbertransclude-category"
+	],
 	"ResourceModules": {
 		"ext.tabberNeue": {
 			"packageFiles": [

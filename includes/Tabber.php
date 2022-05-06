@@ -35,6 +35,7 @@ class Tabber {
 			return;
 		}
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
+		$parser->addTrackingCategory( 'tabberneue-tabber-category' );
 		return $html;
 	}
 
