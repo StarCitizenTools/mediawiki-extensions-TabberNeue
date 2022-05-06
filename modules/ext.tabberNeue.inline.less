@@ -1,0 +1,37 @@
+/**
+ * Critial rendering styles
+ *
+ * Since ext.tabberNeue is loaded a while after page load,
+ * inline styles are needed to create an inital state and
+ * avoid potential layout shifts. This should be kept as
+ * small as possible.
+ *
+ * Used in Tabber.php and TabberTransclude.php
+ */
+
+// Skeleton UI
+.tabber__header {
+	height: 2.6em;
+	box-shadow: inset 0 -1px 0 0;
+	opacity: 0.1;
+}
+
+.tabber__header:after {
+	position: absolute;
+	width: 16ch;
+	height: 0.5em;
+	margin-top: 1em;
+	margin-left: 0.75em;
+	background: #000;
+	border-radius: 40px;
+	// Use double quote in PHP
+	content: '';
+}
+
+// Hide all other panels
+// All panels are stacked vertically initially
+// Then panels are stacked horizontally after Tabber is loaded
+// Causing lots of layout shift
+.tabber__panel:not( :first-child ) {
+	display: none;
+}

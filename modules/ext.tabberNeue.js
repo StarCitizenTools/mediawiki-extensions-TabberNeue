@@ -8,7 +8,7 @@ function initTabber( tabber, count ) {
 	var tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
 
 	var config = require( './config.json' ),
-		container = document.createElement( 'header' ),
+		header = tabber.querySelector( '.tabber__header' ),
 		tabList = document.createElement( 'nav' ),
 		prevButton = document.createElement( 'div' ),
 		nextButton = document.createElement( 'div' );
@@ -39,13 +39,12 @@ function initTabber( tabber, count ) {
 
 		tabList.append( fragment );
 
-		container.classList.add( 'tabber__header' );
 		tabList.classList.add( 'tabber__tabs' );
 		tabList.setAttribute( 'role', 'tablist' );
 		prevButton.classList.add( 'tabber__header__prev' );
 		nextButton.classList.add( 'tabber__header__next' );
 
-		container.append( prevButton, tabList, nextButton );
+		header.append( prevButton, tabList, nextButton );
 	};
 
 	var updateSectionHeight = function ( section, activePanel ) {
@@ -82,7 +81,7 @@ function initTabber( tabber, count ) {
 	}
 
 	buildTabs();
-	tabber.prepend( container );
+	tabber.prepend( header );
 
 	// Initalize previous and next buttons
 	var initButtons = function () {
@@ -106,25 +105,25 @@ function initTabber( tabber, count ) {
 
 			// Scroll to the start
 			if ( scrollLeft <= 0 ) {
-				container.classList.remove( PREVCLASS );
-				container.classList.add( NEXTCLASS );
+				header.classList.remove( PREVCLASS );
+				header.classList.add( NEXTCLASS );
 			} else {
 				// Scroll to the end
 				if ( scrollLeft + tabList.offsetWidth >= tabList.scrollWidth ) {
-					container.classList.remove( NEXTCLASS );
-					container.classList.add( PREVCLASS );
+					header.classList.remove( NEXTCLASS );
+					header.classList.add( PREVCLASS );
 				} else {
-					container.classList.add( NEXTCLASS );
-					container.classList.add( PREVCLASS );
+					header.classList.add( NEXTCLASS );
+					header.classList.add( PREVCLASS );
 				}
 			}
 		};
 
 		var setupButtons = function () {
-			var isScrollable = ( tabList.scrollWidth > container.offsetWidth );
+			var isScrollable = ( tabList.scrollWidth > header.offsetWidth );
 
 			if ( isScrollable ) {
-				var scrollOffset = container.offsetWidth / 2;
+				var scrollOffset = header.offsetWidth / 2;
 
 				// Just to add the right classes
 				updateButtons();
@@ -140,8 +139,8 @@ function initTabber( tabber, count ) {
 					}, false );
 				}
 			} else {
-				container.classList.remove( NEXTCLASS );
-				container.classList.remove( PREVCLASS );
+				header.classList.remove( NEXTCLASS );
+				header.classList.remove( PREVCLASS );
 			}
 		};
 		/* eslint-enable mediawiki/class-doc */
@@ -359,7 +358,8 @@ function initTabber( tabber, count ) {
 }
 
 function main() {
-	var tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' );
+	var tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' ),
+		style = document.getElementById( 'tabber-style' );
 
 	if ( tabbers ) {
 		var count = 0;
@@ -368,6 +368,9 @@ function main() {
 			initTabber( tabber, count );
 			count++;
 		} );
+		// Remove critical render styles after done
+		// IE compatiblity
+		style.parentNode.removeChild( style );
 	}
 }
 

@@ -37,6 +37,13 @@ class TabberTransclude {
 		if ( $input === null ) {
 			return;
 		}
+		// Critial rendering styles
+		// See ext.tabberNeue.inline.less
+		$style = sprintf(
+			'<style id="tabber-style">%s</style>',
+			'.tabber__header{height:2.6em;box-shadow:inset 0-1px 0 0;opacity:0.1}.tabber__header:after{position:absolute;width:16ch;height:0.5em;margin-top:1em;margin-left:0.75em;background:#000;border-radius:40px;content:""}.tabber__panel:not(:first-child){display:none}'
+		);
+		$parser->getOutput()->addHeadItem( $style, true );
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
 		$parser->addTrackingCategory( 'tabberneue-tabbertransclude-category' );
 		return $html;
@@ -59,8 +66,10 @@ class TabberTransclude {
 			$htmlTabs .= self::buildTabTransclude( $tab, $parser, $frame, $selected );
 		}
 
+		$noscriptMsg = wfMessage( 'tabberneue-noscript' )->text();
 		$html = '<div class="tabber">' .
-			'<section class="tabber__section">' . $htmlTabs . "</section></div>";
+			'<header class="tabber__header"><noscript>' . $noscriptMsg . '</noscript></header>' .
+			'<section class="tabber__section">' . $htmlTabs . '</section></div>';
 
 		return $html;
 	}
