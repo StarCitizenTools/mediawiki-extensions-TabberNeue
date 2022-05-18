@@ -1,8 +1,15 @@
 {
-	"@metadata": {
-		"authors": [
-			"Wyz"
-		]
-	},
-	"tabberneue-desc": "Permet de créer des onglets sur une page"
+    "@metadata": {
+        "authors": [
+            "GenerationFallout"
+        ]
+    },
+    "tabberneue-desc": "Permet de créer des onglets dans une page. Fork de [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
+    "tabberneue-noscript": "Tabber nécessite Javascript pour fonctionner.",
+    "tabberneue-tabber-category": "Pages utilisant la balise de l'analyseur Tabber",
+    "tabberneue-tabbertransclude-category": "Pages utilisant la balise de l'analyseur TabberTransclude",
+    "tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
+    "tabberneue-visualeditor-mwtabberdialog-desc": "Voir la [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documentation] pour l'utilisation.",
+    "tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (transclusion)",
+    "tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Voir la [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation] pour l'utilisation."
 }
