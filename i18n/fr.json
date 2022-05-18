@@ -1,9 +1,7 @@
 {
     "@metadata": {
         "authors": [
-            "alistair3149",
-            "Eric Fortin",
-            "Ciencia Al Poder"
+            "GenerationFallout"
         ]
     },
     "tabberneue-desc": "Permet de créer des onglets dans une page. Fork de [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
