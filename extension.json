@@ -33,6 +33,7 @@
 				{
 					"name": "config.json",
 					"config": {
+						"enableAnimation": "TabberNeueEnableAnimation",
 						"updateLocationOnTabChange": "TabberNeueUpdateLocationOnTabChange"
 					}
 				}
@@ -108,6 +109,11 @@
 	},
 	"config_prefix": "wg",
 	"config": {
+		"TabberNeueEnableAnimation": {
+			"value": false,
+			"description": "Enable or disable smooth scroll animation",
+			"public": true
+		},
 		"TabberNeueUpdateLocationOnTabChange": {
 			"value": true,
 			"description": "If enabled, when a tab is selected, the URL displayed on the browser changes. Opening this URL makes that tab initially selected.",

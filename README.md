@@ -90,3 +90,9 @@ Second Page Name|Second Tab Title
 Third Page Name|Third Tab Title
 </tabbertransclude>
 ```
+
+## Configurations
+Name | Description | Values | Default
+:--- | :--- | :--- | :---
+`$wgTabberNeueEnableAnimation` | Enable or disable smooth scroll animation |`true` - enable; `false` - disable | `false`
+`$wgTabberNeueUpdateLocationOnTabChange` | If enabled, when a tab is selected, the URL displayed on the browser changes. Opening this URL makes that tab initially selected |`true` - enable; `false` - disable | `true`

@@ -153,6 +153,16 @@ function initTabber( tabber, count ) {
 			updateButtons();
 		} );
 
+		// Add class to enable animation
+		// TODO: Change default to true when Safari bug is resolved
+		//
+		// Safari does not scroll when scroll-behavior: smooth and overflow: hidden
+		// Therefore the default is set to false now until it gets resolved
+		// https://bugs.webkit.org/show_bug.cgi?id=238497
+		if ( !config || config.enableAnimation ) {
+			tabber.classList.add( 'tabber--animate' );
+		}
+
 		// Listen for element resize
 		if ( window.ResizeObserver ) {
 			var tabListResizeObserver = new ResizeObserver( mw.util.debounce( 250, setupButtons ) );
@@ -380,4 +390,4 @@ if ( document.readyState === 'interactive' || document.readyState === 'complete'
 	document.addEventListener( 'DOMContentLoaded', function () {
 		main();
 	} );
-};
+}
