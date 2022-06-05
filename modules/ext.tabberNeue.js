@@ -15,10 +15,21 @@ function initTabber( tabber, count ) {
 
 	var buildTabs = function () {
 		var fragment = new DocumentFragment();
+		var hashList = [];
 
 		Array.prototype.forEach.call( tabPanels, function ( tabPanel ) {
 			var hash = mw.util.escapeIdForAttribute( tabPanel.title ) + '-' + count,
 				tab = document.createElement( 'a' );
+
+			// add to list of already used hash
+			hashList.push( hash );
+
+			// check if the hash is already used before
+			var hashCount = 0;
+			hashList.forEach( function(h) { hashCount += ( h == hash ) ? 1 : 0; } );
+
+			// append counter if the same hash already used
+			hash += ( 1 == hashCount ) ? '' : ( '-' + hashCount );
 
 			tabPanel.setAttribute( 'id', hash );
 			tabPanel.setAttribute( 'role', 'tabpanel' );
