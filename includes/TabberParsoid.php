@@ -55,14 +55,14 @@ class TabberParsoid extends ExtensionTagHandler {
 	 * @return string HTML
 	 */
 	private static function buildTab( ParsoidExtensionAPI $extApi, string $tab ) {
-		$tab = trim( $tab );
-		if ( empty( $tab ) ) {
-			return $tab;
+		if ( empty( trim( $tab ) ) ) {
+			return '';
 		}
 
 		// Use array_pad to make sure at least 2 array values are always returned
-		list( $tabName, $tabBody ) = array_pad( array_map( 'trim', explode( '=', $tab, 2 ) ), 2, '' );
+		list( $tabName, $tabBody ) = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
+		$tabName = trim( $tabName );
 		$tabBody = $extApi->domToHTML(
 				$extApi->wikitextToDOM(
 					$tabBody,
