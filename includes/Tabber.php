@@ -80,15 +80,15 @@ class Tabber {
 	 * @return string HTML
 	 */
 	private static function buildTab( $tab, Parser $parser, PPFrame $frame ) {
-		$tab = trim( $tab );
-		if ( empty( $tab ) ) {
-			return $tab;
+		if ( empty( trim( $tab ) ) ) {
+			return '';
 		}
 
 		// Use array_pad to make sure at least 2 array values are always returned
-		list( $tabName, $tabBody ) = array_pad( array_map( 'trim', explode( '=', $tab, 2 ) ), 2, '' );
+		list( $tabName, $tabBody ) = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
-		$tabBody = $parser->recursiveTagParseFully( $tabBody, $frame );
+		$tabName = trim( $tabName );
+		$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
 
 		$tab = '<article class="tabber__panel" title="' . htmlspecialchars( $tabName ) .
 			'">' . $tabBody . '</article>';

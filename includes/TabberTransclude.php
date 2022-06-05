@@ -85,8 +85,7 @@ class TabberTransclude {
 	 * @return string HTML
 	 */
 	private static function buildTabTransclude( $tab, Parser $parser, PPFrame $frame, &$selected ) {
-		$tab = trim( $tab );
-		if ( empty( $tab ) ) {
+		if ( empty( trim( $tab ) ) ) {
 			return '';
 		}
 
