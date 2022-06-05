@@ -88,7 +88,7 @@ class Tabber {
 		list( $tabName, $tabBody ) = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
 		$tabName = trim( $tabName );
-		$tabBody = $parser->recursiveTagParseFully( $tabBody, $frame );
+		$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
 
 		$tab = '<article class="tabber__panel" title="' . htmlspecialchars( $tabName ) .
 			'">' . $tabBody . '</article>';
