@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
+			"Beta16",
 			"Darth Kule"
 		]
 	},
-	"tabberneue-desc": "Permette di creare schede all'interno di una pagina"
+	"tabberneue-desc": "Consente di creare schede all'interno di una pagina. Proviene da [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber]."
 }

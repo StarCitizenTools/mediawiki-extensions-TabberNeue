@@ -7,7 +7,7 @@
 	"tabberneue-desc": "{{desc|name=TabberNeue|url=http://www.mediawiki.org/wiki/Extension:TabberNeue}}",
 	"tabberneue-noscript": "Message displayed for users without Javascript",
 	"tabberneue-tabber-category": "{{tracking category name}}\nTracking category for pages with tabber parser tag.",
-    "tabberneue-tabbertransclude-category": "{{tracking category name}}\nTracking category for pages with tabbertransclude parser tag.",
+	"tabberneue-tabbertransclude-category": "{{tracking category name}}\nTracking category for pages with tabbertransclude parser tag.",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Title for the dialog to edit <nowiki><tabber></nowiki> Tabber blocks.",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "Description for the dialog to edit <nowiki><tabber></nowiki> Tabber blocks.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Title for the popup to edit <nowiki><tabbertransclude></nowiki> Tabber blocks.",

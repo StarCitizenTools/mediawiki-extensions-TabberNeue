@@ -1,8 +1,16 @@
 {
 	"@metadata": {
 		"authors": [
+			"Sabelöga",
 			"WikiPhoenix"
 		]
 	},
-	"tabberneue-desc": "Gör det möjligt att skapa flikar på en sida"
+	"tabberneue-desc": "Gör det möjligt att skapa flikar inom en sida. Avknoppad från [https://www.mediawiki.org/wiki/Extension:Tabber tillägget Tabber].",
+	"tabberneue-noscript": "Tabber kräver Javascript för att fungera.",
+	"tabberneue-tabber-category": "Sidor som använder parser-taggen Tabber",
+	"tabberneue-tabbertransclude-category": "Sidor som använder parser-taggen TabberTransclude",
+	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
+	"tabberneue-visualeditor-mwtabberdialog-desc": "Läs [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers dokumentationen] för användning.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (infogning)",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Läs [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion dokumentationen] för användning."
 }
