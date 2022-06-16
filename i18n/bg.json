@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"DCLXVI"
+			"DCLXVI",
+			"StanProg"
 		]
 	},
-	"tabberneue-desc": "Позволява създаването на табове в страниците"
+	"tabberneue-desc": "Позволява създаването на табове в страница. Разклонено от [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber]."
 }
