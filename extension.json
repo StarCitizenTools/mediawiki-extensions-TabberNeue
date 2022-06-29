@@ -84,6 +84,14 @@
 				"mobile"
 			]
 		},
+		"ext.tabberNeue.mobile.styles": {
+			"styles": [
+				"ext.tabberNeue.mobile.less"
+			],
+			"targets": [
+				"mobile"
+			]
+		},
 		"ext.tabberNeue.icons": {
 			"class": "ResourceLoaderImageModule",
 			"selector": ".tabber__header__{name}:after",
@@ -121,10 +129,11 @@
 		}
 	},
 	"Hooks": {
-		"ParserFirstCallInit": "parser"
+		"BeforePageDisplayMobile": "TabberHooks",
+		"ParserFirstCallInit": "TabberHooks"
 	},
 	"HookHandlers": {
-		"parser": {
+		"TabberHooks": {
 			"class": "TabberNeue\\Hooks"
 		}
 	},
