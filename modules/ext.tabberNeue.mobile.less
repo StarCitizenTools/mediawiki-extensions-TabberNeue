@@ -5,11 +5,11 @@
 
 /* stylelint-disable selector-class-pattern */
 .tabber {
-	.thumb {
-		.image {
-			img + img {
-				display: none;
-			}
+	.lazy-image-placeholder,
+	.image-lazy-loaded {
+		+ .lazy-image-placeholder,
+		+ .image-lazy-loaded {
+			display: none;
 		}
 	}
 }
