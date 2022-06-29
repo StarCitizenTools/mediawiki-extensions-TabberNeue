@@ -20,7 +20,7 @@
 		]
 	},
 	"AutoloadNamespaces": {
-		"TabberNeue\\": "includes/"
+		"MediaWiki\\Extension\\TabberNeue\\": "includes/"
 	},
 	"TrackingCategories": [
 		"tabberneue-tabber-category",
@@ -134,7 +134,7 @@
 	},
 	"HookHandlers": {
 		"TabberHooks": {
-			"class": "TabberNeue\\Hooks"
+			"class": "MediaWiki\\Extension\\TabberNeue\\Hooks"
 		}
 	},
 	"attributes": {

@@ -12,7 +12,7 @@
 
 declare( strict_types=1 );
 
-namespace TabberNeue;
+namespace MediaWiki\Extension\TabberNeue;
 
 use Wikimedia\Parsoid\Ext\ExtensionTagHandler;
 use Wikimedia\Parsoid\Ext\ParsoidExtensionAPI;

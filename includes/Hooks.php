@@ -2,7 +2,7 @@
 
 declare( strict_types=1 );
 
-namespace TabberNeue;
+namespace MediaWiki\Extension\TabberNeue;
 
 use MediaWiki\Hook\ParserFirstCallInitHook;
 use OutputPage;
