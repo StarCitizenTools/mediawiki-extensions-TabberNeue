@@ -38,7 +38,6 @@ function initTabber( tabber, count ) {
 
 			tab.innerText = tabPanel.title;
 			tab.classList.add( 'tabber__tab' );
-			tab.setAttribute( 'title', tabPanel.title );
 			tab.setAttribute( 'role', 'tab' );
 			tab.setAttribute( 'href', '#' + hash );
 			tab.setAttribute( 'id', 'tab-' + hash );
