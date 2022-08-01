@@ -43,5 +43,10 @@
 			"minus-x check ."
 		],
 		"phan": "phan -d . --long-progress-bar"
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true
+		}
 	}
 }
