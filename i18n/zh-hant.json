@@ -1,8 +1,16 @@
 {
 	"@metadata": {
 		"authors": [
-			"Justincheng12345"
+			"Justincheng12345",
+			"Lakejason0"
 		]
 	},
-	"tabberneue-desc": "容許於頁面內創建分頁"
+	"tabberneue-desc": "容許於頁面內創建分頁",
+	"tabberneue-noscript": "Tabber需要JavaScript才能使用。",
+	"tabberneue-tabber-category": "使用Tabber解析器標籤的頁面",
+	"tabberneue-tabbertransclude-category": "使用TabberTransclude解析器標籤的頁面",
+	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
+	"tabberneue-visualeditor-mwtabberdialog-desc": "關於具體用法，參閱[https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers 文件]。",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber（嵌入）",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "關於具體用法，參閱[https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion 文件]。"
 }
