@@ -90,10 +90,6 @@
 
 	&__header,
 	&__section {
-		/* prevent scroll chaining on x scroll */
-		overscroll-behavior-x: contain;
-		/* scrolling should snap children on x */
-		scroll-snap-type: x mandatory;
 		scrollbar-width: none;
 
 		&::-webkit-scrollbar {
@@ -108,7 +104,6 @@
 		padding: 0.5em 0.75em;
 		color: #54595d;
 		font-weight: bold;
-		scroll-snap-align: start;
 		text-decoration: none;
 		white-space: nowrap;
 
@@ -131,8 +126,7 @@
 
 	&__panel {
 		height: max-content;
-		overflow-y: auto;
-		scroll-snap-align: start;
+		overflow-x: auto;
 
 		// Hide edit buttons for non-transclusion tabs since they don't work
 		/* stylelint-disable-next-line selector-class-pattern */
