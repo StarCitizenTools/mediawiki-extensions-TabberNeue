@@ -40,21 +40,21 @@ jobs:
     # Check for changed files 
     - name: Check for PHP changes
       id: changed-php
-      uses: tj-actions/changed-files@v25
+      uses: tj-actions/changed-files@v29.0.5
       with:
         files: |
           includes/**/*.php
 
     - name: Check for script changes
       id: changed-script
-      uses: tj-actions/changed-files@v25
+      uses: tj-actions/changed-files@v29.0.5
       with:
         files: |
           resources/**/*.js
 
     - name: Check for stylesheet changes
       id: changed-stylesheet
-      uses: tj-actions/changed-files@v25
+      uses: tj-actions/changed-files@v29.0.5
       with:
         files: |
           resources/**/*.css
@@ -64,7 +64,7 @@ jobs:
     
     - name: Check for i18n changes
       id: changed-i18n
-      uses: tj-actions/changed-files@v25
+      uses: tj-actions/changed-files@v29.0.5
       with:
         files: |
           i18n/*.json
