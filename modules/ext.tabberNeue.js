@@ -212,8 +212,9 @@ function initTabber( tabber, count ) {
 	 *
 	 * @param {string} targetHash
 	 * @param {boolean} allowRemoteLoad
+	 * @param {boolean} scrollIntoView
 	 */
-	function showPanel( targetHash, allowRemoteLoad ) {
+	function showPanel( targetHash, allowRemoteLoad, scrollIntoView ) {
 		var ACTIVETABCLASS = 'tabber__tab--active',
 			ACTIVEPANELCLASS = 'tabber__panel--active',
 			targetPanel = document.getElementById( targetHash ),
@@ -289,6 +290,13 @@ function initTabber( tabber, count ) {
 			resizeObserver.observe( targetPanel );
 		}
 		/* eslint-enable mediawiki/class-doc */
+
+		// If requested, scroll the tabber into view (browser fails to do that
+		// on its own as it tries to look up the anchor before we add it to the
+		// DOM)
+		if ( scrollIntoView ) {
+			targetTab.scrollIntoView();
+		}
 	}
 
 	/**
@@ -341,9 +349,9 @@ function initTabber( tabber, count ) {
 	 * Retrieve target hash and trigger show panel
 	 * If no targetHash is invalid, use the first panel
 	 *
-	 * @param {HTMLElement} tabber
+	 * @param {boolean} isInitialLoad
 	 */
-	function switchTab() {
+	function switchTab( isInitialLoad ) {
 		var targetHash = new mw.Uri( location.href ).fragment;
 
 		// Switch to the first tab if no targetHash or no tab is detected
@@ -352,10 +360,10 @@ function initTabber( tabber, count ) {
 			targetHash = tabList.firstElementChild.getAttribute( 'id' ).substring( 4 );
 		}
 
-		showPanel( targetHash );
+		showPanel( targetHash, false, isInitialLoad );
 	}
 
-	switchTab();
+	switchTab( true );
 
 	initButtons();
 
