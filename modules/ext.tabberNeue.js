@@ -349,18 +349,19 @@ function initTabber( tabber, count ) {
 	 * Retrieve target hash and trigger show panel
 	 * If no targetHash is invalid, use the first panel
 	 *
-	 * @param {boolean} isInitialLoad
+	 * @param {boolean} scrollIntoView
 	 */
-	function switchTab( isInitialLoad ) {
+	function switchTab( scrollIntoView ) {
 		var targetHash = new mw.Uri( location.href ).fragment;
 
-		// Switch to the first tab if no targetHash or no tab is detected
+		// Switch to the first tab if no targetHash or no tab is detected and do not scroll to it
 		// TODO: Remove the polyfill with CSS.escape when we are dropping IE support
 		if ( !targetHash || !tabList.querySelector( '#tab-' + targetHash.replace( /[^a-zA-Z0-9-_]/g, '\\$&' ) ) ) {
 			targetHash = tabList.firstElementChild.getAttribute( 'id' ).substring( 4 );
+			scrollIntoView = false;
 		}
 
-		showPanel( targetHash, false, isInitialLoad );
+		showPanel( targetHash, false, scrollIntoView );
 	}
 
 	switchTab( true );
