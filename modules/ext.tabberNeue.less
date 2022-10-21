@@ -25,6 +25,7 @@
 		block-size: 100%;
 		grid-auto-columns: 100%;
 		grid-auto-flow: column;
+		scroll-snap-type: x mandatory;
 	}
 
 	&__header {
@@ -127,6 +128,7 @@
 	&__panel {
 		height: max-content;
 		overflow-x: auto;
+		scroll-snap-align: start;
 
 		// Hide edit buttons for non-transclusion tabs since they don't work
 		/* stylelint-disable-next-line selector-class-pattern */
@@ -151,10 +153,10 @@
 				display: inline-block;
 				width: @width-bounce-dot;
 				height: @width-bounce-dot;
+				border-radius: 100%;
 				animation: bounce-delay 1600ms infinite ease-in-out both;
 				animation-delay: -160ms;
 				background-color: #36c;
-				border-radius: 100%;
 				content: '';
 			}
 
