@@ -5,13 +5,16 @@
  * @param {number} count
  */
 function initTabber( tabber, count ) {
+	var ACTIVETABCLASS = 'tabber__tab--active';
+
 	var tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
 
 	var config = require( './config.json' ),
 		header = tabber.querySelector( '.tabber__header' ),
 		tabList = document.createElement( 'nav' ),
 		prevButton = document.createElement( 'div' ),
-		nextButton = document.createElement( 'div' );
+		nextButton = document.createElement( 'div' ),
+		indicator = document.createElement( 'div' );
 
 	var buildTabs = function () {
 		var fragment = new DocumentFragment();
@@ -26,10 +29,14 @@ function initTabber( tabber, count ) {
 
 			// check if the hash is already used before
 			var hashCount = 0;
-			hashList.forEach( function(h) { hashCount += ( h == hash ) ? 1 : 0; } );
+			hashList.forEach(
+				function ( h ) {
+					hashCount += ( h === hash ) ? 1 : 0;
+				}
+			);
 
 			// append counter if the same hash already used
-			hash += ( 1 == hashCount ) ? '' : ( '-' + hashCount );
+			hash += ( hashCount === 1 ) ? '' : ( '-' + hashCount );
 
 			tabPanel.setAttribute( 'id', hash );
 			tabPanel.setAttribute( 'role', 'tabpanel' );
@@ -53,8 +60,9 @@ function initTabber( tabber, count ) {
 		tabList.setAttribute( 'role', 'tablist' );
 		prevButton.classList.add( 'tabber__header__prev' );
 		nextButton.classList.add( 'tabber__header__next' );
+		indicator.classList.add( 'tabber__indicator' );
 
-		header.append( prevButton, tabList, nextButton );
+		header.append( prevButton, tabList, nextButton, indicator );
 	};
 
 	var updateSectionHeight = function ( section, activePanel ) {
@@ -83,6 +91,12 @@ function initTabber( tabber, count ) {
 			var section = targetPanel.parentNode;
 			updateSectionHeight( section, targetPanel );
 		}
+	};
+
+	var updateIndicator = function () {
+		var activeTab = tabList.querySelector( '.' + ACTIVETABCLASS );
+		indicator.style.width = activeTab.offsetWidth + 'px';
+		indicator.style.transform = 'translateX(' + ( activeTab.offsetLeft - tabList.scrollLeft ) + 'px)';
 	};
 
 	var resizeObserver = null;
@@ -161,6 +175,7 @@ function initTabber( tabber, count ) {
 		// Also triggered by side-scrolling using other means other than the buttons
 		tabList.addEventListener( 'scroll', function () {
 			updateButtons();
+			updateIndicator();
 		} );
 
 		// Add class to enable animation
@@ -215,8 +230,7 @@ function initTabber( tabber, count ) {
 	 * @param {boolean} scrollIntoView
 	 */
 	function showPanel( targetHash, allowRemoteLoad, scrollIntoView ) {
-		var ACTIVETABCLASS = 'tabber__tab--active',
-			ACTIVEPANELCLASS = 'tabber__panel--active',
+		var ACTIVEPANELCLASS = 'tabber__panel--active',
 			targetPanel = document.getElementById( targetHash ),
 			targetTab = document.getElementById( 'tab-' + targetHash ),
 			section = targetPanel.parentNode,
@@ -225,13 +239,13 @@ function initTabber( tabber, count ) {
 
 		var loadTransclusion = function () {
 			var loading = document.createElement( 'div' ),
-				indicator = document.createElement( 'div' );
+				loadingIndicator = document.createElement( 'div' );
 
 			targetPanel.setAttribute( 'aria-live', 'polite' );
 			targetPanel.setAttribute( 'aria-busy', 'true' );
 			loading.setAttribute( 'class', 'tabber__transclusion--loading' );
-			indicator.setAttribute( 'class', 'tabber__loading-indicator' );
-			loading.appendChild( indicator );
+			loadingIndicator.setAttribute( 'class', 'tabber__loading-indicator' );
+			loading.appendChild( loadingIndicator );
 			targetPanel.textContent = '';
 			targetPanel.appendChild( loading );
 			loadPage( targetPanel, targetPanel.dataset.tabberLoadUrl );
@@ -263,6 +277,8 @@ function initTabber( tabber, count ) {
 		targetTab.setAttribute( 'aria-selected', true );
 		targetPanel.classList.add( ACTIVEPANELCLASS );
 		targetPanel.setAttribute( 'aria-hidden', false );
+
+		updateIndicator();
 
 		// Lazyload transclusion if needed
 		if ( allowRemoteLoad &&
@@ -357,7 +373,7 @@ function initTabber( tabber, count ) {
 		// Switch to the first tab if no targetHash or no tab is detected and do not scroll to it
 		// TODO: Remove the polyfill with CSS.escape when we are dropping IE support
 		if ( !targetHash || !tabList.querySelector( '#tab-' + targetHash.replace( /[^a-zA-Z0-9-_]/g, '\\$&' ) ) ) {
-			targetHash = tabList.firstElementChild.getAttribute( 'id' ).substring( 4 );
+			targetHash = tabList.firstElementChild.getAttribute( 'id' ).slice( 4 );
 			scrollIntoView = false;
 		}
 
@@ -373,7 +389,7 @@ function initTabber( tabber, count ) {
 	// Respond to clicks on the nav tabs
 	Array.prototype.forEach.call( tabList.children, function ( tab ) {
 		tab.addEventListener( 'click', function ( event ) {
-			var targetHash = tab.getAttribute( 'href' ).substring( 1 );
+			var targetHash = tab.getAttribute( 'href' ).slice( 1 );
 			event.preventDefault();
 			if ( !config || config.updateLocationOnTabChange ) {
 				// Add hash to the end of the URL
