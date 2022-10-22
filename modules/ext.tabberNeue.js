@@ -95,8 +95,20 @@ function initTabber( tabber, count ) {
 
 	var updateIndicator = function () {
 		var activeTab = tabList.querySelector( '.' + ACTIVETABCLASS );
-		indicator.style.width = activeTab.offsetWidth + 'px';
-		indicator.style.transform = 'translateX(' + ( activeTab.offsetLeft - tabList.scrollLeft ) + 'px)';
+		// When the activeTab is visible in viewport, set the indicator
+		// IntersectionObserver is not supported in IE
+		// Probably time to drop IE support and move to ES6
+		/* eslint-disable-next-line compat/compat */
+		var observer = new IntersectionObserver( function ( entries ) {
+			entries.forEach( function ( entry ) {
+				if ( entry.isIntersecting ) {
+					indicator.style.width = activeTab.offsetWidth + 'px';
+					indicator.style.transform = 'translateX(' + ( activeTab.offsetLeft - tabList.scrollLeft ) + 'px)';
+				}
+			} );
+		}, tabList );
+
+		observer.observe( activeTab );
 	};
 
 	var resizeObserver = null;
