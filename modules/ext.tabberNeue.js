@@ -89,10 +89,10 @@ function initTabber( tabber, count ) {
 			// Measure the size of the clone
 			switch ( type ) {
 				case 'width':
-					value = element.offsetWidth;
+					value = clone.offsetWidth;
 					break;
 				case 'height':
-					value = element.offsetHeight;
+					value = clone.offsetHeight;
 					break;
 			}
 			// Remove the cloned element
