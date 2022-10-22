@@ -65,22 +65,47 @@ function initTabber( tabber, count ) {
 		header.append( prevButton, tabList, nextButton, indicator );
 	};
 
-	var updateSectionHeight = function ( section, activePanel ) {
-		var height = activePanel.offsetHeight;
-		if ( height === 0 ) {
+	// There is probably a smarter way to do this
+	var getActualSize = function ( element, type ) {
+		var value;
+
+		switch ( type ) {
+			case 'width':
+				value = element.offsetWidth;
+				break;
+			case 'height':
+				value = element.offsetHeight;
+				break;
+		}
+
+		if ( value === 0 ) {
 			// Sometimes the tab is hidden by one of its parent elements
-			// and you can only get the actual height by cloning the element
-			var clone = activePanel.cloneNode( true );
+			// and you can only get the actual size  by cloning the element
+			var clone = element.cloneNode( true );
 			// Hide the cloned element
 			clone.style.cssText = 'position:absolute;visibility:hidden;';
 			// Add cloned element to body
 			document.body.appendChild( clone );
-			// Measure the height of the clone
-			height = clone.clientHeight;
+			// Measure the size of the clone
+			switch ( type ) {
+				case 'width':
+					value = element.offsetWidth;
+					break;
+				case 'height':
+					value = element.offsetHeight;
+					break;
+			}
 			// Remove the cloned element
 			clone.parentNode.removeChild( clone );
 		}
-		section.style.height = String( height ) + 'px';
+
+		return value;
+	};
+
+	var updateSectionHeight = function ( section, activePanel ) {
+		var height = getActualSize( activePanel, 'height' );
+
+		section.style.height = height + 'px';
 		// Scroll to tab
 		section.scrollLeft = activePanel.offsetLeft;
 	};
@@ -95,20 +120,10 @@ function initTabber( tabber, count ) {
 
 	var updateIndicator = function () {
 		var activeTab = tabList.querySelector( '.' + ACTIVETABCLASS );
-		// When the activeTab is visible in viewport, set the indicator
-		// IntersectionObserver is not supported in IE
-		// Probably time to drop IE support and move to ES6
-		/* eslint-disable-next-line compat/compat */
-		var observer = new IntersectionObserver( function ( entries ) {
-			entries.forEach( function ( entry ) {
-				if ( entry.isIntersecting ) {
-					indicator.style.width = activeTab.offsetWidth + 'px';
-					indicator.style.transform = 'translateX(' + ( activeTab.offsetLeft - tabList.scrollLeft ) + 'px)';
-				}
-			} );
-		}, tabList );
 
-		observer.observe( activeTab );
+		var width = getActualSize( activeTab, 'width' );
+		indicator.style.width = width + 'px';
+		indicator.style.transform = 'translateX(' + ( activeTab.offsetLeft - tabList.scrollLeft ) + 'px)';
 	};
 
 	var resizeObserver = null;
