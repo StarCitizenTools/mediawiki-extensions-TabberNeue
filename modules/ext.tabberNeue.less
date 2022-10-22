@@ -1,4 +1,5 @@
 @width-bounce-dot: 12px;
+@height-indicator: 2px;
 
 .tabber {
 	position: relative;
@@ -91,9 +92,10 @@
 	}
 
 	&__indicator {
+		margin-top: @height-indicator * -1;
 		background: #36c;
-		block-size: 2px;
-		border-radius: 2px;
+		block-size: @height-indicator;
+		border-radius: @height-indicator;
 		inline-size: 0;
 	}
 
