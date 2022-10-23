@@ -5,7 +5,8 @@
  * @param {number} count
  */
 function initTabber( tabber, count ) {
-	var ACTIVETAB_SELECTOR = '[aria-selected="true"]';
+	var ACTIVETAB_SELECTOR = '[aria-selected="true"]',
+		ACTIVEPANEL_SELECTOR = '[aria-hidden="false"]';
 
 	var tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
 
@@ -257,11 +258,10 @@ function initTabber( tabber, count ) {
 	 * @param {boolean} scrollIntoView
 	 */
 	function showPanel( targetHash, allowRemoteLoad, scrollIntoView ) {
-		var ACTIVEPANELCLASS = 'tabber__panel--active',
-			targetPanel = document.getElementById( targetHash ),
+		var targetPanel = document.getElementById( targetHash ),
 			targetTab = document.getElementById( 'tab-' + targetHash ),
 			section = targetPanel.parentNode,
-			activePanel = section.querySelector( ':scope > .' + ACTIVEPANELCLASS ),
+			activePanel = section.querySelector( ':scope > ' + ACTIVEPANEL_SELECTOR ),
 			parentPanel, parentSection;
 
 		var loadTransclusion = function () {
@@ -294,13 +294,11 @@ function initTabber( tabber, count ) {
 				resizeObserver.unobserve( activePanel );
 			}
 
-			activePanel.classList.remove( ACTIVEPANELCLASS );
 			activePanel.setAttribute( 'aria-hidden', true );
 		}
 
 		// Add active class to the tab
 		targetTab.setAttribute( 'aria-selected', true );
-		targetPanel.classList.add( ACTIVEPANELCLASS );
 		targetPanel.setAttribute( 'aria-hidden', false );
 
 		updateIndicator();
@@ -320,7 +318,7 @@ function initTabber( tabber, count ) {
 		// ResizeObserver should take care of the recursivity already
 		/* eslint-disable-next-line no-unmodified-loop-condition */
 		while ( !resizeObserver ) {
-			parentPanel = parentSection.closest( '.' + ACTIVEPANELCLASS );
+			parentPanel = parentSection.closest( ACTIVEPANEL_SELECTOR );
 			if ( !parentPanel ) {
 				break;
 			}
@@ -364,10 +362,9 @@ function initTabber( tabber, count ) {
 			targetPanel.setAttribute( 'aria-busy', 'false' );
 		}
 
-		var ACTIVEPANELCLASS = 'tabber__panel--active',
-			targetHash = targetPanel.getAttribute( 'id' ),
+		var targetHash = targetPanel.getAttribute( 'id' ),
 			section = targetPanel.parentNode,
-			activePanel = section.querySelector( ':scope > .' + ACTIVEPANELCLASS );
+			activePanel = section.querySelector( ':scope > ' + ACTIVEPANEL_SELECTOR );
 
 		if ( nextRequest ) {
 			currentRequest = nextRequest;
