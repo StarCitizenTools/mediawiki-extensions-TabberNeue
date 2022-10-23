@@ -5,7 +5,7 @@
  * @param {number} count
  */
 function initTabber( tabber, count ) {
-	var ACTIVETABCLASS = 'tabber__tab--active';
+	var ACTIVETAB_SELECTOR = '[aria-selected="true"]';
 
 	var tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
 
@@ -119,7 +119,7 @@ function initTabber( tabber, count ) {
 	};
 
 	var updateIndicator = function () {
-		var activeTab = tabList.querySelector( '.' + ACTIVETABCLASS );
+		var activeTab = tabList.querySelector( ACTIVETAB_SELECTOR );
 
 		var width = getActualSize( activeTab, 'width' );
 		indicator.style.width = width + 'px';
@@ -280,13 +280,12 @@ function initTabber( tabber, count ) {
 
 		/* eslint-disable mediawiki/class-doc */
 		if ( activePanel ) {
-			// Just to be safe since there can be multiple active classes
+			// Just to be safe since there can be multiple active tabs
 			// even if there shouldn't be
-			var activeTabs = tabList.querySelectorAll( '.' + ACTIVETABCLASS );
+			var activeTabs = tabList.querySelectorAll( ACTIVETAB_SELECTOR );
 
 			if ( activeTabs.length > 0 ) {
 				Array.prototype.forEach.call( activeTabs, function ( activeTab ) {
-					activeTab.classList.remove( ACTIVETABCLASS );
 					activeTab.setAttribute( 'aria-selected', false );
 				} );
 			}
@@ -300,7 +299,6 @@ function initTabber( tabber, count ) {
 		}
 
 		// Add active class to the tab
-		targetTab.classList.add( ACTIVETABCLASS );
 		targetTab.setAttribute( 'aria-selected', true );
 		targetPanel.classList.add( ACTIVEPANELCLASS );
 		targetPanel.setAttribute( 'aria-hidden', false );

@@ -92,10 +92,10 @@
 	}
 
 	&__indicator {
+		border-radius: @height-indicator;
 		margin-top: @height-indicator * -1;
 		background: #36c;
 		block-size: @height-indicator;
-		border-radius: @height-indicator;
 		inline-size: 0;
 	}
 
@@ -128,8 +128,8 @@
 			text-decoration: none;
 		}
 
-		&--active,
-		&--active:visited {
+		&[ aria-selected='true' ],
+		&[ aria-selected='true' ]:visited {
 			color: #36c;
 		}
 	}
