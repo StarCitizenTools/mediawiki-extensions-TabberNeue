@@ -8,8 +8,6 @@ function initTabber( tabber, count ) {
 	var ACTIVETAB_SELECTOR = '[aria-selected="true"]',
 		ACTIVEPANEL_SELECTOR = '[aria-hidden="false"]';
 
-	var tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
-
 	var config = require( './config.json' ),
 		header = tabber.querySelector( '.tabber__header' ),
 		tabList = document.createElement( 'nav' ),
@@ -18,8 +16,9 @@ function initTabber( tabber, count ) {
 		indicator = document.createElement( 'div' );
 
 	var buildTabs = function () {
-		var fragment = new DocumentFragment();
-		var hashList = [];
+		var tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' ),
+			fragment = new DocumentFragment(),
+			hashList = [];
 
 		Array.prototype.forEach.call( tabPanels, function ( tabPanel ) {
 			var hash = mw.util.escapeIdForAttribute( tabPanel.title ) + '-' + count,
