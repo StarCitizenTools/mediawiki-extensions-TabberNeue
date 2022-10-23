@@ -118,12 +118,22 @@ function initTabber( tabber, count ) {
 		}
 	};
 
-	var updateIndicator = function () {
+	var updateIndicator = function ( showTransition ) {
 		var activeTab = tabList.querySelector( ACTIVETAB_SELECTOR );
-
 		var width = getActualSize( activeTab, 'width' );
+
 		indicator.style.width = width + 'px';
 		indicator.style.transform = 'translateX(' + ( activeTab.offsetLeft - tabList.scrollLeft ) + 'px)';
+		indicator.style.transition = '';
+
+		// Do not animate when user prefers reduced motion
+		if ( window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+			return;
+		}
+
+		if ( showTransition ) {
+			indicator.style.transition = 'transform 250ms ease, width 250ms ease';
+		}
 	};
 
 	var resizeObserver = null;
@@ -201,8 +211,10 @@ function initTabber( tabber, count ) {
 		// Listen for scroll event on header
 		// Also triggered by side-scrolling using other means other than the buttons
 		tabList.addEventListener( 'scroll', function () {
-			updateButtons();
-			updateIndicator();
+			window.requestAnimationFrame( function () {
+				updateButtons();
+				updateIndicator( false );
+			} );
 		} );
 
 		// Add class to enable animation
@@ -300,7 +312,7 @@ function initTabber( tabber, count ) {
 		targetTab.setAttribute( 'aria-selected', true );
 		targetPanel.setAttribute( 'aria-hidden', false );
 
-		updateIndicator();
+		updateIndicator( true );
 
 		// Lazyload transclusion if needed
 		if ( allowRemoteLoad &&
