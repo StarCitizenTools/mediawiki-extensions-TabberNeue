@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"Asma",
+			"Meno25"
+		]
+	},
+	"tabberneue-desc": "يسمح بإنشاء علامات تبويب داخل الصفحة. متفرع من [https://www.mediawiki.org/wiki/Extension:Tabber Extension: Tabber].",
+	"tabberneue-noscript": "يتطلب Tabber جافا سكريبت ليعمل.",
+	"tabberneue-tabber-category": "الصفحات التي تستخدم علامة Tabber parser",
+	"tabberneue-tabbertransclude-category": "الصفحات التي تستخدم علامة المحلل اللغوي TabberTransclude",
+	"tabberneue-visualeditor-mwtabberdialog-title": "تابر",
+	"tabberneue-visualeditor-mwtabberdialog-desc": "راجع [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documents] للاستخدام.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "تابر (التضمين)",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "انظر [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation]  للاستخدام."
+}
