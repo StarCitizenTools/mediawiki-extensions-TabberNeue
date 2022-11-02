@@ -90,7 +90,7 @@ class Tabber {
 		$tabName = trim( $tabName );
 		$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
 
-		$tab = '<article class="tabber__panel" title="' . htmlspecialchars( $tabName ) .
+		$tab = '<article class="tabber__panel" data-title="' . htmlspecialchars( $tabName ) .
 			'">' . $tabBody . '</article>';
 
 		return $tab;

@@ -21,7 +21,8 @@ function initTabber( tabber, count ) {
 			hashList = [];
 
 		Array.prototype.forEach.call( tabPanels, function ( tabPanel ) {
-			var hash = mw.util.escapeIdForAttribute( tabPanel.title ) + '-' + count,
+			var title = tabPanel.getAttribute( 'data-title' ),
+				hash = mw.util.escapeIdForAttribute( title ) + '-' + count,
 				tab = document.createElement( 'a' );
 
 			// add to list of already used hash
@@ -43,7 +44,7 @@ function initTabber( tabber, count ) {
 			tabPanel.setAttribute( 'aria-labelledby', 'tab-' + hash );
 			tabPanel.setAttribute( 'aria-hidden', true );
 
-			tab.innerText = tabPanel.title;
+			tab.innerText = title;
 			tab.classList.add( 'tabber__tab' );
 			tab.setAttribute( 'role', 'tab' );
 			tab.setAttribute( 'href', '#' + hash );
@@ -289,7 +290,6 @@ function initTabber( tabber, count ) {
 			loadPage( targetPanel, targetPanel.dataset.tabberLoadUrl );
 		};
 
-		/* eslint-disable mediawiki/class-doc */
 		if ( activePanel ) {
 			// Just to be safe since there can be multiple active tabs
 			// even if there shouldn't be
