@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Hamilton Abreu"
+		]
+	},
+	"tabberneue-desc": "Permite criar separadores dentro de uma página. Uma ramificação de [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
+	"tabberneue-noscript": "Tabber requer Javascript para funcionar.",
+	"tabberneue-tabber-category": "Páginas que usam a etiqueta Tabber do analisador sintático",
+	"tabberneue-tabbertransclude-category": "Páginas que usam a etiqueta TabberTransclude do analisador sintático",
+	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
+	"tabberneue-visualeditor-mwtabberdialog-desc": "Ver a [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documentação] para utilizar.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (transclusão)",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Ver a [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentação] para utilizar."
+}
