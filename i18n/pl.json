@@ -1,8 +1,16 @@
 {
 	"@metadata": {
 		"authors": [
-			"BeginaFelicysym"
+			"BeginaFelicysym",
+			"Rail"
 		]
 	},
-	"tabberneue-desc": "Pozwala na tworzenie zakładek na stronie"
+	"tabberneue-desc": "Pozwala na tworzenie zakładek na stronie. Uaktualniona wersja [https://www.mediawiki.org/wiki/Extension:Tabber rozszerzenia Tabber]",
+	"tabberneue-noscript": "Zakładki wymagają wsparcia JavaScriptu, aby funkcjonować.",
+	"tabberneue-tabber-category": "Strony używające funkcji parsera Tabber",
+	"tabberneue-tabbertransclude-category": "Strony używające funkcji parsera TabberTransclude",
+	"tabberneue-visualeditor-mwtabberdialog-title": "Zakładki",
+	"tabberneue-visualeditor-mwtabberdialog-desc": "Przejdź do [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers dokumentacji], aby dowiedzieć się więcej.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Zakładki (transkluzja)",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Przejdź do [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion dokumentacji], aby dowiedzieć się więcej."
 }
