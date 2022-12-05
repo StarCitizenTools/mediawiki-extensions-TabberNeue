@@ -143,7 +143,7 @@ class TabberTransclude {
 			);
 		}
 
-		$tab = '<article class="tabber__panel" title="' . htmlspecialchars( $tabName ) . '"';
+		$tab = '<article class="tabber__panel" data-title="' . htmlspecialchars( $tabName ) . '"';
 		$tab .= implode( array_map( static function ( $prop, $value ) {
 			return sprintf( ' data-tabber-%s="%s"', $prop, htmlspecialchars( $value ) );
 		}, array_keys( $dataProps ), $dataProps ) );
