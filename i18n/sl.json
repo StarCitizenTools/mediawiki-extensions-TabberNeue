@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eleassar"
+		]
+	},
+	"tabberneue-desc": "Omogoča ustvarjanje zavihkov na strani. Odvejitev razširitve [https://www.mediawiki.org/wiki/Extension:Tabber Tabber].",
+	"tabberneue-noscript": "Tabber za delovanje potrebuje Javascript.",
+	"tabberneue-tabber-category": "Strani z razčlembno značko Tabber",
+	"tabberneue-tabbertransclude-category": "Strani z razčlembno znako TabberTransclude",
+	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
+	"tabberneue-visualeditor-mwtabberdialog-desc": "Za uporabo glejte [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers dokumentacijo].",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (vključitev)",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Za uporabo glejte [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion dokumentacijo]."
+}

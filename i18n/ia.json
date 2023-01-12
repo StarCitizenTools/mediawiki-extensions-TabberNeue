@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"McDutchie"
+		]
+	},
+	"tabberneue-desc": "Permitte crear schedas intra un pagina. Bifurcate ab [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
+	"tabberneue-noscript": "Tabber necessita JavaScript pro functionar.",
+	"tabberneue-tabber-category": "Paginas que usa le etiquetta de analysator Tabber",
+	"tabberneue-tabbertransclude-category": "Paginas que usa le etiquetta de analysator TabberTransclude",
+	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
+	"tabberneue-visualeditor-mwtabberdialog-desc": "Vide le [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documentation] pro le information sur le uso.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (transclusion)",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Vide le [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation] pro le information de uso."
+}
