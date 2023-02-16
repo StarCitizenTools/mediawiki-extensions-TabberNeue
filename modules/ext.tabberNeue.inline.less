@@ -9,14 +9,16 @@
  * Used in Tabber.php and TabberTransclude.php
  */
 
+/* stylelint-disable selector-class-pattern */
+
 // Skeleton UI
-.tabber__header {
+.client-js .tabber__header {
 	height: 2.6em;
 	box-shadow: inset 0 -1px 0 0;
 	opacity: 0.1;
 }
 
-.tabber__header:after {
+.client-js .tabber__header:after {
 	position: absolute;
 	width: 16ch;
 	height: 0.5em;
@@ -32,6 +34,6 @@
 // All panels are stacked vertically initially
 // Then panels are stacked horizontally after Tabber is loaded
 // Causing lots of layout shift
-.tabber__panel:not( :first-child ) {
+.client-js .tabber__panel:not( :first-child ) {
 	display: none;
 }

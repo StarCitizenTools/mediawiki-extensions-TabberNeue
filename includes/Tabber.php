@@ -38,7 +38,7 @@ class Tabber {
 		// See ext.tabberNeue.inline.less
 		$style = sprintf(
 			'<style id="tabber-style">%s</style>',
-			'.tabber__header{height:2.6em;box-shadow:inset 0-1px 0 0;opacity:0.1}.tabber__header:after{position:absolute;width:16ch;height:0.5em;margin-top:1em;margin-left:0.75em;background:#000;border-radius:40px;content:""}.tabber__panel:not(:first-child){display:none}'
+			'.client-js .tabber__header{height:2.6em;box-shadow:inset 0-1px 0 0;opacity:0.1}.client-js .tabber__header:after{position:absolute;width:16ch;height:0.5em;margin-top:1em;margin-left:0.75em;background:#000;border-radius:40px;content:""}.client-js .tabber__panel:not(:first-child){display:none}'
 		);
 		$parser->getOutput()->addHeadItem( $style, true );
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
@@ -64,7 +64,7 @@ class Tabber {
 
 		$noscriptMsg = wfMessage( 'tabberneue-noscript' )->text();
 		$html = '<div class="tabber">' .
-			'<header class="tabber__header"><noscript>' . $noscriptMsg . '</noscript></header>' .
+			'<header class="tabber__header"><noscript><div class="mw-message-box mw-message-box-warning">' . $noscriptMsg . '</div></noscript></header>' .
 			'<section class="tabber__section">' . $htmlTabs . '</section></div>';
 
 		return $html;
