@@ -87,10 +87,11 @@ class Tabber {
 		// Use array_pad to make sure at least 2 array values are always returned
 		list( $tabName, $tabBody ) = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
-		$tabName = trim( $tabName );
+		// Use language converter to get variant title and also escape html
+		$tabName = $parser->getTargetLanguageConverter()->convertHtml( trim( $tabName ) );
 		$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
 
-		$tab = '<article class="tabber__panel" data-title="' . htmlspecialchars( $tabName ) .
+		$tab = '<article class="tabber__panel" data-title="' . $tabName .
 			'">' . $tabBody . '</article>';
 
 		return $tab;
