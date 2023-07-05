@@ -31,8 +31,8 @@ ve.ce.MWTabberNode.static.tagName = 'div';
 ve.ce.MWTabberNode.static.primaryCommandName = 'mwTabber';
 
 /* Methods */
-
-let lastHeader;
+// eslint-disable-next-line no-var
+var lastHeader;
 
 /**
  * @inheritdoc

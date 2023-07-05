@@ -31,8 +31,8 @@ ve.ce.MWTabberTranscludeNode.static.tagName = 'div';
 ve.ce.MWTabberTranscludeNode.static.primaryCommandName = 'mwTabberTransclude';
 
 /* Methods */
-
-let lastHeader;
+// eslint-disable-next-line no-var
+var lastHeader;
 
 /**
  * @inheritdoc
