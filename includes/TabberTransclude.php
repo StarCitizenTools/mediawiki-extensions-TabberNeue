@@ -128,8 +128,7 @@ class TabberTransclude {
 					$linkRenderer->makeLink( $title, null, [ 'rel' => 'nofollow' ] )
 				);
 				$dataProps['pending-load'] = '1';
-				// 1.37: $currentTitle = $parser->getPage();
-				$currentTitle = $parser->getTitle();
+				$currentTitle = $parser->getPage();
 				$query = sprintf(
 					'?action=parse&format=json&formatversion=2&title=%s&text={{:%s}}&redirects=1&prop=text&disablelimitreport=1&disabletoc=1&wrapoutputclass=',
 					urlencode( $currentTitle->getPrefixedText() ),
