@@ -6,16 +6,16 @@
 			:name="tab.name"
 			:label="tab.label"
 			:disabled="tab.disabled"
-			v-html = "tab.content"
+			v-html="tab.content"
 		>
 		</cdx-tab>
 	</cdx-tabs>
 </template>
 
 <script>
-const { defineComponent } = require('vue');
+const { defineComponent } = require( 'vue' );
 // Codex is available from ResourceLoader at runtime and is available without needing a build step.
-const { CdxTabs, CdxTab } = require('@wikimedia/codex');
+const { CdxTabs, CdxTab } = require( '@wikimedia/codex' );
 
 // @vue/component
 module.exports = exports = defineComponent( {
@@ -27,8 +27,8 @@ module.exports = exports = defineComponent( {
 		whitespace: 'condense'
 	},
 	components: {
-		CdxTabs,
-		CdxTab
+		CdxTabs: CdxTabs,
+		CdxTab: CdxTab
 	},
 	props: {
 		tabberData: {
@@ -40,13 +40,13 @@ module.exports = exports = defineComponent( {
 			default: false
 		}
 	},
-	data() {
+	data: function () {
 		return {
 			tabsData: this.tabberData.tabsData,
 			currentTab: this.tabberData.currentTab
 		};
 	},
-	mounted() {
+	mounted: function () {
 		console.log( this.$el );
 		this.$el.parentElement.classList.add( 'tabber--live' );
 	}
