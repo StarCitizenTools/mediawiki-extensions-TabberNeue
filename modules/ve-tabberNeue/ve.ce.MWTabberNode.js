@@ -32,7 +32,7 @@ ve.ce.MWTabberNode.static.primaryCommandName = 'mwTabber';
 
 /* Methods */
 
-var lastHeader;
+let lastHeader;
 
 /**
  * @inheritdoc
@@ -41,7 +41,7 @@ ve.ce.MWTabberNode.prototype.onSetup = function () {
 	// Parent method
 	ve.ce.MWTabberNode.super.prototype.onSetup.call( this );
 
-	var tabber = this.$element[ 0 ];
+	const tabber = this.$element[ 0 ];
 
 	// Do not render header if it is already rendered
 	if (
@@ -63,13 +63,14 @@ ve.ce.MWTabberNode.prototype.onSetup = function () {
  * @param {HTMLElement} tabber
  */
 ve.ce.MWTabberNode.prototype.renderHeader = function ( tabber ) {
-	var tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' ),
+	const
+		tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' ),
 		container = document.createElement( 'header' ),
 		tabList = document.createElement( 'nav' ),
 		fragment = new DocumentFragment();
 
 	Array.prototype.forEach.call( tabPanels, function ( tabPanel, index ) {
-		var tab = document.createElement( 'a' );
+		const tab = document.createElement( 'a' );
 
 		tab.innerText = tabPanel.title;
 		tab.classList.add( 'tabber__tab' );

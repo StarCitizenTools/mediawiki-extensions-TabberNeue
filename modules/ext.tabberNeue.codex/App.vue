@@ -47,7 +47,6 @@ module.exports = exports = defineComponent( {
 		};
 	},
 	mounted: function () {
-		console.log( this.$el );
 		this.$el.parentElement.classList.add( 'tabber--live' );
 	}
 } );

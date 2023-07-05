@@ -5,31 +5,36 @@
  * @param {number} count
  */
 function initTabber( tabber, count ) {
-	var ACTIVETAB_SELECTOR = '[aria-selected="true"]',
+	const
+		ACTIVETAB_SELECTOR = '[aria-selected="true"]',
 		ACTIVEPANEL_SELECTOR = '[aria-hidden="false"]';
 
-	var config = require( './config.json' ),
+	const
+		config = require( './config.json' ),
 		header = tabber.querySelector( '.tabber__header' ),
 		tabList = document.createElement( 'nav' ),
 		prevButton = document.createElement( 'div' ),
 		nextButton = document.createElement( 'div' ),
 		indicator = document.createElement( 'div' );
 
-	var buildTabs = function () {
-		var tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' ),
+	const buildTabs = function () {
+		const
+			tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' ),
 			fragment = new DocumentFragment(),
 			hashList = [];
 
 		Array.prototype.forEach.call( tabPanels, function ( tabPanel ) {
-			var title = tabPanel.getAttribute( 'data-title' ),
-				hash = mw.util.escapeIdForAttribute( title ) + '-' + count,
+			const
+				title = tabPanel.getAttribute( 'data-title' ),
 				tab = document.createElement( 'a' );
+
+			let hash = mw.util.escapeIdForAttribute( title ) + '-' + count;
 
 			// add to list of already used hash
 			hashList.push( hash );
 
 			// check if the hash is already used before
-			var hashCount = 0;
+			let hashCount = 0;
 			hashList.forEach(
 				function ( h ) {
 					hashCount += ( h === hash ) ? 1 : 0;
@@ -67,8 +72,8 @@ function initTabber( tabber, count ) {
 	};
 
 	// There is probably a smarter way to do this
-	var getActualSize = function ( element, type ) {
-		var value;
+	const getActualSize = function ( element, type ) {
+		let value;
 
 		switch ( type ) {
 			case 'width':
@@ -82,7 +87,7 @@ function initTabber( tabber, count ) {
 		if ( value === 0 ) {
 			// Sometimes the tab is hidden by one of its parent elements
 			// and you can only get the actual size  by cloning the element
-			var clone = element.cloneNode( true );
+			const clone = element.cloneNode( true );
 			// Hide the cloned element
 			clone.style.cssText = 'position:absolute;visibility:hidden;';
 			// Add cloned element to body
@@ -103,25 +108,26 @@ function initTabber( tabber, count ) {
 		return value;
 	};
 
-	var updateSectionHeight = function ( section, activePanel ) {
-		var height = getActualSize( activePanel, 'height' );
+	const updateSectionHeight = function ( section, activePanel ) {
+		const height = getActualSize( activePanel, 'height' );
 
 		section.style.height = height + 'px';
 		// Scroll to tab
 		section.scrollLeft = activePanel.offsetLeft;
 	};
 
-	var onElementResize = function ( entries ) {
+	const onElementResize = function ( entries ) {
 		if ( entries && entries.length > 0 ) {
-			var targetPanel = entries[ 0 ].target;
-			var section = targetPanel.parentNode;
+			const targetPanel = entries[ 0 ].target;
+			const section = targetPanel.parentNode;
 			updateSectionHeight( section, targetPanel );
 		}
 	};
 
-	var updateIndicator = function ( showTransition ) {
-		var activeTab = tabList.querySelector( ACTIVETAB_SELECTOR );
-		var width = getActualSize( activeTab, 'width' );
+	const updateIndicator = function ( showTransition ) {
+		const
+			activeTab = tabList.querySelector( ACTIVETAB_SELECTOR ),
+			width = getActualSize( activeTab, 'width' );
 
 		indicator.style.width = width + 'px';
 		indicator.style.transform = 'translateX(' + ( activeTab.offsetLeft - tabList.scrollLeft ) + 'px)';
@@ -137,7 +143,7 @@ function initTabber( tabber, count ) {
 		}
 	};
 
-	var resizeObserver = null;
+	let resizeObserver = null;
 	if ( window.ResizeObserver ) {
 		resizeObserver = new ResizeObserver( mw.util.debounce( 250, onElementResize ) );
 	}
@@ -146,13 +152,14 @@ function initTabber( tabber, count ) {
 	tabber.prepend( header );
 
 	// Initalize previous and next buttons
-	var initButtons = function () {
-		var PREVCLASS = 'tabber__header--prev-visible',
+	const initButtons = function () {
+		const
+			PREVCLASS = 'tabber__header--prev-visible',
 			NEXTCLASS = 'tabber__header--next-visible';
 
 		/* eslint-disable mediawiki/class-doc */
-		var scrollTabs = function ( offset ) {
-			var scrollLeft = tabList.scrollLeft + offset;
+		const scrollTabs = function ( offset ) {
+			const scrollLeft = tabList.scrollLeft + offset;
 
 			// Scroll to the start
 			if ( scrollLeft <= 0 ) {
@@ -162,8 +169,8 @@ function initTabber( tabber, count ) {
 			}
 		};
 
-		var updateButtons = function () {
-			var scrollLeft = tabList.scrollLeft;
+		const updateButtons = function () {
+			const scrollLeft = tabList.scrollLeft;
 
 			// Scroll to the start
 			if ( scrollLeft <= 0 ) {
@@ -181,11 +188,11 @@ function initTabber( tabber, count ) {
 			}
 		};
 
-		var setupButtons = function () {
-			var isScrollable = ( tabList.scrollWidth > header.offsetWidth );
+		const setupButtons = function () {
+			const isScrollable = ( tabList.scrollWidth > header.offsetWidth );
 
 			if ( isScrollable ) {
-				var scrollOffset = header.offsetWidth / 2;
+				const scrollOffset = header.offsetWidth / 2;
 
 				// Just to add the right classes
 				updateButtons();
@@ -230,14 +237,16 @@ function initTabber( tabber, count ) {
 
 		// Listen for element resize
 		if ( window.ResizeObserver ) {
-			var tabListResizeObserver = new ResizeObserver( mw.util.debounce( 250, setupButtons ) );
+			const tabListResizeObserver = new ResizeObserver(
+				mw.util.debounce( 250, setupButtons )
+			);
 			tabListResizeObserver.observe( tabList );
 		}
 	};
 
 	// NOTE: Are there better ways to scope them?
-	var xhr = new XMLHttpRequest();
-	var currentRequest = null, nextRequest = null;
+	const xhr = new XMLHttpRequest();
+	let currentRequest = null, nextRequest = null;
 
 	/**
 	 * Loads page contents into tab
@@ -246,7 +255,7 @@ function initTabber( tabber, count ) {
 	 * @param {string} url
 	 */
 	function loadPage( targetPanel, url ) {
-		var requestData = {
+		const requestData = {
 			url: url,
 			targetPanel: targetPanel
 		};
@@ -270,14 +279,17 @@ function initTabber( tabber, count ) {
 	 * @param {boolean} scrollIntoView
 	 */
 	function showPanel( targetHash, allowRemoteLoad, scrollIntoView ) {
-		var targetPanel = document.getElementById( targetHash ),
+		const
+			targetPanel = document.getElementById( targetHash ),
 			targetTab = document.getElementById( 'tab-' + targetHash ),
 			section = targetPanel.parentNode,
-			activePanel = section.querySelector( ':scope > ' + ACTIVEPANEL_SELECTOR ),
-			parentPanel, parentSection;
+			activePanel = section.querySelector( ':scope > ' + ACTIVEPANEL_SELECTOR );
 
-		var loadTransclusion = function () {
-			var loading = document.createElement( 'div' ),
+		let parentPanel, parentSection;
+
+		const loadTransclusion = function () {
+			const
+				loading = document.createElement( 'div' ),
 				loadingIndicator = document.createElement( 'div' );
 
 			targetPanel.setAttribute( 'aria-live', 'polite' );
@@ -293,7 +305,7 @@ function initTabber( tabber, count ) {
 		if ( activePanel ) {
 			// Just to be safe since there can be multiple active tabs
 			// even if there shouldn't be
-			var activeTabs = tabList.querySelectorAll( ACTIVETAB_SELECTOR );
+			const activeTabs = tabList.querySelectorAll( ACTIVETAB_SELECTOR );
 
 			if ( activeTabs.length > 0 ) {
 				Array.prototype.forEach.call( activeTabs, function ( activeTab ) {
@@ -353,9 +365,9 @@ function initTabber( tabber, count ) {
 	 * Event handler for XMLHttpRequest where ends loading
 	 */
 	function onLoadEndPage() {
-		var targetPanel = currentRequest.targetPanel;
+		const targetPanel = currentRequest.targetPanel;
 		if ( xhr.status !== 200 ) {
-			var err = document.createElement( 'div' ),
+			const err = document.createElement( 'div' ),
 				errMsg = mw.message( 'error' ).text() + ': HTTP ' + xhr.status;
 
 			err.setAttribute( 'class', 'tabber__transclusion--error error' );
@@ -363,7 +375,7 @@ function initTabber( tabber, count ) {
 			targetPanel.textContent = '';
 			targetPanel.appendChild( err );
 		} else {
-			var result = JSON.parse( xhr.responseText );
+			const result = JSON.parse( xhr.responseText );
 			targetPanel.innerHTML = result.parse.text;
 			// wikipage.content hook requires a jQuery object
 			/* eslint-disable-next-line no-undef */
@@ -373,7 +385,7 @@ function initTabber( tabber, count ) {
 			targetPanel.setAttribute( 'aria-busy', 'false' );
 		}
 
-		var targetHash = targetPanel.getAttribute( 'id' ),
+		const targetHash = targetPanel.getAttribute( 'id' ),
 			section = targetPanel.parentNode,
 			activePanel = section.querySelector( ':scope > ' + ACTIVEPANEL_SELECTOR );
 
@@ -401,7 +413,7 @@ function initTabber( tabber, count ) {
 	 * @param {boolean} scrollIntoView
 	 */
 	function switchTab( scrollIntoView ) {
-		var targetHash = new mw.Uri( location.href ).fragment;
+		let targetHash = new mw.Uri( location.href ).fragment;
 
 		// Switch to the first tab if no targetHash or no tab is detected and do not scroll to it
 		// TODO: Remove the polyfill with CSS.escape when we are dropping IE support
@@ -422,7 +434,7 @@ function initTabber( tabber, count ) {
 	// Respond to clicks on the nav tabs
 	Array.prototype.forEach.call( tabList.children, function ( tab ) {
 		tab.addEventListener( 'click', function ( event ) {
-			var targetHash = tab.getAttribute( 'href' ).slice( 1 );
+			const targetHash = tab.getAttribute( 'href' ).slice( 1 );
 			event.preventDefault();
 			if ( !config || config.updateLocationOnTabChange ) {
 				// Add hash to the end of the URL
@@ -436,11 +448,11 @@ function initTabber( tabber, count ) {
 }
 
 function main() {
-	var tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' ),
+	const tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' ),
 		style = document.getElementById( 'tabber-style' );
 
 	if ( tabbers ) {
-		var count = 0;
+		let count = 0;
 		mw.loader.load( 'ext.tabberNeue.icons' );
 		Array.prototype.forEach.call( tabbers, function ( tabber ) {
 			initTabber( tabber, count );

@@ -48,11 +48,11 @@ ve.ui.MWTabberDialog.prototype.initialize = function () {
 
 	this.input.connect( this, { resize: 'updateSize' } );
 
-	var inputField = new OO.ui.FieldLayout( this.input, {
+	const inputField = new OO.ui.FieldLayout( this.input, {
 		align: 'top'
 	} );
 
-	var panel = new OO.ui.PanelLayout( {
+	const panel = new OO.ui.PanelLayout( {
 		expanded: false,
 		padded: true
 	} );
