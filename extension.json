@@ -32,6 +32,9 @@
 				"ext.tabberNeue.codex/ext.tabberNeue.codex.js",
 				"ext.tabberNeue.codex/App.vue"
 			],
+			"styles": [
+				"ext.tabberNeue.codex/ext.tabberNeue.codex.less"
+			],
 			"dependencies": [
 				"@wikimedia/codex",
 				"mediawiki.util"

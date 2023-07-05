@@ -72,9 +72,8 @@ class Tabber {
 			$htmlTabs .= self::buildTab( $tab, $parser, $frame );
 		}
 
-		$noscriptMsg = wfMessage( 'tabberneue-noscript' )->text();
 		$html = '<div class="tabber">' .
-			'<header class="tabber__header"><div class="tabber__noscript mw-message-box mw-message-box-warning">' . $noscriptMsg . '</div></header>' .
+			'<header class="tabber__header"></header>' .
 			'<section class="tabber__section">' . $htmlTabs . '</section></div>';
 
 		return $html;
