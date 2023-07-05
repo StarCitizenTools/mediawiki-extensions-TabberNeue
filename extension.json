@@ -27,11 +27,25 @@
 		"tabberneue-tabbertransclude-category"
 	],
 	"ResourceModules": {
-		"ext.tabberNeue": {
+		"ext.tabberNeue.codex": {
 			"packageFiles": [
-				"ext.tabberNeue.js",
+				"ext.tabberNeue.codex/ext.tabberNeue.codex.js",
+				"ext.tabberNeue.codex/App.vue"
+			],
+			"dependencies": [
+				"@wikimedia/codex",
+				"mediawiki.util"
+			],
+			"targets": [
+				"desktop",
+				"mobile"
+			]
+		},
+		"ext.tabberNeue.legacy": {
+			"packageFiles": [
+				"ext.tabberNeue.legacy/ext.tabberNeue.legacy.js",
 				{
-					"name": "config.json",
+					"name": "ext.tabberNeue.legacy/config.json",
 					"config": {
 						"enableAnimation": "TabberNeueEnableAnimation",
 						"updateLocationOnTabChange": "TabberNeueUpdateLocationOnTabChange"
@@ -42,7 +56,7 @@
 				"error"
 			],
 			"styles": [
-				"ext.tabberNeue.less"
+				"ext.tabberNeue.legacy/ext.tabberNeue.legacy.less"
 			],
 			"dependencies": [
 				"mediawiki.Uri",
@@ -117,6 +131,11 @@
 	},
 	"config_prefix": "wg",
 	"config": {
+		"TabberNeueEnableLegacyMode": {
+			"value": true,
+			"description": "Use legacy mode to render Tabber. It is required for nested Tabber.",
+			"public": true
+		},
 		"TabberNeueEnableAnimation": {
 			"value": false,
 			"description": "Enable or disable smooth scroll animation",

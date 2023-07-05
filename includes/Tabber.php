@@ -14,6 +14,7 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue;
 
+use MediaWiki\MediaWikiServices;
 use Parser;
 use PPFrame;
 
@@ -31,17 +32,26 @@ class Tabber {
 	public static function parserHook( string $input, array $args, Parser $parser, PPFrame $frame ) {
 		$tabber = new Tabber();
 		$html = $tabber->render( $input, $parser, $frame );
+
 		if ( $input === null ) {
 			return;
 		}
-		// Critial rendering styles
-		// See ext.tabberNeue.inline.less
-		$style = sprintf(
-			'<style id="tabber-style">%s</style>',
-			'.client-js .tabber__header{height:2.6em;box-shadow:inset 0-1px 0 0;opacity:0.1}.client-js .tabber__header:after{position:absolute;width:16ch;height:0.5em;margin-top:1em;margin-left:0.75em;background:#000;border-radius:40px;content:""}.client-js .tabber__panel:not(:first-child){display:none}'
-		);
-		$parser->getOutput()->addHeadItem( $style, true );
-		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
+
+		$isLegacy = MediaWikiServices::getInstance()->getMainConfig()->get( 'TabberNeueEnableLegacyMode' );
+
+		if ( $isLegacy === true ) {
+			// Critial rendering styles
+			// See ext.tabberNeue.inline.less
+			$style = sprintf(
+				'<style id="tabber-style">%s</style>',
+				'.client-js .tabber__header{height:2.6em;box-shadow:inset 0-1px 0 0;opacity:0.1}.client-js .tabber__header:after{position:absolute;width:16ch;height:0.5em;margin-top:1em;margin-left:0.75em;background:#000;border-radius:40px;content:""}.client-js .tabber__panel:not(:first-child){display:none}'
+			);
+			$parser->getOutput()->addHeadItem( $style, true );
+			$parser->getOutput()->addModules( [ 'ext.tabberNeue.legacy' ] );
+		} else {
+			$parser->getOutput()->addModules( [ 'ext.tabberNeue.codex' ] );
+		}
+
 		$parser->addTrackingCategory( 'tabberneue-tabber-category' );
 		return $html;
 	}
