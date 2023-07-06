@@ -37,9 +37,11 @@ class Tabber {
 			return;
 		}
 
-		$isLegacy = MediaWikiServices::getInstance()->getMainConfig()->get( 'TabberNeueEnableLegacyMode' );
+		$useCodex = MediaWikiServices::getInstance()->getMainConfig()->get( 'TabberNeueUseCodex' );
 
-		if ( $isLegacy === true ) {
+		if ( $useCodex === true ) {
+			$parser->getOutput()->addModules( [ 'ext.tabberNeue.codex' ] );
+		} else {
 			// Critial rendering styles
 			// See ext.tabberNeue.inline.less
 			$style = sprintf(
@@ -48,8 +50,6 @@ class Tabber {
 			);
 			$parser->getOutput()->addHeadItem( $style, true );
 			$parser->getOutput()->addModules( [ 'ext.tabberNeue.legacy' ] );
-		} else {
-			$parser->getOutput()->addModules( [ 'ext.tabberNeue.codex' ] );
 		}
 
 		$parser->addTrackingCategory( 'tabberneue-tabber-category' );

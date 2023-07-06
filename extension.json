@@ -135,9 +135,9 @@
 	},
 	"config_prefix": "wg",
 	"config": {
-		"TabberNeueEnableLegacyMode": {
-			"value": true,
-			"description": "Use legacy mode to render Tabber. It is required for nested Tabber.",
+		"TabberNeueUseCodex": {
+			"value": false,
+			"description": "Use Codex to render Tabber. It is experimental and many features might not work as expected.",
 			"public": true
 		},
 		"TabberNeueEnableAnimation": {

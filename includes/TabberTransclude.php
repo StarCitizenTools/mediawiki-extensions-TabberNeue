@@ -39,20 +39,14 @@ class TabberTransclude {
 			return;
 		}
 
-		$isLegacy = MediaWikiServices::getInstance()->getMainConfig()->get( 'TabberNeueEnableLegacyMode' );
-
-		if ( $isLegacy === true ) {
-			// Critial rendering styles
-			// See ext.tabberNeue.inline.less
-			$style = sprintf(
-				'<style id="tabber-style">%s</style>',
-				'.client-js .tabber__header{height:2.6em;box-shadow:inset 0 -1px 0 0;opacity:.1}.client-js .tabber__header:after{position:absolute;width:16ch;height:.5em;border-radius:40px;margin-top:1em;margin-left:.75em;background:#000;content:""}.client-js .tabber__noscript,.client-js .tabber__panel:not( :first-child ){display:none}'
-			);
-			$parser->getOutput()->addHeadItem( $style, true );
-			$parser->getOutput()->addModules( [ 'ext.tabberNeue.legacy' ] );
-		} else {
-			$parser->getOutput()->addModules( [ 'ext.tabberNeue.codex' ] );
-		}
+		// Critial rendering styles
+		// See ext.tabberNeue.inline.less
+		$style = sprintf(
+			'<style id="tabber-style">%s</style>',
+			'.client-js .tabber__header{height:2.6em;box-shadow:inset 0 -1px 0 0;opacity:.1}.client-js .tabber__header:after{position:absolute;width:16ch;height:.5em;border-radius:40px;margin-top:1em;margin-left:.75em;background:#000;content:""}.client-js .tabber__noscript,.client-js .tabber__panel:not( :first-child ){display:none}'
+		);
+		$parser->getOutput()->addHeadItem( $style, true );
+		$parser->getOutput()->addModules( [ 'ext.tabberNeue.legacy' ] );
 
 		$parser->addTrackingCategory( 'tabberneue-tabbertransclude-category' );
 		return $html;
