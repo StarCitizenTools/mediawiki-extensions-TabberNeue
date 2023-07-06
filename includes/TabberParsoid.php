@@ -21,16 +21,16 @@ use Wikimedia\Parsoid\Ext\ParsoidExtensionAPI;
 class TabberParsoid extends ExtensionTagHandler implements ExtensionModule {
 	/** @inheritDoc */
 	public function getConfig(): array {
-        return [
-            'name' => 'TabberNeue',
+		return [
+			'name' => 'TabberNeue',
 			'tags' => [
 				[
 					'name' => 'tabber',
 					'handler' => self::class
 				]
 			]
-        ];
-    }
+		];
+	}
 
 	/** @inheritDoc */
 	public function sourceToDom( ParsoidExtensionAPI $extApi, string $src, array $extArgs ) {
