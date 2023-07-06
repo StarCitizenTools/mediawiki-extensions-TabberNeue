@@ -98,7 +98,12 @@ class Tabber {
 
 		// Use language converter to get variant title and also escape html
 		$tabName = $parser->getTargetLanguageConverter()->convertHtml( trim( $tabName ) );
-		$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
+		$tabBody = $parser->recursiveTagParse( trim( $tabBody ), $frame );
+
+		// If $tabBody does not have any HTML element (i.e. just a text node), wrap it in <p/>
+		if ( substr( $tabBody, 0, 1 ) !== '<' ) {
+			$tabBody = '<p>' . $tabBody . '</p>';
+		}
 
 		$tab = '<article class="tabber__panel" data-title="' . $tabName .
 			'">' . $tabBody . '</article>';
