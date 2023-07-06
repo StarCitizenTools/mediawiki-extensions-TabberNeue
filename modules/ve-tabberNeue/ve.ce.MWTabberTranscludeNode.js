@@ -63,20 +63,22 @@ ve.ce.MWTabberTranscludeNode.prototype.onSetup = function () {
  * @param {HTMLElement} tabber
  */
 ve.ce.MWTabberTranscludeNode.prototype.renderHeader = function ( tabber ) {
-	const tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' ),
-		container = document.createElement( 'header' ),
+	const
+		tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' ),
+		header = tabber.querySelector( ':scope > .tabber__header' ),
 		tabList = document.createElement( 'nav' ),
+		indicator = document.createElement( 'div' ),
 		fragment = new DocumentFragment();
 
 	Array.prototype.forEach.call( tabPanels, function ( tabPanel, index ) {
 		const tab = document.createElement( 'a' );
 
-		tab.innerText = tabPanel.title;
+		tab.innerText = tabPanel.getAttribute( 'data-title' );
 		tab.classList.add( 'tabber__tab' );
 
 		// Make first tab active
 		if ( index === 0 ) {
-			tab.classList.add( 'tabber__tab--active' );
+			tab.setAttribute( 'aria-selected', true );
 		}
 
 		fragment.append( tab );
@@ -84,11 +86,12 @@ ve.ce.MWTabberTranscludeNode.prototype.renderHeader = function ( tabber ) {
 
 	tabList.append( fragment );
 
-	container.classList.add( 'tabber__header' );
 	tabList.classList.add( 'tabber__tabs' );
+	indicator.classList.add( 'tabber__indicator' );
 
-	container.append( tabList );
-	tabber.prepend( container );
+	header.append( tabList, indicator );
+
+	indicator.style.width = tabList.firstElementChild.offsetWidth + 'px';
 
 	tabber.classList.add( 'tabber--live' );
 

@@ -63,35 +63,50 @@ ve.ce.MWTabberNode.prototype.onSetup = function () {
  * @param {HTMLElement} tabber
  */
 ve.ce.MWTabberNode.prototype.renderHeader = function ( tabber ) {
-	const
-		tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' ),
-		container = document.createElement( 'header' ),
-		tabList = document.createElement( 'nav' ),
-		fragment = new DocumentFragment();
+	const nestedTabbers = tabber.querySelectorAll( '.tabber__panel:first-child .tabber' );
 
-	Array.prototype.forEach.call( tabPanels, function ( tabPanel, index ) {
-		const tab = document.createElement( 'a' );
+	const renderSingleHeader = function ( element ) {
+		const
+			tabPanels = element.querySelectorAll( ':scope > .tabber__section > .tabber__panel' ),
+			header = element.querySelector( ':scope > .tabber__header' ),
+			tabList = document.createElement( 'nav' ),
+			indicator = document.createElement( 'div' ),
+			fragment = new DocumentFragment();
 
-		tab.innerText = tabPanel.title;
-		tab.classList.add( 'tabber__tab' );
+		Array.prototype.forEach.call( tabPanels, function ( tabPanel, index ) {
+			const tab = document.createElement( 'a' );
 
-		// Make first tab active
-		if ( index === 0 ) {
-			tab.classList.add( 'tabber__tab--active' );
-		}
+			tab.innerText = tabPanel.getAttribute( 'data-title' );
+			tab.classList.add( 'tabber__tab' );
 
-		fragment.append( tab );
-	} );
+			// Make first tab active
+			if ( index === 0 ) {
+				tab.setAttribute( 'aria-selected', true );
+			}
 
-	tabList.append( fragment );
+			fragment.append( tab );
+		} );
 
-	container.classList.add( 'tabber__header' );
-	tabList.classList.add( 'tabber__tabs' );
+		tabList.append( fragment );
 
-	container.append( tabList );
-	tabber.prepend( container );
+		tabList.classList.add( 'tabber__tabs' );
+		indicator.classList.add( 'tabber__indicator' );
 
-	tabber.classList.add( 'tabber--live' );
+		header.append( tabList, indicator );
+
+		console.log( tabList );
+		indicator.style.width = tabList.firstElementChild.offsetWidth + 'px';
+
+		element.classList.add( 'tabber--live' );
+	};
+
+	if ( nestedTabbers.length > 0 ) {
+		Array.prototype.forEach.call( nestedTabbers, function ( nestedTabber ) {
+			renderSingleHeader( nestedTabber );
+		} );
+	}
+
+	renderSingleHeader( tabber );
 
 	lastHeader = tabber.firstElementChild;
 };
