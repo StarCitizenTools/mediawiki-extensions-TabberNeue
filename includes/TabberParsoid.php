@@ -14,14 +14,28 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue;
 
+use Wikimedia\Parsoid\Ext\ExtensionModule;
 use Wikimedia\Parsoid\Ext\ExtensionTagHandler;
 use Wikimedia\Parsoid\Ext\ParsoidExtensionAPI;
 
-class TabberParsoid extends ExtensionTagHandler {
+class TabberParsoid extends ExtensionTagHandler implements ExtensionModule {
+	/** @inheritDoc */
+	public function getConfig(): array {
+        return [
+            'name' => 'TabberNeue',
+			'tags' => [
+				[
+					'name' => 'tabber',
+					'handler' => self::class
+				]
+			]
+        ];
+    }
+
 	/** @inheritDoc */
 	public function sourceToDom( ParsoidExtensionAPI $extApi, string $src, array $extArgs ) {
 		$html = self::render( $extApi, $src );
-		$extApi->addModules( [ 'ext.tabberNeue' ] );
+		$extApi->addModules( [ 'ext.tabberNeue.codex' ] );
 		return $extApi->htmlToDom( $html );
 	}
 
@@ -41,6 +55,7 @@ class TabberParsoid extends ExtensionTagHandler {
 		}
 
 		$html = '<div class="tabber">' .
+			'<header class="tabber__header"></header>' .
 			'<section class="tabber__section">' . $htmlTabs . "</section></div>";
 
 		return $html;
@@ -62,8 +77,12 @@ class TabberParsoid extends ExtensionTagHandler {
 		// Use array_pad to make sure at least 2 array values are always returned
 		list( $tabName, $tabBody ) = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
-		// Use language converter to get variant title and also escape html
-		$tabName = $parser->getTargetLanguageConverter()->convertHtml( trim( $tabName ) );
+		/*
+		 * Use language converter to get variant title and also escape html
+		 * FIXME: No replacement method yet
+		 * See T85581, T272943
+		*/
+		// $tabName = $parser->getTargetLanguageConverter()->convertHtml( trim( $tabName ) );
 		$tabBody = $extApi->domToHTML(
 				$extApi->wikitextToDOM(
 					$tabBody,
