@@ -30,7 +30,8 @@
 		"ext.tabberNeue.codex": {
 			"packageFiles": [
 				"ext.tabberNeue.codex/ext.tabberNeue.codex.js",
-				"ext.tabberNeue.codex/App.vue"
+				"ext.tabberNeue.codex/App.vue",
+				"ext.tabberNeue.codex/TabContent.vue"
 			],
 			"styles": [
 				"ext.tabberNeue.codex/ext.tabberNeue.codex.less"

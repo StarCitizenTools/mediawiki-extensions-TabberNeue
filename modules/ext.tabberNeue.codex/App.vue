@@ -6,8 +6,11 @@
 			:name="tab.name"
 			:label="tab.label"
 			:disabled="tab.disabled"
-			v-html="tab.content"
 		>
+			<tab-content
+				:html="tab.content"
+			>
+			</tab-content>
 		</cdx-tab>
 	</cdx-tabs>
 </template>
@@ -16,6 +19,7 @@
 const { defineComponent } = require( 'vue' );
 // Codex is available from ResourceLoader at runtime and is available without needing a build step.
 const { CdxTabs, CdxTab } = require( '@wikimedia/codex' );
+const TabContent = require( './TabContent.vue' );
 
 // @vue/component
 module.exports = exports = defineComponent( {
@@ -28,7 +32,8 @@ module.exports = exports = defineComponent( {
 	},
 	components: {
 		CdxTabs: CdxTabs,
-		CdxTab: CdxTab
+		CdxTab: CdxTab,
+		TabContent: TabContent
 	},
 	props: {
 		tabberData: {
