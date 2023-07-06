@@ -60,3 +60,13 @@ function main( document ) {
 }
 
 main( document );
+
+/*
+ * Add hooks for Tabber when Visual Editor is used.
+*/
+mw.loader.using( 'ext.visualEditor.desktopArticleTarget.init', function () {
+	// After saving edits
+	mw.hook( 'postEdit.afterRemoval' ).add( () => {
+		main( document );
+	} );
+} );
