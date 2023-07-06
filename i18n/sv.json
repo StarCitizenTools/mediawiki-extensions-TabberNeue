@@ -6,7 +6,6 @@
 		]
 	},
 	"tabberneue-desc": "Gör det möjligt att skapa flikar inom en sida. Avknoppad från [https://www.mediawiki.org/wiki/Extension:Tabber tillägget Tabber].",
-	"tabberneue-noscript": "Tabber kräver Javascript för att fungera.",
 	"tabberneue-tabber-category": "Sidor som använder parser-taggen Tabber",
 	"tabberneue-tabbertransclude-category": "Sidor som använder parser-taggen TabberTransclude",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",

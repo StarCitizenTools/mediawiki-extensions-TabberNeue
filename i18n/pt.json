@@ -5,7 +5,6 @@
 		]
 	},
 	"tabberneue-desc": "Permite criar separadores dentro de uma página. Uma ramificação de [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
-	"tabberneue-noscript": "Tabber requer Javascript para funcionar.",
 	"tabberneue-tabber-category": "Páginas que usam a etiqueta Tabber do analisador sintático",
 	"tabberneue-tabbertransclude-category": "Páginas que usam a etiqueta TabberTransclude do analisador sintático",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",

@@ -7,7 +7,6 @@
 		]
 	},
 	"tabberneue-desc": "允许在页面内创建标签页。是[https://www.mediawiki.org/wiki/Extension:Tabber Tabber扩展]的分支。",
-	"tabberneue-noscript": "Tabber需要JavaScript才能使用。",
 	"tabberneue-tabber-category": "使用Tabber解析器标签的页面",
 	"tabberneue-tabbertransclude-category": "使用TabberTransclude解析器标签的页面",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",

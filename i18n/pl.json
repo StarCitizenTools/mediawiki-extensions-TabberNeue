@@ -6,7 +6,6 @@
 		]
 	},
 	"tabberneue-desc": "Pozwala na tworzenie zakładek na stronie. Uaktualniona wersja [https://www.mediawiki.org/wiki/Extension:Tabber rozszerzenia Tabber]",
-	"tabberneue-noscript": "Zakładki wymagają wsparcia JavaScriptu, aby funkcjonować.",
 	"tabberneue-tabber-category": "Strony używające funkcji parsera Tabber",
 	"tabberneue-tabbertransclude-category": "Strony używające funkcji parsera TabberTransclude",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Zakładki",
