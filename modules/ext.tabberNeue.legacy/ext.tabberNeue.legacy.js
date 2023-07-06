@@ -11,7 +11,7 @@ function initTabber( tabber, count ) {
 
 	const
 		config = require( './config.json' ),
-		header = tabber.querySelector( '.tabber__header' ),
+		header = tabber.querySelector( ':scope > .tabber__header' ),
 		tabList = document.createElement( 'nav' ),
 		prevButton = document.createElement( 'div' ),
 		nextButton = document.createElement( 'div' ),
@@ -448,7 +448,8 @@ function initTabber( tabber, count ) {
 }
 
 function main() {
-	const tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' ),
+	const
+		tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' ),
 		style = document.getElementById( 'tabber-style' );
 
 	if ( tabbers ) {
@@ -471,3 +472,13 @@ if ( document.readyState === 'interactive' || document.readyState === 'complete'
 		main();
 	} );
 }
+
+/*
+ * Add hooks for Tabber when Visual Editor is used.
+*/
+mw.loader.using( 'ext.visualEditor.desktopArticleTarget.init', function () {
+	// After saving edits
+	mw.hook( 'postEdit.afterRemoval' ).add( () => {
+		main();
+	} );
+} );
