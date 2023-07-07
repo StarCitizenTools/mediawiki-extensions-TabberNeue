@@ -48,7 +48,7 @@ class TabberParsoid extends ExtensionTagHandler implements ExtensionModule {
 	 * @return string HTML
 	 */
 	public static function render( ParsoidExtensionAPI $extApi, string $src ): string {
-		$arr = explode( "|-|", $src );
+		$arr = explode( '|-|', $src );
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {
 			$htmlTabs .= self::buildTab( $extApi, $tab );
@@ -82,17 +82,17 @@ class TabberParsoid extends ExtensionTagHandler implements ExtensionModule {
 		*/
 		// $tabName = $parser->getTargetLanguageConverter()->convertHtml( trim( $tabName ) );
 		$tabBody = $extApi->domToHTML(
-				$extApi->wikitextToDOM(
-					$tabBody,
-					[
-						'parseOpts' => [
-							'extTag' => 'tabber',
-							'context' => 'inline',
-						]
-					],
-					true // sol
-				)
-			);
+			$extApi->wikitextToDOM(
+				$tabBody,
+				[
+					'parseOpts' => [
+						'extTag' => 'tabber',
+						'context' => 'inline',
+					]
+				],
+			true // sol
+			)
+		);
 
 		return '<article class="tabber__panel" title="' . $tabName .
 			'">' . $tabBody . '</article>';

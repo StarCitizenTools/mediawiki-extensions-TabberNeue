@@ -14,6 +14,7 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue;
 
+use JsonException;
 use MediaWiki\MediaWikiServices;
 use Parser;
 use PPFrame;
@@ -28,6 +29,14 @@ class Tabber {
 	public static $criticalInlineStyle = '.client-js .tabber__header{height:2.6em;box-shadow:inset 0 -1px 0 0;opacity:.1}.client-js .tabber__header:after{position:absolute;width:16ch;height:.5em;border-radius:40px;margin-top:1em;margin-left:.75em;background:#000;content:""}.client-js .tabber__noscript,.client-js .tabber__panel:not( :first-child ){display:none}';
 
 	/**
+	 * Flag that checks if this is a nested tabber
+	 * @var bool
+	 */
+	private static $isNested = false;
+
+	private static $useCodex = false;
+
+	/**
 	 * Parser callback for <tabber> tag
 	 *
 	 * @param string|null $input
@@ -38,15 +47,15 @@ class Tabber {
 	 * @return string HTML
 	 */
 	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ) {
+		self::$useCodex = MediaWikiServices::getInstance()->getMainConfig()->get( 'TabberNeueUseCodex' );
+
 		$html = self::render( $input, $parser, $frame );
 
 		if ( $input === null ) {
 			return '';
 		}
 
-		$useCodex = MediaWikiServices::getInstance()->getMainConfig()->get( 'TabberNeueUseCodex' );
-
-		if ( $useCodex === true ) {
+		if ( self::$useCodex === true ) {
 			$parser->getOutput()->addModules( [ 'ext.tabberNeue.codex' ] );
 		} else {
 			// Critical rendering styles
@@ -70,15 +79,41 @@ class Tabber {
 	 * @return string HTML
 	 */
 	public static function render( string $input, Parser $parser, PPFrame $frame ): string {
-		$arr = explode( "|-|", $input );
+		$arr = explode( '|-|', $input );
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {
 			$htmlTabs .= self::buildTab( $tab, $parser, $frame );
 		}
 
+		if ( self::$useCodex && self::$isNested ) {
+			return sprintf( '[%s]', rtrim( implode( '},', explode( '}', $htmlTabs ) ), ',' ) );
+		}
+
 		return '<div class="tabber">' .
 			'<header class="tabber__header"></header>' .
 			'<section class="tabber__section">' . $htmlTabs . '</section></div>';
+
+		/*
+		$tabsArray = [];
+		foreach ( $arr as $tab ) {
+		try {
+		$tab = self::buildTab( $tab, $parser, $frame );
+		} catch ( JsonException $e ) {
+		continue;
+		}
+
+		if ( self::$useCodex ) {
+		$tabsArray[] = $tab;
+		} else {
+		$htmlTabs .= $tab;
+		}
+		}
+
+		if ( self::$useCodex && self::$isNested ) {
+		return sprintf( '[%s]', implode( ',', $tabsArray ) );
+		}
+
+		 */
 	}
 
 	/**
@@ -89,18 +124,34 @@ class Tabber {
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
+	 * @throws JsonException
 	 */
-	private static function buildTab( $tab, Parser $parser, PPFrame $frame ) {
+	private static function buildTab( string $tab, Parser $parser, PPFrame $frame ): string {
 		if ( empty( trim( $tab ) ) ) {
 			return '';
 		}
-
 		// Use array_pad to make sure at least 2 array values are always returned
 		[ $tabName, $tabBody ] = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
-		// Use language converter to get variant title and also escape html
 		$tabName = $parser->getTargetLanguageConverter()->convertHtml( trim( $tabName ) );
-		$tabBody = $parser->recursiveTagParse( trim( $tabBody ), $frame );
+
+		if ( self::$useCodex && strpos( trim( $tabBody ), '{{#tag:tabber' ) !== false ) {
+			self::$isNested = true;
+			$tabBody = $parser->recursiveTagParseFully( $tabBody, $frame );
+			self::$isNested = false;
+		} else {
+			// Use language converter to get variant title and also escape html
+			$tabBody = $parser->recursiveTagParse( trim( $tabBody ), $frame );
+		}
+
+		if ( self::$useCodex && self::$isNested ) {
+			return json_encode( [
+				'label' => $tabName,
+				'content' => $tabBody
+			],
+				JSON_THROW_ON_ERROR
+			);
+		}
 
 		// If $tabBody does not have any HTML element (i.e. just a text node), wrap it in <p/>
 		if ( $tabBody[0] !== '<' ) {
