@@ -20,21 +20,28 @@ use PPFrame;
 
 class Tabber {
 	/**
+	 * Critical rendering styles
+	 * See ext.tabberNeue.inline.less
+	 *
+	 * @var string
+	 */
+	public static $criticalInlineStyle = '.client-js .tabber__header{height:2.6em;box-shadow:inset 0 -1px 0 0;opacity:.1}.client-js .tabber__header:after{position:absolute;width:16ch;height:.5em;border-radius:40px;margin-top:1em;margin-left:.75em;background:#000;content:""}.client-js .tabber__noscript,.client-js .tabber__panel:not( :first-child ){display:none}';
+
+	/**
 	 * Parser callback for <tabber> tag
 	 *
-	 * @param string $input
+	 * @param string|null $input
 	 * @param array $args
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 */
-	public static function parserHook( string $input, array $args, Parser $parser, PPFrame $frame ) {
-		$tabber = new Tabber();
-		$html = $tabber->render( $input, $parser, $frame );
+	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ) {
+		$html = self::render( $input, $parser, $frame );
 
 		if ( $input === null ) {
-			return;
+			return '';
 		}
 
 		$useCodex = MediaWikiServices::getInstance()->getMainConfig()->get( 'TabberNeueUseCodex' );
@@ -42,12 +49,9 @@ class Tabber {
 		if ( $useCodex === true ) {
 			$parser->getOutput()->addModules( [ 'ext.tabberNeue.codex' ] );
 		} else {
-			// Critial rendering styles
+			// Critical rendering styles
 			// See ext.tabberNeue.inline.less
-			$style = sprintf(
-				'<style id="tabber-style">%s</style>',
-				'.client-js .tabber__header{height:2.6em;box-shadow:inset 0 -1px 0 0;opacity:.1}.client-js .tabber__header:after{position:absolute;width:16ch;height:.5em;border-radius:40px;margin-top:1em;margin-left:.75em;background:#000;content:""}.client-js .tabber__noscript,.client-js .tabber__panel:not( :first-child ){display:none}'
-			);
+			$style = sprintf( '<style id="tabber-style">%s</style>', self::$criticalInlineStyle );
 			$parser->getOutput()->addHeadItem( $style, true );
 			$parser->getOutput()->addModules( [ 'ext.tabberNeue.legacy' ] );
 		}
@@ -65,18 +69,16 @@ class Tabber {
 	 *
 	 * @return string HTML
 	 */
-	public static function render( $input, Parser $parser, PPFrame $frame ) {
+	public static function render( string $input, Parser $parser, PPFrame $frame ): string {
 		$arr = explode( "|-|", $input );
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {
 			$htmlTabs .= self::buildTab( $tab, $parser, $frame );
 		}
 
-		$html = '<div class="tabber">' .
+		return '<div class="tabber">' .
 			'<header class="tabber__header"></header>' .
 			'<section class="tabber__section">' . $htmlTabs . '</section></div>';
-
-		return $html;
 	}
 
 	/**
@@ -94,20 +96,18 @@ class Tabber {
 		}
 
 		// Use array_pad to make sure at least 2 array values are always returned
-		list( $tabName, $tabBody ) = array_pad( explode( '=', $tab, 2 ), 2, '' );
+		[ $tabName, $tabBody ] = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
 		// Use language converter to get variant title and also escape html
 		$tabName = $parser->getTargetLanguageConverter()->convertHtml( trim( $tabName ) );
 		$tabBody = $parser->recursiveTagParse( trim( $tabBody ), $frame );
 
 		// If $tabBody does not have any HTML element (i.e. just a text node), wrap it in <p/>
-		if ( substr( $tabBody, 0, 1 ) !== '<' ) {
+		if ( $tabBody[0] !== '<' ) {
 			$tabBody = '<p>' . $tabBody . '</p>';
 		}
 
-		$tab = '<article class="tabber__panel" data-title="' . $tabName .
+		return '<article class="tabber__panel" data-title="' . $tabName .
 			'">' . $tabBody . '</article>';
-
-		return $tab;
 	}
 }
