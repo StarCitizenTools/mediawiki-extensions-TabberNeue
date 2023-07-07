@@ -17,10 +17,6 @@ function initApp( tabber ) {
 	tabs.forEach( ( tab ) => {
 		const label = tab.getAttribute( 'data-title' );
 
-		if ( tab.querySelector( '.tabber' ) ) {
-			//throw new Error( 'Nested Tabber is not supported in Codex mode, please use legacy mode instead.' );
-		}
-
 		tabberData.tabsData.push( {
 			name: mw.util.escapeIdForAttribute( label ),
 			label: label,
@@ -45,16 +41,6 @@ function initApp( tabber ) {
  */
 function main( document ) {
 	const tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' );
-	const sortedTabbers = [];
-
-	/* Nested Tabber children needed to be rendered before parents */
-	// tabbers.forEach( ( tabber ) => {
-	// 	if ( tabber.querySelector( '.tabber:not( .tabber--live )' ) ) {
-	// 		sortedTabbers.push( tabber );
-	// 	} else {
-	// 		sortedTabbers.unshift( tabber );
-	// 	}
-	// } );
 
 	tabbers.forEach( initApp );
 }

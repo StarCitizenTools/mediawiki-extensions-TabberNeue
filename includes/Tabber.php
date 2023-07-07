@@ -86,34 +86,20 @@ class Tabber {
 		}
 
 		if ( self::$useCodex && self::$isNested ) {
-			return sprintf( '[%s]', rtrim( implode( '},', explode( '}', $htmlTabs ) ), ',' ) );
+			$tab = rtrim( implode( '},', explode( '}', $htmlTabs ) ), ',' );
+			$tab = strip_tags( html_entity_decode( $tab ) );
+			$tab = str_replace( ',,', ',', $tab );
+			$tab = str_replace( ',]', ']', $tab );
+
+			return sprintf( '[%s]', $tab );
 		}
+		$htmlTabs = preg_replace( '/\\\n/', '', $htmlTabs );
+		$htmlTabs = preg_replace( '/\\\*/', '', $htmlTabs );
+		$htmlTabs = str_replace( [ '"[', ']"' ], [ '[', ']' ], $htmlTabs );
 
 		return '<div class="tabber">' .
 			'<header class="tabber__header"></header>' .
 			'<section class="tabber__section">' . $htmlTabs . '</section></div>';
-
-		/*
-		$tabsArray = [];
-		foreach ( $arr as $tab ) {
-		try {
-		$tab = self::buildTab( $tab, $parser, $frame );
-		} catch ( JsonException $e ) {
-		continue;
-		}
-
-		if ( self::$useCodex ) {
-		$tabsArray[] = $tab;
-		} else {
-		$htmlTabs .= $tab;
-		}
-		}
-
-		if ( self::$useCodex && self::$isNested ) {
-		return sprintf( '[%s]', implode( ',', $tabsArray ) );
-		}
-
-		 */
 	}
 
 	/**
@@ -134,14 +120,20 @@ class Tabber {
 		[ $tabName, $tabBody ] = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
 		$tabName = $parser->getTargetLanguageConverter()->convertHtml( trim( $tabName ) );
+		$tabBody = trim( $tabBody );
 
-		if ( self::$useCodex && strpos( trim( $tabBody ), '{{#tag:tabber' ) !== false ) {
+		// A nested tabber which should return json in codex
+		if ( self::$useCodex && strpos( $tabBody, '{{#tag:tabber' ) !== false ) {
 			self::$isNested = true;
-			$tabBody = $parser->recursiveTagParseFully( $tabBody, $frame );
+			$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
 			self::$isNested = false;
+		// The outermost tabber that must be parsed fully in codex for correct json
+		} elseif ( self::$useCodex ) {
+			$tabBody = $parser->recursiveTagParseFully( $tabBody, $frame );
+		// Normal mode
 		} else {
 			// Use language converter to get variant title and also escape html
-			$tabBody = $parser->recursiveTagParse( trim( $tabBody ), $frame );
+			$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
 		}
 
 		if ( self::$useCodex && self::$isNested ) {

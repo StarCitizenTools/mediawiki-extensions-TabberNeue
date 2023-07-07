@@ -1,10 +1,9 @@
 <template>
-
 	<cdx-tabs v-if="isChildTabber && tabsData.length > 0" v-model:active="currentTab">
 		<cdx-tab
 			v-for="( tab, index ) in tabsData"
 			:key="index"
-			:name="tab.label"
+			:name="escapeId( tab.label )"
 			:label="tab.label"
 		>
 			<tab-content
@@ -52,18 +51,26 @@ module.exports = exports = defineComponent( {
 	},
 	methods: {
 		isChildTabber() {
-			return this.html.includes("{\"label\":")
+			return Array.isArray(this.html) || this.html.includes("{\"label\":")
 		},
 		parse() {
-			const json = this.html.replace(/^<p>/, '').replace(/<\/p>$/, '')
+			if (Array.isArray(this.html)) {
+				return this.html
+			} else {
+				const tmp = document.createElement('div');
+				tmp.innerHTML = this.html;
 
-			return JSON.parse(json);
+				return JSON.parse( tmp.textContent.trim() );
+			}
+		},
+		escapeId( id ) {
+			return mw.util.escapeIdForAttribute( id )
 		}
 	},
 	mounted: function () {
 		if (this.isChildTabber()) {
 			this.tabsData = this.parse(this.html)
-			this.currentTab = this.tabsData[0].label
+			this.currentTab = this.escapeId( this.tabsData[0].label )
 		}
 	}
 } );

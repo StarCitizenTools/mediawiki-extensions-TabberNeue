@@ -45,6 +45,11 @@ module.exports = exports = defineComponent( {
 			default: false
 		}
 	},
+	methods: {
+		escapeId( id ) {
+			return mw.util.escapeIdForAttribute( id )
+		}
+	},
 	data: function () {
 		return {
 			tabsData: this.tabberData.tabsData,
