@@ -119,6 +119,7 @@ class Tabber {
 		// Use array_pad to make sure at least 2 array values are always returned
 		[ $tabName, $tabBody ] = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
+		// Use language converter to get variant title and also escape html
 		$tabName = $parser->getTargetLanguageConverter()->convertHtml( trim( $tabName ) );
 		$tabBody = trim( $tabBody );
 
@@ -132,7 +133,6 @@ class Tabber {
 			$tabBody = $parser->recursiveTagParseFully( $tabBody, $frame );
 		// Normal mode
 		} else {
-			// Use language converter to get variant title and also escape html
 			$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
 		}
 
