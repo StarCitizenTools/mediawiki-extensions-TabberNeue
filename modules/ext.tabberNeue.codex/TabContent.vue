@@ -32,12 +32,9 @@ module.exports = exports = defineComponent( {
 	compilerOptions: {
 		whitespace: 'condense'
 	},
-	data() {
-		return {
-			tabsData: [],
-
-			currentTab: ''
-		};
+	components: {
+		CdxTabs: CdxTabs,
+		CdxTab: CdxTab
 	},
 	props: {
 		html: {
@@ -45,32 +42,35 @@ module.exports = exports = defineComponent( {
 			required: true
 		}
 	},
-	components: {
-		CdxTabs: CdxTabs,
-		CdxTab: CdxTab,
+	data() {
+		return {
+			tabsData: [],
+
+			currentTab: ''
+		};
 	},
 	methods: {
 		isChildTabber() {
-			return Array.isArray(this.html) || this.html.includes("{\"label\":")
+			return Array.isArray( this.html ) || this.html.includes( '{"label":' );
 		},
 		parse() {
-			if (Array.isArray(this.html)) {
-				return this.html
+			if ( Array.isArray( this.html ) ) {
+				return this.html;
 			} else {
-				const tmp = document.createElement('div');
+				const tmp = document.createElement( 'div' );
 				tmp.innerHTML = this.html;
 
 				return JSON.parse( tmp.textContent.trim() );
 			}
 		},
 		escapeId( id ) {
-			return mw.util.escapeIdForAttribute( id )
+			return mw.util.escapeIdForAttribute( id );
 		}
 	},
 	mounted: function () {
-		if (this.isChildTabber()) {
-			this.tabsData = this.parse(this.html)
-			this.currentTab = this.escapeId( this.tabsData[0].label )
+		if ( this.isChildTabber() ) {
+			this.tabsData = this.parse( this.html );
+			this.currentTab = this.escapeId( this.tabsData[ 0 ].label );
 		}
 	}
 } );

@@ -45,16 +45,16 @@ module.exports = exports = defineComponent( {
 			default: false
 		}
 	},
-	methods: {
-		escapeId( id ) {
-			return mw.util.escapeIdForAttribute( id )
-		}
-	},
 	data: function () {
 		return {
 			tabsData: this.tabberData.tabsData,
 			currentTab: this.tabberData.currentTab
 		};
+	},
+	methods: {
+		escapeId( id ) {
+			return mw.util.escapeIdForAttribute( id );
+		}
 	},
 	mounted: function () {
 		this.$el.parentElement.classList.add( 'tabber--live' );

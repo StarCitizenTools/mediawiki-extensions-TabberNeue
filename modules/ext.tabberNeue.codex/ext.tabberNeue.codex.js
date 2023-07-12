@@ -26,7 +26,7 @@ function initApp( tabber ) {
 
 	tabberData.currentTab = tabberData.tabsData[ 0 ].name;
 
-	//@ts-ignore MediaWiki-specific function
+	// @ts-ignore MediaWiki-specific function
 	Vue.createMwApp(
 		App, Object.assign( {
 			tabberData: tabberData
