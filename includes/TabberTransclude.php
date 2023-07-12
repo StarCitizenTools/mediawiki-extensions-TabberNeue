@@ -14,7 +14,7 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue;
 
-use Hooks;
+use Exception;
 use MediaWiki\MediaWikiServices;
 use Parser;
 use PPFrame;
@@ -24,27 +24,23 @@ class TabberTransclude {
 	/**
 	 * Parser callback for <tabbertransclude> tag
 	 *
-	 * @param string $input
+	 * @param string|null $input
 	 * @param array $args
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 */
-	public static function parserHook( string $input, array $args, Parser $parser, PPFrame $frame ) {
-		$tabberTransclude = new TabberTransclude();
-		$html = $tabberTransclude->render( $input, $parser, $frame );
+	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ) {
+		$html = self::render( $input, $parser, $frame );
 
 		if ( $input === null ) {
-			return;
+			return '';
 		}
 
-		// Critial rendering styles
+		// Critical rendering styles
 		// See ext.tabberNeue.inline.less
-		$style = sprintf(
-			'<style id="tabber-style">%s</style>',
-			'.client-js .tabber__header{height:2.6em;box-shadow:inset 0 -1px 0 0;opacity:.1}.client-js .tabber__header:after{position:absolute;width:16ch;height:.5em;border-radius:40px;margin-top:1em;margin-left:.75em;background:#000;content:""}.client-js .tabber__noscript,.client-js .tabber__panel:not( :first-child ){display:none}'
-		);
+		$style = sprintf( '<style id="tabber-style">%s</style>', Tabber::$criticalInlineStyle );
 		$parser->getOutput()->addHeadItem( $style, true );
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue.legacy' ] );
 
@@ -61,19 +57,22 @@ class TabberTransclude {
 	 *
 	 * @return string HTML
 	 */
-	public static function render( $input, Parser $parser, PPFrame $frame ) {
+	public static function render( string $input, Parser $parser, PPFrame $frame ): string {
 		$selected = true;
 		$arr = explode( "\n", $input );
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {
-			$htmlTabs .= self::buildTabTransclude( $tab, $parser, $frame, $selected );
+			try {
+				$htmlTabs .= self::buildTabTransclude( $tab, $parser, $frame, $selected );
+			} catch ( Exception $e ) {
+				// This can happen if a $currentTitle is null
+				continue;
+			}
 		}
 
-		$html = '<div class="tabber">' .
+		return '<div class="tabber">' .
 			'<header class="tabber__header"></header>' .
 			'<section class="tabber__section">' . $htmlTabs . '</section></div>';
-
-		return $html;
 	}
 
 	/**
@@ -85,23 +84,22 @@ class TabberTransclude {
 	 * @param bool &$selected The tab is the selected one
 	 *
 	 * @return string HTML
+	 * @throws Exception
 	 */
-	private static function buildTabTransclude( $tab, Parser $parser, PPFrame $frame, &$selected ) {
+	private static function buildTabTransclude( string $tab, Parser $parser, PPFrame $frame, bool &$selected ): string {
 		if ( empty( trim( $tab ) ) ) {
 			return '';
 		}
 
-		$tabBody = '';
 		$dataProps = [];
 		// Use array_pad to make sure at least 2 array values are always returned
-		list( $pageName, $tabName ) = array_pad( explode( '|', $tab, 2 ), 2, '' );
+		[ $pageName, $tabName ] = array_pad( explode( '|', $tab, 2 ), 2, '' );
 		$title = Title::newFromText( trim( $pageName ) );
 		if ( !$title ) {
 			if ( empty( $tabName ) ) {
 				$tabName = $pageName;
 			}
 			$tabBody = sprintf( '<div class="error">Invalid title: %s</div>', $pageName );
-			$pageName = '';
 		} else {
 			$pageName = $title->getPrefixedText();
 			if ( empty( $tabName ) ) {
@@ -127,11 +125,18 @@ class TabberTransclude {
 					urlencode( $currentTitle->getPrefixedText() ),
 					urlencode( $pageName )
 				);
-				$dataProps['load-url'] = wfExpandUrl( wfScript( 'api' ) . $query,  PROTO_CANONICAL );
+
+				$utils = MediaWikiServices::getInstance()->getUrlUtils();
+				$utils->expand( wfScript( 'api' ) . $query,  PROTO_CANONICAL );
+
+				$dataProps['load-url'] = $utils->expand( wfScript( 'api' ) . $query,  PROTO_CANONICAL );
 				$oldTabBody = $tabBody;
 				// Allow extensions to update the lazy loaded tab
-				Hooks::run( 'TabberNeueRenderLazyLoadedTab', [ &$tabBody, &$dataProps, $parser, $frame ] );
-				if ( $oldTabBody != $tabBody ) {
+				MediaWikiServices::getInstance()->getHookContainer()->run(
+					'TabberNeueRenderLazyLoadedTab',
+					[ &$tabBody, &$dataProps, $parser, $frame ]
+				);
+				if ( $oldTabBody !== $tabBody ) {
 					$parser->getOutput()->recordOption( 'tabberneuelazyupdated' );
 				}
 			}

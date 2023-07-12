@@ -1,5 +1,19 @@
 <template>
+	<cdx-tabs v-if="isChildTabber && tabsData.length > 0" v-model:active="currentTab">
+		<cdx-tab
+			v-for="( tab, index ) in tabsData"
+			:key="index"
+			:name="escapeId( tab.label )"
+			:label="tab.label"
+		>
+			<tab-content
+				:html="tab.content"
+			>
+			</tab-content>
+		</cdx-tab>
+	</cdx-tabs>
 	<div
+		v-else
 		v-html="html"
 	>
 	</div>
@@ -7,6 +21,7 @@
 
 <script>
 const { defineComponent } = require( 'vue' );
+const { CdxTabs, CdxTab } = require( '@wikimedia/codex' );
 
 // @vue/component
 module.exports = exports = defineComponent( {
@@ -17,14 +32,46 @@ module.exports = exports = defineComponent( {
 	compilerOptions: {
 		whitespace: 'condense'
 	},
+	data() {
+		return {
+			tabsData: [],
+
+			currentTab: ''
+		};
+	},
 	props: {
 		html: {
 			type: String,
 			required: true
 		}
 	},
+	components: {
+		CdxTabs: CdxTabs,
+		CdxTab: CdxTab,
+	},
+	methods: {
+		isChildTabber() {
+			return Array.isArray(this.html) || this.html.includes("{\"label\":")
+		},
+		parse() {
+			if (Array.isArray(this.html)) {
+				return this.html
+			} else {
+				const tmp = document.createElement('div');
+				tmp.innerHTML = this.html;
+
+				return JSON.parse( tmp.textContent.trim() );
+			}
+		},
+		escapeId( id ) {
+			return mw.util.escapeIdForAttribute( id )
+		}
+	},
 	mounted: function () {
-		this.$el.parentElement.innerHTML = this.$el.innerHTML;
+		if (this.isChildTabber()) {
+			this.tabsData = this.parse(this.html)
+			this.currentTab = this.escapeId( this.tabsData[0].label )
+		}
 	}
 } );
 </script>

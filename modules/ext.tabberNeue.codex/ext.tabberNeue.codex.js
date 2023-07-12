@@ -17,10 +17,6 @@ function initApp( tabber ) {
 	tabs.forEach( ( tab ) => {
 		const label = tab.getAttribute( 'data-title' );
 
-		if ( tab.querySelector( '.tabber' ) ) {
-			throw new Error( 'Nested Tabber is not supported in Codex mode, please use legacy mode instead.' );
-		}
-
 		tabberData.tabsData.push( {
 			name: mw.util.escapeIdForAttribute( label ),
 			label: label,
@@ -30,7 +26,7 @@ function initApp( tabber ) {
 
 	tabberData.currentTab = tabberData.tabsData[ 0 ].name;
 
-	// @ts-ignore MediaWiki-specific function
+	//@ts-ignore MediaWiki-specific function
 	Vue.createMwApp(
 		App, Object.assign( {
 			tabberData: tabberData
@@ -45,18 +41,8 @@ function initApp( tabber ) {
  */
 function main( document ) {
 	const tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' );
-	const sortedTabbers = [];
 
-	/* Nested Tabber children needed to be rendered before parents */
-	tabbers.forEach( ( tabber ) => {
-		if ( tabber.querySelector( '.tabber:not( .tabber--live )' ) ) {
-			sortedTabbers.push( tabber );
-		} else {
-			sortedTabbers.unshift( tabber );
-		}
-	} );
-
-	sortedTabbers.forEach( initApp );
+	tabbers.forEach( initApp );
 }
 
 main( document );
