@@ -156,24 +156,21 @@ function initTabber( tabber, count ) {
 	tabber.prepend( header );
 
 	// Initalize previous and next buttons
-	const initButtons = function () {
-		const
-			PREVCLASS = 'tabber__header--prev-visible',
-			NEXTCLASS = 'tabber__header--next-visible';
+	const initHeaderButtons = function () {
+		const updateTabsNavigation = function () {
+			/* eslint-disable mediawiki/class-doc */
+			const
+				PREVCLASS = 'tabber__header--prev-visible',
+				NEXTCLASS = 'tabber__header--next-visible';
 
-		/* eslint-disable mediawiki/class-doc */
-		const scrollTabs = function ( offset ) {
-			const scrollLeft = tabList.scrollLeft + offset;
+			const isScrollable = ( tabList.scrollWidth > header.offsetWidth );
 
-			// Scroll to the start
-			if ( scrollLeft <= 0 ) {
-				tabList.scrollLeft = 0;
-			} else {
-				tabList.scrollLeft = scrollLeft;
+			if ( !isScrollable ) {
+				header.classList.remove( NEXTCLASS );
+				header.classList.remove( PREVCLASS );
+				return;
 			}
-		};
 
-		const updateButtons = function () {
 			const scrollLeft = tabList.scrollLeft;
 
 			// Scroll to the start
@@ -190,41 +187,49 @@ function initTabber( tabber, count ) {
 					header.classList.add( PREVCLASS );
 				}
 			}
+			/* eslint-enable mediawiki/class-doc */
 		};
 
-		const setupButtons = function () {
-			const isScrollable = ( tabList.scrollWidth > header.offsetWidth );
+		updateTabsNavigation();
 
-			if ( isScrollable ) {
-				const scrollOffset = header.offsetWidth / 2;
-
-				// Just to add the right classes
-				updateButtons();
-
-				// Button only shows on pointer devices
-				if ( matchMedia( '(hover: hover)' ).matches ) {
-					prevButton.addEventListener( 'click', function () {
-						scrollTabs( -scrollOffset );
-					}, false );
-
-					nextButton.addEventListener( 'click', function () {
-						scrollTabs( scrollOffset );
-					}, false );
+		// Set up click event listener
+		header.addEventListener( 'click', function ( event ) {
+			// Tab button
+			if ( event.target.classList.contains( 'tabber__tab' ) ) {
+				const targetHash = event.target.getAttribute( 'href' ).slice( 1 );
+				event.preventDefault();
+				if ( !config || config.updateLocationOnTabChange ) {
+					// Add hash to the end of the URL
+					history.replaceState( null, null, '#' + targetHash );
 				}
-			} else {
-				header.classList.remove( NEXTCLASS );
-				header.classList.remove( PREVCLASS );
+				showPanel( targetHash, true );
+			// Handle tab navigation buttons when device uses a pointer device
+			} else if ( matchMedia( '(hover: hover)' ).matches ) {
+				const scrollOffset = header.offsetWidth / 2;
+				const scrollTabs = function ( offset ) {
+					const scrollLeft = tabList.scrollLeft + offset;
+					// Scroll to the start
+					if ( scrollLeft <= 0 ) {
+						tabList.scrollLeft = 0;
+					} else {
+						tabList.scrollLeft = scrollLeft;
+					}
+				};
+				// Prev button
+				if ( event.target.classList.contains( 'tabber__header__prev' ) ) {
+					scrollTabs( -scrollOffset );
+				// Next button
+				} else if ( event.target.classList.contains( 'tabber__header__next' ) ) {
+					scrollTabs( scrollOffset );
+				}
 			}
-		};
-		/* eslint-enable mediawiki/class-doc */
-
-		setupButtons();
+		} );
 
 		// Listen for scroll event on header
 		// Also triggered by side-scrolling using other means other than the buttons
 		tabList.addEventListener( 'scroll', function () {
 			window.requestAnimationFrame( function () {
-				updateButtons();
+				updateTabsNavigation();
 				updateIndicator( false );
 			} );
 		} );
@@ -242,7 +247,7 @@ function initTabber( tabber, count ) {
 		// Listen for element resize
 		if ( window.ResizeObserver ) {
 			const tabListResizeObserver = new ResizeObserver(
-				mw.util.debounce( 250, setupButtons )
+				mw.util.debounce( 250, updateTabsNavigation )
 			);
 			tabListResizeObserver.observe( tabList );
 		}
@@ -431,22 +436,9 @@ function initTabber( tabber, count ) {
 
 	switchTab( true );
 
-	initButtons();
+	initHeaderButtons();
 
 	// window.addEventListener( 'hashchange', switchTab, false );
-
-	tabList.addEventListener( 'click', function ( event ) {
-		// Respond to clicks on the nav tabs
-		if ( event.target.classList.contains( 'tabber__tab' ) ) {
-			const targetHash = event.target.getAttribute( 'href' ).slice( 1 );
-			event.preventDefault();
-			if ( !config || config.updateLocationOnTabChange ) {
-				// Add hash to the end of the URL
-				history.replaceState( null, null, '#' + targetHash );
-			}
-			showPanel( targetHash, true );
-		}
-	} );
 
 	tabber.classList.add( 'tabber--live' );
 }
