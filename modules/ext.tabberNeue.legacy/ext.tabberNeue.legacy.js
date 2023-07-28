@@ -108,23 +108,23 @@ function initTabber( tabber, count ) {
 		return value;
 	};
 
-	const updateSectionHeight = function ( section, activePanel ) {
-		const height = getActualSize( activePanel, 'height' );
+	const updateSectionHeight = function ( section, panel ) {
+		/* Exit early if it is not the active panel */
+		if ( panel.getAttribute( 'aria-hidden' ) !== false ) {
+			return;
+		}
 
+		const height = getActualSize( panel, 'height' );
 		section.style.height = height + 'px';
 		// Scroll to tab
-		section.scrollLeft = activePanel.offsetLeft;
+		section.scrollLeft = panel.offsetLeft;
 	};
 
 	const onElementResize = function ( entries ) {
 		if ( entries && entries.length > 0 ) {
 			const targetPanel = entries[ 0 ].target;
-
-			/* Only update section height when it is the current active tab */
-			if ( targetPanel.getAttribute( 'aria-hidden' ) === false ) {
-				const section = targetPanel.parentNode;
-				updateSectionHeight( section, targetPanel );
-			}
+			const section = targetPanel.parentNode;
+			updateSectionHeight( section, targetPanel );
 		}
 	};
 
