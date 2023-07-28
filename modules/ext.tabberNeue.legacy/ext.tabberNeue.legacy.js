@@ -119,8 +119,12 @@ function initTabber( tabber, count ) {
 	const onElementResize = function ( entries ) {
 		if ( entries && entries.length > 0 ) {
 			const targetPanel = entries[ 0 ].target;
-			const section = targetPanel.parentNode;
-			updateSectionHeight( section, targetPanel );
+
+			/* Only update section height when it is the current active tab */
+			if ( targetPanel.getAttribute( 'aria-hidden' ) === false ) {
+				const section = targetPanel.parentNode;
+				updateSectionHeight( section, targetPanel );
+			}
 		}
 	};
 
