@@ -110,7 +110,7 @@ function initTabber( tabber, count ) {
 
 	const updateSectionHeight = function ( section, panel ) {
 		/* Exit early if it is not the active panel */
-		if ( panel.getAttribute( 'aria-hidden' ) !== false ) {
+		if ( panel.getAttribute( 'aria-hidden' ) !== 'false' ) {
 			return;
 		}
 
