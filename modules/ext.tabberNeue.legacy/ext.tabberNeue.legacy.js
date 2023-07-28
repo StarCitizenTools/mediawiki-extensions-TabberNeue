@@ -435,17 +435,17 @@ function initTabber( tabber, count ) {
 
 	// window.addEventListener( 'hashchange', switchTab, false );
 
-	// Respond to clicks on the nav tabs
-	Array.prototype.forEach.call( tabList.children, function ( tab ) {
-		tab.addEventListener( 'click', function ( event ) {
-			const targetHash = tab.getAttribute( 'href' ).slice( 1 );
+	tabList.addEventListener( 'click', function ( event ) {
+		// Respond to clicks on the nav tabs
+		if ( event.target.classList.contains( 'tabber__tab' ) ) {
+			const targetHash = event.target.getAttribute( 'href' ).slice( 1 );
 			event.preventDefault();
 			if ( !config || config.updateLocationOnTabChange ) {
 				// Add hash to the end of the URL
 				history.replaceState( null, null, '#' + targetHash );
 			}
 			showPanel( targetHash, true );
-		} );
+		}
 	} );
 
 	tabber.classList.add( 'tabber--live' );
