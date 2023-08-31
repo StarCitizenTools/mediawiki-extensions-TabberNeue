@@ -51,11 +51,6 @@ module.exports = exports = defineComponent( {
 			currentTab: this.tabberData.currentTab
 		};
 	},
-	methods: {
-		escapeId( id ) {
-			return mw.util.escapeIdForAttribute( id );
-		}
-	},
 	mounted: function () {
 		this.$el.parentElement.classList.add( 'tabber--live' );
 	}
