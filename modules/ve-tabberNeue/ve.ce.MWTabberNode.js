@@ -94,7 +94,6 @@ ve.ce.MWTabberNode.prototype.renderHeader = function ( tabber ) {
 
 		header.append( tabList, indicator );
 
-		console.log( tabList );
 		indicator.style.width = tabList.firstElementChild.offsetWidth + 'px';
 
 		element.classList.add( 'tabber--live' );
