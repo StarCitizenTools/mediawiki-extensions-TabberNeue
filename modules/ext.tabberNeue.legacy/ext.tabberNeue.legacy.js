@@ -129,9 +129,10 @@ function initTabber( tabber, count ) {
 	};
 
 	const updateIndicator = function ( showTransition ) {
-		const
-			activeTab = tabList.querySelector( ACTIVETAB_SELECTOR ),
-			width = getActualSize( activeTab, 'width' );
+		// Select the first tab when there are no active tab (e.g. page preview)
+		const activeTab = tabList.querySelector( ACTIVETAB_SELECTOR ) || tabList.querySelector( '.tabber__tab' );
+
+		const width = getActualSize( activeTab, 'width' );
 
 		indicator.style.width = width + 'px';
 		indicator.style.transform = 'translateX(' + ( activeTab.offsetLeft - tabList.scrollLeft ) + 'px)';
@@ -444,9 +445,7 @@ function initTabber( tabber, count ) {
 }
 
 function main() {
-	const
-		tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' ),
-		style = document.getElementById( 'tabber-style' );
+	const tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' );
 
 	if ( tabbers ) {
 		let count = 0;
@@ -455,19 +454,20 @@ function main() {
 			initTabber( tabber, count );
 			count++;
 		} );
-		// Remove critical render styles after done
+	}
+
+	const style = document.getElementById( 'tabber-style' );
+
+	// Remove critical render styles after done
+	if ( style ) {
 		// IE compatiblity
 		style.parentNode.removeChild( style );
 	}
 }
 
-if ( document.readyState === 'interactive' || document.readyState === 'complete' ) {
+mw.hook( 'wikipage.content' ).add( function () {
 	main();
-} else {
-	document.addEventListener( 'DOMContentLoaded', function () {
-		main();
-	} );
-}
+} );
 
 /*
  * Add hooks for Tabber when Visual Editor is used.

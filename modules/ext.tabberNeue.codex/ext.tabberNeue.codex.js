@@ -36,16 +36,17 @@ function initApp( tabber ) {
 }
 
 /**
- * @param {Document} document
  * @return {void}
  */
-function main( document ) {
+function main() {
 	const tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' );
 
 	tabbers.forEach( initApp );
 }
 
-main( document );
+mw.hook( 'wikipage.content' ).add( function () {
+	main();
+} );
 
 /*
  * Add hooks for Tabber when Visual Editor is used.
@@ -53,6 +54,6 @@ main( document );
 mw.loader.using( 'ext.visualEditor.desktopArticleTarget.init', function () {
 	// After saving edits
 	mw.hook( 'postEdit.afterRemoval' ).add( () => {
-		main( document );
+		main();
 	} );
 } );
