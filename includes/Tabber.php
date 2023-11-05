@@ -146,7 +146,7 @@ class Tabber {
 		}
 
 		// If $tabBody does not have any HTML element (i.e. just a text node), wrap it in <p/>
-		if ( $tabBody[0] !== '<' ) {
+		if ( $tabBody && $tabBody[0] !== '<' ) {
 			$tabBody = '<p>' . $tabBody . '</p>';
 		}
 
