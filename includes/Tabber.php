@@ -49,7 +49,7 @@ class Tabber {
 	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ) {
 		self::$useCodex = MediaWikiServices::getInstance()->getMainConfig()->get( 'TabberNeueUseCodex' );
 
-		$html = self::render( $input, $parser, $frame );
+		$html = self::render( $input ?? '', $parser, $frame );
 
 		if ( $input === null ) {
 			return '';
