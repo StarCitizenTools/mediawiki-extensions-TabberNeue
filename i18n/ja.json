@@ -1,8 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"Ant176",
 			"Shirayuki"
 		]
 	},
-	"tabberneue-desc": "ページ内にタブを作成できるようにする"
+	"tabberneue-desc": "ページ内にタブを作成できるようにする",
+	"tabberneue-tabber-category": "Tabberパーサータグを使用しているページ",
+	"tabberneue-tabbertransclude-category": "TabberTranscludeパーサータグを使用しているページ",
+	"tabberneue-visualeditor-mwtabberdialog-desc": "使用方法は[https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers ドキュメント]を参照して下さい。",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "使用方法は[https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion ドキュメント]を参照して下さい。"
 }
