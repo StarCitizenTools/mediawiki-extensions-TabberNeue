@@ -111,7 +111,7 @@
 			]
 		},
 		"ext.tabberNeue.icons": {
-			"class": "MediaWiki\ResourceLoader\ImageModule",
+			"class": "MediaWiki\\ResourceLoader\\ImageModule",
 			"selector": ".tabber__header__{name}:after",
 			"images": {
 				"next": {
