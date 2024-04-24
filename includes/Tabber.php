@@ -36,6 +36,8 @@ class Tabber {
 
 	private static $useCodex = false;
 
+	private static $parseTabName = false;
+
 	/**
 	 * Parser callback for <tabber> tag
 	 *
@@ -47,7 +49,9 @@ class Tabber {
 	 * @return string HTML
 	 */
 	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ) {
-		self::$useCodex = MediaWikiServices::getInstance()->getMainConfig()->get( 'TabberNeueUseCodex' );
+		$config = MediaWikiServices::getInstance()->getMainConfig();
+		self::$parseTabName = $config->get( 'TabberNeueParseTabName' );
+		self::$useCodex = $config->get( 'TabberNeueUseCodex' );
 
 		$html = self::render( $input ?? '', $parser, $frame );
 
@@ -119,31 +123,48 @@ class Tabber {
 		// Use array_pad to make sure at least 2 array values are always returned
 		[ $tabName, $tabBody ] = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
-		// Use language converter to get variant title and also escape html
-		$tabName = $parser->getTargetLanguageConverter()->convertHtml( trim( $tabName ) );
+		$tabName = trim( $tabName );
 		$tabBody = trim( $tabBody );
 
-		// A nested tabber which should return json in codex
-		if ( self::$useCodex && strpos( $tabBody, '{{#tag:tabber' ) !== false ) {
-			self::$isNested = true;
-			$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
-			self::$isNested = false;
-		// The outermost tabber that must be parsed fully in codex for correct json
-		} elseif ( self::$useCodex ) {
-			$tabBody = $parser->recursiveTagParseFully( $tabBody, $frame );
-		// Normal mode
-		} else {
-			$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
+		// Codex mode
+		if ( self::$useCodex ) {
+			// Use language converter to get variant title and also escape html
+			$tabName = $parser->getTargetLanguageConverter()->convertHtml( $tabName );
+			// A nested tabber which should return json in codex
+			if ( strpos( $tabBody, '{{#tag:tabber' ) !== false ) {
+				self::$isNested = true;
+				$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
+				self::$isNested = false;
+			// The outermost tabber that must be parsed fully in codex for correct json
+			} else {
+				$tabBody = $parser->recursiveTagParseFully( $tabBody, $frame );
+			}
+
+			if ( self::$isNested ) {
+				return json_encode( [
+					'label' => $tabName,
+					'content' => $tabBody
+				],
+					JSON_THROW_ON_ERROR
+				);
+			}
 		}
 
-		if ( self::$useCodex && self::$isNested ) {
-			return json_encode( [
-				'label' => $tabName,
-				'content' => $tabBody
-			],
-				JSON_THROW_ON_ERROR
-			);
+		// Legacy mode
+		if ( self::$parseTabName ) {
+			$tabName =  $parser->recursiveTagParseFully( $tabName );
+			// Remove outer paragraph tags
+			if ( substr( $tabName, 0, 3 ) == '<p>' ) {
+				$tabName = substr( $tabName, 3 );
+			}
+			if ( substr( $tabName, -4 ) == '</p>' ) {
+				$tabName = substr( $tabName, 0, -4 );
+			}
+			$tabName = htmlentities( $tabName );
+		} else {
+			$tabName = $parser->getTargetLanguageConverter()->convertHtml( $tabName );
 		}
+		$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
 
 		// If $tabBody does not have any HTML element (i.e. just a text node), wrap it in <p/>
 		if ( $tabBody && $tabBody[0] !== '<' ) {
@@ -151,6 +172,6 @@ class Tabber {
 		}
 
 		return '<article class="tabber__panel" data-title="' . $tabName .
-			'">' . $tabBody . '</article>';
+		'">' . $tabBody . '</article>';
 	}
 }

@@ -51,6 +51,7 @@ module.exports = exports = defineComponent( {
 	},
 	methods: {
 		isChildTabber() {
+			// eslint-disable-next-line es-x/no-array-prototype-includes
 			return Array.isArray( this.html ) || this.html.includes( '{"label":' );
 		},
 		parse() {

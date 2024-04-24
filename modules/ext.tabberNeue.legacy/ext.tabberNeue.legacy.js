@@ -28,10 +28,22 @@ function initTabber( tabber, count ) {
 			fragment = new DocumentFragment(),
 			hashList = [];
 
+		const getTextFromHtml = function ( html ) {
+			const tmp = document.createElement( 'div' );
+			tmp.innerHTML = html;
+			return tmp.textContent || tmp.innerText;
+		};
+
 		Array.prototype.forEach.call( tabPanels, function ( tabPanel ) {
-			const
-				title = tabPanel.getAttribute( 'data-title' ),
-				tab = document.createElement( 'a' );
+			const tab = document.createElement( 'a' );
+			let title = tabPanel.getAttribute( 'data-title' );
+
+			if ( config && config.parseTabName ) {
+				tab.innerHTML = title;
+				title = getTextFromHtml( title );
+			} else {
+				tab.innerText = title;
+			}
 
 			let hash = mw.util.escapeIdForAttribute( title ) + '-' + count;
 
@@ -54,7 +66,6 @@ function initTabber( tabber, count ) {
 			tabPanel.setAttribute( 'aria-labelledby', 'tab-' + hash );
 			tabPanel.setAttribute( 'aria-hidden', true );
 
-			tab.innerText = title;
 			tab.classList.add( 'tabber__tab' );
 			tab.setAttribute( 'role', 'tab' );
 			tab.setAttribute( 'href', '#' + hash );
