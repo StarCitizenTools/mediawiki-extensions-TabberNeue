@@ -60,7 +60,8 @@
 				"error"
 			],
 			"styles": [
-				"ext.tabberNeue.legacy/ext.tabberNeue.legacy.less"
+				"ext.tabberNeue.legacy/ext.tabberNeue.legacy.less",
+				"ext.tabberNeue.legacy/ext.tabberNeue.legacy.mobile.less"
 			],
 			"dependencies": [
 				"mediawiki.Uri",
@@ -99,14 +100,6 @@
 			],
 			"targets": [
 				"desktop",
-				"mobile"
-			]
-		},
-		"ext.tabberNeue.mobile.styles": {
-			"styles": [
-				"ext.tabberNeue.mobile.less"
-			],
-			"targets": [
 				"mobile"
 			]
 		},
