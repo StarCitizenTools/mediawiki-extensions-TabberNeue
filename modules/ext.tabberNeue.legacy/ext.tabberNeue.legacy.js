@@ -17,6 +17,11 @@ function initTabber( tabber, count ) {
 		nextButton = document.createElement( 'div' ),
 		indicator = document.createElement( 'div' );
 
+	// scrollLeft can return decimals while offset are always integer
+	const roundScrollLeft = function ( val ) {
+		return Math.ceil( val );
+	};
+
 	const buildTabs = function () {
 		const
 			tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' ),
@@ -135,7 +140,7 @@ function initTabber( tabber, count ) {
 		const width = getActualSize( activeTab, 'width' );
 
 		indicator.style.width = width + 'px';
-		indicator.style.transform = 'translateX(' + ( activeTab.offsetLeft - tabList.scrollLeft ) + 'px)';
+		indicator.style.transform = 'translateX(' + ( activeTab.offsetLeft - roundScrollLeft( tabList.scrollLeft ) ) + 'px)';
 		indicator.style.transition = '';
 
 		// Do not animate when user prefers reduced motion
@@ -172,7 +177,7 @@ function initTabber( tabber, count ) {
 				return;
 			}
 
-			const scrollLeft = tabList.scrollLeft;
+			const scrollLeft = roundScrollLeft( tabList.scrollLeft );
 
 			// Scroll to the start
 			if ( scrollLeft <= 0 ) {
@@ -208,7 +213,7 @@ function initTabber( tabber, count ) {
 			} else if ( matchMedia( '(hover: hover)' ).matches ) {
 				const scrollOffset = header.offsetWidth / 2;
 				const scrollTabs = function ( offset ) {
-					const scrollLeft = tabList.scrollLeft + offset;
+					const scrollLeft = roundScrollLeft( tabList.scrollLeft ) + offset;
 					// Scroll to the start
 					if ( scrollLeft <= 0 ) {
 						tabList.scrollLeft = 0;
