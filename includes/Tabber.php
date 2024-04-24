@@ -153,13 +153,7 @@ class Tabber {
 		// Legacy mode
 		if ( self::$parseTabName ) {
 			$tabName = $parser->recursiveTagParseFully( $tabName );
-			// Remove outer paragraph tags
-			if ( substr( $tabName, 0, 3 ) == '<p>' ) {
-				$tabName = substr( $tabName, 3 );
-			}
-			if ( substr( $tabName, -4 ) == '</p>' ) {
-				$tabName = substr( $tabName, 0, -4 );
-			}
+			$tabName = $parser->stripOuterParagraph( $tabName );
 			$tabName = htmlentities( $tabName );
 		} else {
 			$tabName = $parser->getTargetLanguageConverter()->convertHtml( $tabName );
