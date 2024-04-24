@@ -90,7 +90,7 @@ class TabberParsoid extends ExtensionTagHandler implements ExtensionModule {
 						'context' => 'inline',
 					]
 				],
-			true // sol
+				true // sol
 			)
 		);
 

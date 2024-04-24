@@ -127,9 +127,9 @@ class TabberTransclude {
 				);
 
 				$utils = MediaWikiServices::getInstance()->getUrlUtils();
-				$utils->expand( wfScript( 'api' ) . $query,  PROTO_CANONICAL );
+				$utils->expand( wfScript( 'api' ) . $query, PROTO_CANONICAL );
 
-				$dataProps['load-url'] = $utils->expand( wfScript( 'api' ) . $query,  PROTO_CANONICAL );
+				$dataProps['load-url'] = $utils->expand( wfScript( 'api' ) . $query, PROTO_CANONICAL );
 				$oldTabBody = $tabBody;
 				// Allow extensions to update the lazy loaded tab
 				MediaWikiServices::getInstance()->getHookContainer()->run(

@@ -152,7 +152,7 @@ class Tabber {
 
 		// Legacy mode
 		if ( self::$parseTabName ) {
-			$tabName =  $parser->recursiveTagParseFully( $tabName );
+			$tabName = $parser->recursiveTagParseFully( $tabName );
 			// Remove outer paragraph tags
 			if ( substr( $tabName, 0, 3 ) == '<p>' ) {
 				$tabName = substr( $tabName, 3 );
