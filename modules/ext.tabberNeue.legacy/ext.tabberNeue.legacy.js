@@ -366,7 +366,6 @@ function initTabber( tabber, count ) {
 		if ( resizeObserver ) {
 			resizeObserver.observe( targetPanel );
 		}
-		/* eslint-enable mediawiki/class-doc */
 
 		// If requested, scroll the tabber into view (browser fails to do that
 		// on its own as it tries to look up the anchor before we add it to the
