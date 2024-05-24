@@ -1,3 +1,103 @@
+const ACTIVETAB_SELECTOR = '[aria-selected="true"]';
+const ACTIVEPANEL_SELECTOR = '[aria-hidden="false"]';
+
+const sizeProperties = Object.freeze( {
+	width: 'offsetWidth',
+	height: 'offsetHeight'
+} );
+
+// Temp element used by various extractTextFromHtml and getActualSize
+const tempElement = document.createElement( 'div' );
+
+/**
+ * Rounds the scrollLeft value to the nearest integer using Math.ceil.
+ * scrollLeft can return decimals while offset are always integer
+ *
+ * @param {number} val - The scrollLeft value to be rounded.
+ * @return {number} The rounded scrollLeft value.
+ */
+function roundScrollLeft( val ) {
+	return Math.ceil( val );
+}
+
+/**
+ * Parses the given HTML string and returns the text content of the body element.
+ *
+ * @param {string} html - The HTML string to parse
+ * @return {string} The text content of the body element in the parsed document
+ */
+function extractTextFromHtml( html ) {
+	tempElement.innerHTML = html;
+	return tempElement.textContent;
+}
+
+/**
+ * Returns the actual size (width or height) of the provided element.
+ *
+ * @param {Element} element - The element for which to get the size.
+ * @param {string} type - The type of size to retrieve ('width' or 'height').
+ * @return {number} The actual size of the element based on the specified type.
+ */
+function getActualSize( element, type ) {
+	if ( !element || !( element instanceof Element ) || ( type !== 'width' && type !== 'height' ) ) {
+		mw.log.error( '[TabberNeue] Invalid element or type provided for getActualSize' );
+		return 0;
+	}
+
+	let value = element[ sizeProperties[ type ] ];
+
+	if ( value === 0 ) {
+		const clone = element.cloneNode( true );
+		clone.style.position = 'absolute';
+		clone.style.visibility = 'hidden';
+		tempElement.appendChild( clone );
+		value = clone[ sizeProperties[ type ] ];
+		clone.parentNode.removeChild( clone );
+	}
+
+	return value;
+}
+
+/**
+ * Updates the height of a section based on the height of the provided panel.
+ *
+ * @param {Element} section - The section element to update the height for.
+ * @param {Element} panel - The panel element whose height will be used to
+ * update the section height.
+ * @return {void}
+ */
+function updateSectionHeight( section, panel ) {
+	/* Exit early if it is not the active panel */
+	if ( panel.getAttribute( 'aria-hidden' ) !== 'false' ) {
+		return;
+	}
+
+	const height = getActualSize( panel, 'height' );
+
+	window.requestAnimationFrame( function () {
+		section.style.height = height + 'px';
+		// Scroll to tab
+		section.scrollLeft = panel.offsetLeft;
+	} );
+}
+
+/**
+ * Handles the resize event for an element.
+ *
+ * @param {Array} entries - An array of ResizeObserverEntry objects representing
+ * the elements being resized.
+ * @return {void}
+ */
+function onElementResize( entries ) {
+	if ( entries && entries.length > 0 ) {
+		const targetPanel = entries[ 0 ].target;
+		if ( targetPanel instanceof Element ) {
+			const section = targetPanel.parentNode;
+			updateSectionHeight( section, targetPanel );
+		}
+	}
+}
+
 /**
  * Initialize Tabber
  *
@@ -6,10 +106,6 @@
  */
 function initTabber( tabber, count ) {
 	const
-		ACTIVETAB_SELECTOR = '[aria-selected="true"]',
-		ACTIVEPANEL_SELECTOR = '[aria-hidden="false"]';
-
-	const
 		config = require( './config.json' ),
 		header = tabber.querySelector( ':scope > .tabber__header' ),
 		tabList = document.createElement( 'nav' ),
@@ -17,22 +113,15 @@ function initTabber( tabber, count ) {
 		nextButton = document.createElement( 'div' ),
 		indicator = document.createElement( 'div' );
 
-	// scrollLeft can return decimals while offset are always integer
-	const roundScrollLeft = function ( val ) {
-		return Math.ceil( val );
-	};
-
+	/**
+	 * Function to build tabs for a tabber component.
+	 * It iterates over tab panels, creates corresponding tab elements,
+	 * assigns necessary attributes, and appends them to the tab list.
+	 */
 	const buildTabs = function () {
-		const
-			tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' ),
-			fragment = new DocumentFragment(),
-			hashList = [];
-
-		const getTextFromHtml = function ( html ) {
-			const tmp = document.createElement( 'div' );
-			tmp.innerHTML = html;
-			return tmp.textContent || tmp.innerText;
-		};
+		const tabPanels = tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
+		const fragment = document.createDocumentFragment();
+		const hashList = [];
 
 		Array.prototype.forEach.call( tabPanels, function ( tabPanel ) {
 			const tab = document.createElement( 'a' );
@@ -40,9 +129,9 @@ function initTabber( tabber, count ) {
 
 			if ( config && config.parseTabName ) {
 				tab.innerHTML = title;
-				title = getTextFromHtml( title );
+				title = extractTextFromHtml( title );
 			} else {
-				tab.innerText = title;
+				tab.textContent = title;
 			}
 
 			let hash = mw.util.escapeIdForAttribute( title ) + '-' + count;
@@ -85,63 +174,6 @@ function initTabber( tabber, count ) {
 		indicator.classList.add( 'tabber__indicator' );
 
 		header.append( prevButton, tabList, nextButton, indicator );
-	};
-
-	// There is probably a smarter way to do this
-	const getActualSize = function ( element, type ) {
-		let value;
-
-		switch ( type ) {
-			case 'width':
-				value = element.offsetWidth;
-				break;
-			case 'height':
-				value = element.offsetHeight;
-				break;
-		}
-
-		if ( value === 0 ) {
-			// Sometimes the tab is hidden by one of its parent elements
-			// and you can only get the actual size  by cloning the element
-			const clone = element.cloneNode( true );
-			// Hide the cloned element
-			clone.style.cssText = 'position:absolute;visibility:hidden;';
-			// Add cloned element to body
-			document.body.appendChild( clone );
-			// Measure the size of the clone
-			switch ( type ) {
-				case 'width':
-					value = clone.offsetWidth;
-					break;
-				case 'height':
-					value = clone.offsetHeight;
-					break;
-			}
-			// Remove the cloned element
-			clone.parentNode.removeChild( clone );
-		}
-
-		return value;
-	};
-
-	const updateSectionHeight = function ( section, panel ) {
-		/* Exit early if it is not the active panel */
-		if ( panel.getAttribute( 'aria-hidden' ) !== 'false' ) {
-			return;
-		}
-
-		const height = getActualSize( panel, 'height' );
-		section.style.height = height + 'px';
-		// Scroll to tab
-		section.scrollLeft = panel.offsetLeft;
-	};
-
-	const onElementResize = function ( entries ) {
-		if ( entries && entries.length > 0 ) {
-			const targetPanel = entries[ 0 ].target;
-			const section = targetPanel.parentNode;
-			updateSectionHeight( section, targetPanel );
-		}
 	};
 
 	const updateIndicator = function ( showTransition ) {
@@ -220,7 +252,7 @@ function initTabber( tabber, count ) {
 					history.replaceState( null, null, '#' + targetHash );
 				}
 				showPanel( targetHash, true );
-			// Handle tab navigation buttons when device uses a pointer device
+				// Handle tab navigation buttons when device uses a pointer device
 			} else if ( matchMedia( '(hover: hover)' ).matches ) {
 				const scrollOffset = header.offsetWidth / 2;
 				const scrollTabs = function ( offset ) {
@@ -235,7 +267,7 @@ function initTabber( tabber, count ) {
 				// Prev button
 				if ( event.target.classList.contains( 'tabber__header__prev' ) ) {
 					scrollTabs( -scrollOffset );
-				// Next button
+					// Next button
 				} else if ( event.target.classList.contains( 'tabber__header__next' ) ) {
 					scrollTabs( scrollOffset );
 				}
@@ -365,14 +397,12 @@ function initTabber( tabber, count ) {
 		// If we're inside another tab, trigger its logic to recalc its height
 		parentSection = section;
 		// ResizeObserver should take care of the recursivity already
+		parentPanel = parentSection.closest( ACTIVEPANEL_SELECTOR );
 		/* eslint-disable-next-line no-unmodified-loop-condition */
-		while ( !resizeObserver ) {
-			parentPanel = parentSection.closest( ACTIVEPANEL_SELECTOR );
-			if ( !parentPanel ) {
-				break;
-			}
+		while ( !resizeObserver && parentPanel ) {
 			parentSection = parentPanel.parentNode;
 			updateSectionHeight( parentSection, parentPanel );
+			parentPanel = parentSection.closest( ACTIVEPANEL_SELECTOR );
 		}
 		if ( resizeObserver ) {
 			resizeObserver.observe( targetPanel );
@@ -459,17 +489,19 @@ function initTabber( tabber, count ) {
 	tabber.classList.add( 'tabber--live' );
 }
 
-function main() {
-	const tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' );
-
-	if ( tabbers ) {
-		let count = 0;
-		mw.loader.load( 'ext.tabberNeue.icons' );
-		Array.prototype.forEach.call( tabbers, function ( tabber ) {
-			initTabber( tabber, count );
-			count++;
-		} );
-	}
+/**
+ * Initializes tabbers by loading icons and calling initTabber function for each tabber element.
+ *
+ * @param {NodeList} tabbers - List of tabber elements to initialize
+ * @return {void}
+ */
+function initTabbers( tabbers ) {
+	let count = 0;
+	mw.loader.load( 'ext.tabberNeue.icons' );
+	Array.prototype.forEach.call( tabbers, function ( tabber ) {
+		initTabber( tabber, count );
+		count++;
+	} );
 
 	const style = document.getElementById( 'tabber-style' );
 
@@ -478,6 +510,22 @@ function main() {
 		// IE compatiblity
 		style.parentNode.removeChild( style );
 	}
+}
+
+/**
+ * Function to initialize tabbers on the page.
+ * It selects all tabbers that are not live and calls the initTabbers function on them.
+ *
+ * @return {void}
+ */
+function main() {
+	const tabbers = document.querySelectorAll( '.tabber:not(.tabber--live)' );
+
+	if ( tabbers.length === 0 ) {
+		return;
+	}
+
+	initTabbers( tabbers );
 }
 
 mw.hook( 'wikipage.content' ).add( function () {
