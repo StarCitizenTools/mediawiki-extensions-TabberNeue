@@ -15,7 +15,7 @@ function initApp( tabber ) {
 	};
 
 	tabs.forEach( ( tab ) => {
-		const label = tab.getAttribute( 'data-title' );
+		const label = tab.getAttribute( 'data-mw-tabber-title' );
 
 		tabberData.tabsData.push( {
 			name: mw.util.escapeIdForAttribute( label ),

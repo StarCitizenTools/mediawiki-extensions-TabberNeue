@@ -6,7 +6,7 @@ const sizeProperties = Object.freeze( {
 	height: 'offsetHeight'
 } );
 
-// Temp element used by various extractTextFromHtml and getActualSize
+// Temp element used by various extractTextFromHtml
 const tempElement = document.createElement( 'div' );
 
 /**
@@ -50,7 +50,7 @@ function getActualSize( element, type ) {
 		const clone = element.cloneNode( true );
 		clone.style.position = 'absolute';
 		clone.style.visibility = 'hidden';
-		tempElement.appendChild( clone );
+		document.body.appendChild( clone );
 		value = clone[ sizeProperties[ type ] ];
 		clone.parentNode.removeChild( clone );
 	}
@@ -125,7 +125,7 @@ function initTabber( tabber, count ) {
 
 		Array.prototype.forEach.call( tabPanels, function ( tabPanel ) {
 			const tab = document.createElement( 'a' );
-			let title = tabPanel.getAttribute( 'data-title' );
+			let title = tabPanel.getAttribute( 'data-mw-tabber-title' );
 
 			if ( config && config.parseTabName ) {
 				tab.innerHTML = title;

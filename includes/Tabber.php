@@ -165,7 +165,7 @@ class Tabber {
 			$tabBody = '<p>' . $tabBody . '</p>';
 		}
 
-		return '<article class="tabber__panel" data-title="' . $tabName .
+		return '<article class="tabber__panel" data-mw-tabber-title="' . $tabName .
 		'">' . $tabBody . '</article>';
 	}
 }

@@ -73,7 +73,7 @@ ve.ce.MWTabberTranscludeNode.prototype.renderHeader = function ( tabber ) {
 	Array.prototype.forEach.call( tabPanels, function ( tabPanel, index ) {
 		const tab = document.createElement( 'a' );
 
-		tab.innerText = tabPanel.getAttribute( 'data-title' );
+		tab.innerText = tabPanel.getAttribute( 'data-mw-tabber-title' );
 		tab.classList.add( 'tabber__tab' );
 
 		// Make first tab active
