@@ -46,7 +46,10 @@
 						"parseTabName": "TabberNeueParseTabName",
 						"updateLocationOnTabChange": "TabberNeueUpdateLocationOnTabChange"
 					}
-				}
+				},
+				"ext.tabberNeue/Hash.js",
+				"ext.tabberNeue/Transclude.js",
+				"ext.tabberNeue/Util.js"
 			],
 			"messages": [
 				"error"
