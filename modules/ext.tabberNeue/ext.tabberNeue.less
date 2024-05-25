@@ -152,36 +152,36 @@
 		}
 
 		&--loading {
-			/*
-			* Animation based on dots indicators from Wikimedia
-			* T266028
-			*/
 			.tabber__transclusion {
-				margin: 0.5em 0; // based on Vector
-				text-align: center;
-				white-space: nowrap;
+				opacity: 0.1;
 
-				.tabber__loading-indicator,
+				a {
+					color: transparent;
+				}
+
+				a,
 				&::before,
 				&::after {
-					display: inline-block;
-					width: @width-bounce-dot;
-					height: @width-bounce-dot;
-					border-radius: 100%;
-					animation: bounce-delay 1600ms infinite ease-in-out both;
-					animation-delay: -160ms;
-					background-color: #36c;
+					display: block;
+					height: 0.5em;
+					border-radius: 40px;
+					margin-top: 1em;
+					animation-duration: 3s;
+					animation-fill-mode: forwards;
+					animation-iteration-count: infinite;
+					animation-name: skeletonload;
+					animation-timing-function: linear;
+					background: #000;
+					background: linear-gradient( to right, #202122 8%, #54595d 18%, #202122 33% );
+				}
+
+				&::before,
+				&::after {
 					content: '';
 				}
 
-				&::before {
-					margin-right: @width-bounce-dot / 4;
-					animation-delay: -330ms;
-				}
-
 				&::after {
-					margin-left: @width-bounce-dot / 4;
-					animation-delay: 0ms;
+					width: 60%;
 				}
 			}
 		}
@@ -194,19 +194,6 @@
 		&__indicator {
 			transition: transform 250ms ease, width 250ms ease;
 		}
-	}
-}
-
-@keyframes bounce-delay {
-	0%,
-	50%,
-	100% {
-		transform: scale( 0.625 );
-	}
-
-	20% {
-		opacity: 0.87;
-		transform: scale( 1 );
 	}
 }
 
@@ -271,5 +258,15 @@
 				}
 			}
 		}
+	}
+}
+
+@keyframes skeletonload {
+	0% {
+		background-position: 0 0;
+	}
+
+	100% {
+		background-position: 100em 0;
 	}
 }

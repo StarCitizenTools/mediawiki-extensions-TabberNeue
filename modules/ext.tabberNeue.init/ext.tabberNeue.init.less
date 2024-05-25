@@ -24,7 +24,13 @@
 				border-radius: 40px;
 				margin-top: 1em;
 				margin-left: 0.75em;
+				animation-duration: 10s;
+				animation-fill-mode: forwards;
+				animation-iteration-count: infinite;
+				animation-name: skeletonload;
+				animation-timing-function: linear;
 				background: #000;
+				background: linear-gradient( to right, #202122 8%, #54595d 18%, #202122 33% );
 				/* Use double quote in PHP */
 				content: '';
 			}
@@ -44,5 +50,15 @@
 	/* Hide no script message */
 	.tabber__noscript {
 		display: none;
+	}
+}
+
+@keyframes skeletonload {
+	0% {
+		background-position: 0 0;
+	}
+
+	100% {
+		background-position: 100em 0;
 	}
 }
