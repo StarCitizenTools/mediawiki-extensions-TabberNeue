@@ -1,18 +1,17 @@
 <template>
-	<cdx-tabs v-model:active="currentTab" :framed="framed">
-		<cdx-tab
+	<CdxTabs v-model:active="currentTab" :framed="framed">
+		<CdxTab
 			v-for="( tab, index ) in tabsData"
 			:key="index"
 			:name="tab.name"
 			:label="tab.label"
 			:disabled="tab.disabled"
 		>
-			<tab-content
+			<TabContent
 				:html="tab.content"
-			>
-			</tab-content>
-		</cdx-tab>
-	</cdx-tabs>
+			></TabContent>
+		</CdxTab>
+	</CdxTabs>
 </template>
 
 <script>

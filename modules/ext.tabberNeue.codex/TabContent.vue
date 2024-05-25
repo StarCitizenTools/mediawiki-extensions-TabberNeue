@@ -1,6 +1,6 @@
 <template>
-	<cdx-tabs v-if="isChildTabber && tabsData.length > 0" v-model:active="currentTab">
-		<cdx-tab
+	<CdxTabs v-if="isChildTabber && tabsData.length > 0" v-model:active="currentTab">
+		<CdxTab
 			v-for="( tab, index ) in tabsData"
 			:key="index"
 			:name="escapeId( tab.label )"
@@ -8,15 +8,13 @@
 		>
 			<tab-content
 				:html="tab.content"
-			>
-			</tab-content>
-		</cdx-tab>
-	</cdx-tabs>
+			></tab-content>
+		</CdxTab>
+	</CdxTabs>
 	<div
 		v-else
 		v-html="html"
-	>
-	</div>
+	></div>
 </template>
 
 <script>

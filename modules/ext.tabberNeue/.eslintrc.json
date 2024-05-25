@@ -1,0 +1,14 @@
+{
+	"plugins": [
+		"no-jquery"
+	],
+	"parserOptions": {
+		"ecmaVersion": 2017
+	},
+	"extends": [
+		"plugin:no-jquery/all"
+	],
+	"rules": {
+		"es-x/no-async-functions": "off"
+	}
+}

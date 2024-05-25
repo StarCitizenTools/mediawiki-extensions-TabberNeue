@@ -1,21 +1,6 @@
 {
 	"root": true,
 	"extends": [
-		"wikimedia/client-common",
-		"wikimedia/language/es6",
-		"wikimedia/vue3-es6",
-		"wikimedia/mediawiki"
-	],
-	"globals": {
-		"require": "readonly",
-		"module": "readonly"
-	},
-	"rules": {
-		"one-var": "off",
-		"//": [
-			"off",
-			"ResourceLoader's `packageFiles` do not require wrapping but the `module` option is only available in ES6+."
-		],
-		"no-implicit-globals": "off"
-	}
+		"wikimedia/server"
+	]
 }

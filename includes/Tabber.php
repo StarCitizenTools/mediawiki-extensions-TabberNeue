@@ -66,7 +66,7 @@ class Tabber {
 			// See ext.tabberNeue.inline.less
 			$style = sprintf( '<style id="tabber-style">%s</style>', self::$criticalInlineStyle );
 			$parser->getOutput()->addHeadItem( $style, true );
-			$parser->getOutput()->addModules( [ 'ext.tabberNeue.legacy' ] );
+			$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
 		}
 
 		$parser->addTrackingCategory( 'tabberneue-tabber-category' );
@@ -150,7 +150,7 @@ class Tabber {
 			}
 		}
 
-		// Legacy mode
+		// Normal mode
 		if ( self::$parseTabName ) {
 			$tabName = $parser->recursiveTagParseFully( $tabName );
 			$tabName = $parser->stripOuterParagraph( $tabName );

@@ -1,0 +1,9 @@
+{
+	"plugins": [
+		"no-jquery"
+	],
+	"extends": [
+		"plugin:no-jquery/all",
+		"wikimedia/vue3-es6"
+	]
+}

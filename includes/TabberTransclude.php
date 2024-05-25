@@ -42,7 +42,7 @@ class TabberTransclude {
 		// See ext.tabberNeue.inline.less
 		$style = sprintf( '<style id="tabber-style">%s</style>', Tabber::$criticalInlineStyle );
 		$parser->getOutput()->addHeadItem( $style, true );
-		$parser->getOutput()->addModules( [ 'ext.tabberNeue.legacy' ] );
+		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
 
 		$parser->addTrackingCategory( 'tabberneue-tabbertransclude-category' );
 		return $html;
@@ -118,7 +118,6 @@ class TabberTransclude {
 					'<div class="tabber__transclusion">%s</div>',
 					$linkRenderer->makeLink( $title, null, [ 'rel' => 'nofollow' ] )
 				);
-				$dataProps['pending-load'] = '1';
 				$currentTitle = $parser->getPage();
 				$query = sprintf(
 					'?action=parse&format=json&formatversion=2&title=%s&text={{:%s}}&redirects=1&prop=text&disablelimitreport=1&disabletoc=1&wrapoutputclass=',
@@ -151,7 +150,7 @@ class TabberTransclude {
 
 		$tab = '<article class="tabber__panel" data-mw-tabber-title="' . htmlspecialchars( $tabName ) . '"';
 		$tab .= implode( array_map( static function ( $prop, $value ) {
-			return sprintf( ' data-tabber-%s="%s"', $prop, htmlspecialchars( $value ) );
+			return sprintf( ' data-mw-tabber-%s="%s"', $prop, htmlspecialchars( $value ) );
 		}, array_keys( $dataProps ), $dataProps ) );
 		$tab .= '>' . $tabBody . '</article>';
 		$selected = false;

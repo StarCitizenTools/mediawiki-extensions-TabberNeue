@@ -45,11 +45,11 @@
 				"mobile"
 			]
 		},
-		"ext.tabberNeue.legacy": {
+		"ext.tabberNeue": {
 			"packageFiles": [
-				"ext.tabberNeue.legacy/ext.tabberNeue.legacy.js",
+				"ext.tabberNeue/ext.tabberNeue.js",
 				{
-					"name": "ext.tabberNeue.legacy/config.json",
+					"name": "ext.tabberNeue/config.json",
 					"config": {
 						"enableAnimation": "TabberNeueEnableAnimation",
 						"parseTabName": "TabberNeueParseTabName",
@@ -61,8 +61,8 @@
 				"error"
 			],
 			"styles": [
-				"ext.tabberNeue.legacy/ext.tabberNeue.legacy.less",
-				"ext.tabberNeue.legacy/ext.tabberNeue.legacy.mobile.less"
+				"ext.tabberNeue/ext.tabberNeue.less",
+				"ext.tabberNeue/ext.tabberNeue.mobile.less"
 			],
 			"dependencies": [
 				"mediawiki.Uri",
