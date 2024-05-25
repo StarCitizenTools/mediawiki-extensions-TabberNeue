@@ -44,16 +44,17 @@
 			all: unset;
 		}
 
-		&__prev {
+		/* additional specificity needed after reset button styles */
+		& &__prev {
 			left: 0;
 		}
 
-		&__next {
+		& &__next {
 			right: 0;
 		}
 
-		&__prev,
-		&__next {
+		& &__prev,
+		& &__next {
 			position: absolute;
 			z-index: 1;
 			top: 0;

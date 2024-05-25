@@ -675,10 +675,10 @@ class TabberBuilder {
 	 * adds a tablist element. Finally, it appends all these elements to the header of the tabber.
 	 */
 	createHeader() {
-		const prevButton = document.createElement( 'div' );
+		const prevButton = document.createElement( 'button' );
 		prevButton.classList.add( 'tabber__header__prev' );
 
-		const nextButton = document.createElement( 'div' );
+		const nextButton = document.createElement( 'button' );
 		nextButton.classList.add( 'tabber__header__next' );
 
 		this.header.append( prevButton, this.tablist, nextButton );
