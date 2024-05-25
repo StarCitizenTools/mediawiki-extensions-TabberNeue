@@ -27,18 +27,9 @@
 		"tabberneue-tabbertransclude-category"
 	],
 	"ResourceModules": {
-		"ext.tabberNeue.codex": {
-			"packageFiles": [
-				"ext.tabberNeue.codex/ext.tabberNeue.codex.js",
-				"ext.tabberNeue.codex/App.vue",
-				"ext.tabberNeue.codex/TabContent.vue"
-			],
+		"ext.tabberNeue.init.styles": {
 			"styles": [
-				"ext.tabberNeue.codex/ext.tabberNeue.codex.less"
-			],
-			"dependencies": [
-				"@wikimedia/codex",
-				"mediawiki.util"
+				"ext.tabberNeue.init/ext.tabberNeue.init.less"
 			],
 			"targets": [
 				"desktop",
@@ -66,6 +57,24 @@
 			],
 			"dependencies": [
 				"mediawiki.Uri",
+				"mediawiki.util"
+			],
+			"targets": [
+				"desktop",
+				"mobile"
+			]
+		},
+		"ext.tabberNeue.codex": {
+			"packageFiles": [
+				"ext.tabberNeue.codex/ext.tabberNeue.codex.js",
+				"ext.tabberNeue.codex/App.vue",
+				"ext.tabberNeue.codex/TabContent.vue"
+			],
+			"styles": [
+				"ext.tabberNeue.codex/ext.tabberNeue.codex.less"
+			],
+			"dependencies": [
+				"@wikimedia/codex",
 				"mediawiki.util"
 			],
 			"targets": [

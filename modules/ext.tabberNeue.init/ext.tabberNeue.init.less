@@ -1,0 +1,48 @@
+/**
+ * Critial rendering styles
+ *
+ * Since ext.tabberNeue is loaded a while after page load,
+ * inline styles are needed to create an inital state and
+ * avoid potential layout shifts. This should be kept as
+ * small as possible.
+ */
+
+/* stylelint-disable selector-class-pattern */
+
+/* Only apply skeleton UI when Tabber will be loaded */
+.client-js {
+	.tabber:not( .tabber--live ) {
+		.tabber__header {
+			height: 2.6em;
+			box-shadow: inset 0 -1px 0 0;
+			opacity: 0.1;
+
+			&::after {
+				position: absolute;
+				width: 16ch;
+				height: 0.5em;
+				border-radius: 40px;
+				margin-top: 1em;
+				margin-left: 0.75em;
+				background: #000;
+				/* Use double quote in PHP */
+				content: '';
+			}
+		}
+	}
+
+	/* Hide no script message */
+	.tabber__noscript {
+		display: none;
+	}
+
+	/**
+	 * Hide all other panels
+	 * All panels are stacked vertically initially
+	 * then panels are stacked horizontally after Tabber is loaded
+	 * Causing lots of layout shift
+	 */
+	.tabber__panel:not( :first-child ) {
+		display: none;
+	}
+}

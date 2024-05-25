@@ -21,14 +21,6 @@ use PPFrame;
 
 class Tabber {
 	/**
-	 * Critical rendering styles
-	 * See ext.tabberNeue.inline.less
-	 *
-	 * @var string
-	 */
-	public static $criticalInlineStyle = '.client-js .tabber__header{height:2.6em;box-shadow:inset 0 -1px 0 0;opacity:.1}.client-js .tabber__header:after{position:absolute;width:16ch;height:.5em;border-radius:40px;margin-top:1em;margin-left:.75em;background:#000;content:""}.client-js .tabber__noscript,.client-js .tabber__panel:not( :first-child ){display:none}';
-
-	/**
 	 * Flag that checks if this is a nested tabber
 	 * @var bool
 	 */
@@ -62,10 +54,7 @@ class Tabber {
 		if ( self::$useCodex === true ) {
 			$parser->getOutput()->addModules( [ 'ext.tabberNeue.codex' ] );
 		} else {
-			// Critical rendering styles
-			// See ext.tabberNeue.inline.less
-			$style = sprintf( '<style id="tabber-style">%s</style>', self::$criticalInlineStyle );
-			$parser->getOutput()->addHeadItem( $style, true );
+			$parser->getOutput()->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
 			$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
 		}
 

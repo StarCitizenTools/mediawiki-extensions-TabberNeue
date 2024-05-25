@@ -746,11 +746,6 @@ function load( tabberEls ) {
 		tabberBuilder.init();
 	} );
 
-	const style = document.getElementById( 'tabber-style' );
-	if ( style ) {
-		style.remove();
-	}
-
 	const urlHash = new mw.Uri( location.href ).fragment;
 	if ( Hash.exists( urlHash ) ) {
 		TabberEvent.setActiveTab( urlHash );

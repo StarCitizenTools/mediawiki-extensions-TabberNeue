@@ -38,10 +38,7 @@ class TabberTransclude {
 			return '';
 		}
 
-		// Critical rendering styles
-		// See ext.tabberNeue.inline.less
-		$style = sprintf( '<style id="tabber-style">%s</style>', Tabber::$criticalInlineStyle );
-		$parser->getOutput()->addHeadItem( $style, true );
+		$parser->getOutput()->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
 
 		$parser->addTrackingCategory( 'tabberneue-tabbertransclude-category' );
