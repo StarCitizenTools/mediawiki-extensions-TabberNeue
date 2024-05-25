@@ -329,7 +329,9 @@ class TabberEvent {
 		if ( !TabberEvent.shouldShowAnimation() ) {
 			return;
 		}
-		document.documentElement.classList.toggle( 'tabber-animations-ready', enableAnimations );
+		window.requestAnimationFrame( () => {
+			document.documentElement.classList.toggle( 'tabber-animations-ready', enableAnimations );
+		} );
 	}
 
 	/**
@@ -694,16 +696,16 @@ class TabberBuilder {
 	 */
 	attachEvents() {
 		this.tablist.addEventListener( 'scroll', () => {
+			const activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
+			TabberEvent.toggleAnimation( false );
 			window.requestAnimationFrame( () => {
-				const activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
-				TabberEvent.toggleAnimation( false );
 				TabberEvent.updateHeaderOverflow( this.tabber );
 				TabberEvent.updateIndicator( this.tabber, activeTab );
-				// Disable animiation for a short time so that the indicator don't get animated
-				setTimeout( () => {
-					TabberEvent.toggleAnimation( true );
-				}, 100 );
 			} );
+			// Disable animiation for a short time so that the indicator don't get animated
+			setTimeout( () => {
+				TabberEvent.toggleAnimation( true );
+			}, 250 );
 		} );
 		if ( window.ResizeObserver ) {
 			const headerOverflowObserver = new ResizeObserver( mw.util.debounce( 250, () => {
@@ -746,7 +748,7 @@ function load( tabberEls ) {
 		tabberBuilder.init();
 	} );
 
-	const urlHash = new mw.Uri( location.href ).fragment;
+	const urlHash = window.location.hash;
 	if ( Hash.exists( urlHash ) ) {
 		TabberEvent.setActiveTab( urlHash );
 		const activeTabpanel = document.getElementById( urlHash );
@@ -755,8 +757,11 @@ function load( tabberEls ) {
 		} );
 	}
 
-	TabberEvent.toggleAnimation( true );
 	TabberEvent.attachEvents();
+	// Delay animation execution so it doesn't not animate the tab gets into position on load
+	setTimeout( () => {
+		TabberEvent.toggleAnimation( true );
+	}, 250 );
 }
 
 /**

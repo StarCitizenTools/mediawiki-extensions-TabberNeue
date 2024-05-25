@@ -191,8 +191,19 @@
 // Animations
 .tabber-animations-ready {
 	.tabber {
+		&__header {
+			scroll-behavior: smooth;
+		}
+
 		&__indicator {
 			transition: transform 250ms ease, width 250ms ease;
+		}
+
+		&__section,
+		&__tabs {
+			@media ( min-width: 720px ) {
+				scroll-behavior: smooth;
+			}
 		}
 	}
 }
@@ -249,7 +260,7 @@
 		}
 	}
 
-	.tabber--animate {
+	.tabber-animations-ready {
 		.tabber {
 			&__section,
 			&__tabs {
