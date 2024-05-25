@@ -29,20 +29,20 @@
 				content: '';
 			}
 		}
+
+		/**
+		* Hide all other panels
+		* All panels are stacked vertically initially
+		* then panels are stacked horizontally after Tabber is loaded
+		* Causing lots of layout shift
+		*/
+		.tabber__panel:not( :first-child ) {
+			display: none;
+		}
 	}
 
 	/* Hide no script message */
 	.tabber__noscript {
-		display: none;
-	}
-
-	/**
-	 * Hide all other panels
-	 * All panels are stacked vertically initially
-	 * then panels are stacked horizontally after Tabber is loaded
-	 * Causing lots of layout shift
-	 */
-	.tabber__panel:not( :first-child ) {
 		display: none;
 	}
 }
