@@ -20,7 +20,8 @@
 	],
 	"support": {
 		"forum": "https://www.mediawiki.org/wiki/Extension_talk:TabberNeue",
-		"wiki": "https://www.mediawiki.org/wiki/Extension:TabberNeue"
+		"wiki": "https://www.mediawiki.org/wiki/Extension:TabberNeue",
+		"source": "https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue"
 	},
 	"require": {
 		"composer/installers": ">=1.0.1"
