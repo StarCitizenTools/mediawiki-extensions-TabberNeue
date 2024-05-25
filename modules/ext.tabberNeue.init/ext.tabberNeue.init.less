@@ -37,6 +37,14 @@
 		}
 
 		/**
+		* Avoid layout shift by assigning the grid property early on
+		* Because display:block does not take into account of bottom margin of the content
+		*/
+		.tabber__section {
+			display: grid;
+		}
+
+		/**
 		* Hide all other panels
 		* All panels are stacked vertically initially
 		* then panels are stacked horizontally after Tabber is loaded
