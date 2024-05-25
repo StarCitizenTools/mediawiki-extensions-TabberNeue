@@ -415,28 +415,61 @@ class TabberEvent {
 		const tabpanels = tabberEl.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
 		const tabs = tabberEl.querySelectorAll( ':scope > .tabber__header > .tabber__tabs > .tabber__tab' );
 
+		const tabpanelAttributes = [];
+		const tabAttributes = [];
+
 		tabpanels.forEach( ( tabpanel ) => {
-			tabpanel.setAttribute( 'aria-hidden', 'true' );
-			if ( typeof resizeObserver !== 'undefined' && resizeObserver ) {
-				resizeObserver.unobserve( tabpanel );
+			if ( tabpanel === activeTabpanel ) {
+				tabpanelAttributes.push( {
+					element: tabpanel,
+					attributes: {
+						'aria-hidden': 'false'
+					}
+				} );
+				if ( typeof resizeObserver !== 'undefined' && resizeObserver ) {
+					resizeObserver.observe( activeTabpanel );
+				}
+			} else {
+				tabpanelAttributes.push( {
+					element: tabpanel,
+					attributes: {
+						'aria-hidden': 'true'
+					}
+				} );
+				if ( typeof resizeObserver !== 'undefined' && resizeObserver ) {
+					resizeObserver.unobserve( tabpanel );
+				}
 			}
 		} );
 
 		tabs.forEach( ( tab ) => {
-			const tabAttributes = {
-				'aria-selected': false,
-				tabindex: '-1'
-			};
-			Util.setAttributes( tab, tabAttributes );
+			if ( tab === activeTab ) {
+				tabAttributes.push( {
+					element: tab,
+					attributes: {
+						'aria-selected': true,
+						tabindex: '0'
+					}
+				} );
+			} else {
+				tabAttributes.push( {
+					element: tab,
+					attributes: {
+						'aria-selected': false,
+						tabindex: '-1'
+					}
+				} );
+			}
 		} );
 
-		// Ensure `resizeObserver` is defined before using it
-		if ( typeof resizeObserver !== 'undefined' && resizeObserver ) {
-			resizeObserver.observe( activeTabpanel );
-		}
-		activeTabpanel.setAttribute( 'aria-hidden', 'false' );
-		activeTab.setAttribute( 'aria-selected', 'true' );
-		activeTab.setAttribute( 'tabindex', '0' );
+		window.requestAnimationFrame( () => {
+			tabpanelAttributes.forEach( ( { element, attributes } ) => {
+				Util.setAttributes( element, attributes );
+			} );
+			tabAttributes.forEach( ( { element, attributes } ) => {
+				Util.setAttributes( element, attributes );
+			} );
+		} );
 
 		TabberEvent.updateIndicator( tabberEl, activeTab );
 		TabberEvent.setActiveTabpanel( activeTabpanel );
@@ -691,16 +724,8 @@ class TabberBuilder {
 		this.header.append( prevButton, this.tablist, nextButton );
 	}
 
-	/**
-	 * Attach events to the tabber element.
-	 * This method checks if the window has ResizeObserver support and
-	 * creates an observer to update the header overflow.
-	 * If ResizeObserver is supported,it creates an observer to
-	 * call TabberEvent.updateHeaderOverflow method with a debounce of 250ms.
-	 * The observer is then set to observe the tablist element of the tabber.
-	 */
 	attachEvents() {
-		this.tablist.addEventListener( 'scroll', () => {
+		this.tablist.addEventListener( 'scroll', { passive: true }, () => {
 			const activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
 			TabberEvent.toggleAnimation( false );
 			window.requestAnimationFrame( () => {
@@ -712,6 +737,33 @@ class TabberBuilder {
 				TabberEvent.toggleAnimation( true );
 			}, 250 );
 		} );
+
+		let tabFocus = 0;
+		const tabs = this.tablist.querySelectorAll( ':scope > .tabber__tab' );
+		this.tablist.addEventListener( 'keydown', ( e ) => {
+			// Move right
+			if ( e.key === 'ArrowRight' || e.key === 'ArrowLeft' ) {
+				tabs[ tabFocus ].setAttribute( 'tabindex', '-1' );
+				if ( e.key === 'ArrowRight' ) {
+					tabFocus++;
+					// If we're at the end, go to the start
+					if ( tabFocus >= tabs.length ) {
+						tabFocus = 0;
+					}
+					// Move left
+				} else if ( e.key === 'ArrowLeft' ) {
+					tabFocus--;
+					// If we're at the start, move to the end
+					if ( tabFocus < 0 ) {
+						tabFocus = tabs.length - 1;
+					}
+				}
+
+				tabs[ tabFocus ].setAttribute( 'tabindex', '0' );
+				tabs[ tabFocus ].focus();
+			}
+		} );
+
 		if ( window.ResizeObserver ) {
 			const headerOverflowObserver = new ResizeObserver( mw.util.debounce( 250, () => {
 				TabberEvent.updateHeaderOverflow( this.tabber );
