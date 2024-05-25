@@ -415,15 +415,19 @@ class TabberEvent {
 		const tabpanels = tabberEl.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
 		const tabs = tabberEl.querySelectorAll( ':scope > .tabber__header > .tabber__tabs > .tabber__tab' );
 
-		[ ...tabpanels ].forEach( ( tabpanel ) => {
+		tabpanels.forEach( ( tabpanel ) => {
 			tabpanel.setAttribute( 'aria-hidden', 'true' );
 			if ( typeof resizeObserver !== 'undefined' && resizeObserver ) {
 				resizeObserver.unobserve( tabpanel );
 			}
 		} );
 
-		[ ...tabs ].forEach( ( tab ) => {
-			tab.setAttribute( 'aria-selected', 'false' );
+		tabs.forEach( ( tab ) => {
+			const tabAttributes = {
+				'aria-selected': false,
+				tabindex: '-1'
+			};
+			Util.setAttributes( tab, tabAttributes );
 		} );
 
 		// Ensure `resizeObserver` is defined before using it
@@ -432,6 +436,7 @@ class TabberEvent {
 		}
 		activeTabpanel.setAttribute( 'aria-hidden', 'false' );
 		activeTab.setAttribute( 'aria-selected', 'true' );
+		activeTab.setAttribute( 'tabindex', '0' );
 
 		TabberEvent.updateIndicator( tabberEl, activeTab );
 		TabberEvent.setActiveTabpanel( activeTabpanel );
@@ -648,7 +653,7 @@ class TabberBuilder {
 	createTabs() {
 		const fragment = document.createDocumentFragment();
 		const tabpanels = this.tabber.querySelectorAll( ':scope > .tabber__section > .tabber__panel' );
-		[ ...tabpanels ].forEach( ( tabpanel ) => {
+		tabpanels.forEach( ( tabpanel ) => {
 			fragment.append( this.createTabElement( tabpanel ) );
 		} );
 
