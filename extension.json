@@ -140,7 +140,7 @@
 			"public": true
 		},
 		"TabberNeueEnableAnimation": {
-			"value": false,
+			"value": true,
 			"description": "Enable or disable smooth scroll animation",
 			"public": true
 		},
