@@ -726,6 +726,7 @@ class TabberBuilder {
 		TabberEvent.setActiveTab( firstTabId );
 		TabberEvent.updateHeaderOverflow( this.tabber );
 		this.attachEvents();
+		this.tabber.classList.add( 'tabber--live' );
 	}
 }
 
