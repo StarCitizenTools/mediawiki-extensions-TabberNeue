@@ -434,7 +434,7 @@ class TabberBuilder {
 	}
 
 	attachEvents() {
-		this.tablist.addEventListener( 'scroll', { passive: true }, () => {
+		this.tablist.addEventListener( 'scroll', () => {
 			const activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
 			TabberEvent.toggleAnimation( false );
 			window.requestAnimationFrame( () => {
