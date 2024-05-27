@@ -1,5 +1,5 @@
 {
-	"name": "mediawiki/tabber-neue",
+	"name": "starcitizentools/tabber-neue",
 	"type": "mediawiki-extension",
 	"description": "Allows to create tabs within a page. Forked from Extension:Tabber",
 	"keywords": [
