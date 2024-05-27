@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.1.0...v2.1.1) (2024-05-27)
+
+
+### Bug Fixes
+
+* do not unobserve tabber ([def1134](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/def11349b1398abd2dc0fd516581c11b622631a3))
+* do not use passive scroll event listener for tab header ([032aef7](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/032aef7989c956b2bec7744e64d4ef537b84792c))
+
+
+### Performance Improvements
+
+* detach event listeners when not needed ([2819ba8](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/2819ba83a9b333e7c07c3f2d1f02077dd747f018))
+
 ## [2.1.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.0.0...v2.1.0) (2024-05-25)
 
 
