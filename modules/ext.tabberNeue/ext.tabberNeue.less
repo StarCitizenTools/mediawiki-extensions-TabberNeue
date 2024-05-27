@@ -1,7 +1,14 @@
-@width-bounce-dot: 12px;
-@height-indicator: 2px;
-
 .tabber {
+	// Codex tokens aren't avaliable in older MW version
+	--tabber-color-progressive: #36c;
+	--tabber-color-progressive--hover: #447ff5;
+	--tabber-color-progressive--active: #2a4b8d;
+	--tabber-color-base: #202122;
+	--tabber-color-subtle: #54595d;
+	--tabber-background-color-button-quiet--hover: rgba( 0, 24, 73, 0.027 );
+	--tabber-background-color-button-quiet--active: rgba( 0, 24, 73, 0.082 );
+	--tabber-border-color-base: #a2a9b1;
+	--tabber-height-indicator: 2px;
 	position: relative;
 	display: flex;
 
@@ -35,7 +42,7 @@
 		flex-direction: column;
 		/* defend against <section> needing 100% */
 		flex-shrink: 0;
-		box-shadow: inset 0 -1px 0 0 #a2a9b1;
+		box-shadow: inset 0 -1px 0 0 var( --tabber-border-color-base );
 		/* fixes cross browser quarks */
 		min-block-size: fit-content;
 
@@ -97,14 +104,6 @@
 		}
 	}
 
-	&__indicator {
-		border-radius: @height-indicator;
-		margin-top: @height-indicator * -1;
-		background: #36c;
-		block-size: @height-indicator;
-		inline-size: 0;
-	}
-
 	&__header,
 	&__section {
 		scrollbar-width: none;
@@ -115,15 +114,27 @@
 		}
 	}
 
+	&__indicator {
+		display: none;
+		margin-top: ~'calc( var( --tabber-height-indicator ) * -1 )';
+		background: var( --tabber-color-progressive );
+		block-size: var( --tabber-height-indicator );
+		inline-size: 0;
+
+		&--visible {
+			display: block;
+		}
+	}
+
 	&__tab {
 		padding: 0.5em 0.75em;
-		color: #54595d;
+		color: var( --tabber-color-subtle );
 		font-weight: bold;
 		text-decoration: none;
 		white-space: nowrap;
 
 		&:visited {
-			color: #54595d;
+			color: var( --tabber-color-subtle );
 		}
 
 		&:hover,
@@ -132,9 +143,19 @@
 			text-decoration: none;
 		}
 
+		&[ aria-selected='true' ] {
+			box-shadow: 0 -2px 0 var( --tabber-color-progressive ) inset;
+		}
+
 		&[ aria-selected='true' ],
 		&[ aria-selected='true' ]:visited {
-			color: #36c;
+			color: var( --tabber-color-progressive );
+		}
+	}
+
+	&__tabs--animate {
+		.tabber__tab[ aria-selected='true' ] {
+			box-shadow: none;
 		}
 	}
 
@@ -170,7 +191,7 @@
 					animation-name: skeletonload;
 					animation-timing-function: linear;
 					background: #000;
-					background: linear-gradient( to right, #202122 8%, #54595d 18%, #202122 33% );
+					background: linear-gradient( to right, var( --tabber-color-base ) 8%, var( --tabber-color-subtle ) 18%, var( --tabber-color-base ) 33% );
 				}
 
 				&::before,
@@ -226,11 +247,11 @@
 	.tabber {
 		&__tab {
 			&:hover {
-				color: #447ff5;
+				color: var( --tabber-color-progressive--hover );
 			}
 
 			&:active {
-				color: #2a4b8d;
+				color: var( --tabber-color-progressive--active );
 			}
 		}
 
@@ -238,32 +259,11 @@
 			&__prev,
 			&__next {
 				&:hover {
-					background-color: rgba( 0, 24, 73, 0.03 );
+					background-color: var( --tabber-background-color-button-quiet--hover );
 				}
 
 				&:active {
-					background-color: rgba( 0, 24, 73, 0.05 );
-				}
-			}
-		}
-	}
-}
-
-// Smooth scrolling through a large number of panels hurt performance on mobile
-// Also it will trigger unnessecary lazyloading as lazyload content show up momentarily
-@media ( prefers-reduced-motion: no-preference ) {
-	.tabber {
-		&__header {
-			scroll-behavior: smooth;
-		}
-	}
-
-	.tabber-animations-ready {
-		.tabber {
-			&__section,
-			&__tabs {
-				@media ( min-width: 720px ) {
-					scroll-behavior: smooth;
+					background-color: var( --tabber-background-color-button-quiet--active );
 				}
 			}
 		}
