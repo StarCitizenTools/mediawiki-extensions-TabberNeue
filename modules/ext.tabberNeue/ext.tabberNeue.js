@@ -26,7 +26,7 @@ class TabberAction {
 	static shouldShowAnimation() {
 		return (
 			!window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ||
-      !config.enableAnimation
+			!config.enableAnimation
 		);
 	}
 
@@ -61,7 +61,7 @@ class TabberAction {
 		const { roundScrollLeft } = Util;
 		const tablistWidth = tablist.offsetWidth;
 		const tablistScrollWidth = tablist.scrollWidth;
-		const isScrollable = tablistScrollWidth > header.offsetWidth;
+		const isScrollable = tablistScrollWidth > tablistWidth;
 
 		if ( !isScrollable ) {
 			window.requestAnimationFrame( () => {
@@ -96,15 +96,15 @@ class TabberAction {
 	 * @param {Element} tablist - The parent element containing the tabs.
 	 */
 	static animateIndicator( indicator, activeTab, tablist ) {
+		const tablistScrollLeft = Util.roundScrollLeft( tablist.scrollLeft );
+		const width = Util.getElementSize( activeTab, 'width' );
+		const transformValue = activeTab.offsetLeft - tablistScrollLeft;
+
 		window.requestAnimationFrame( () => {
 			indicator.classList.add( 'tabber__indicator--visible' );
 			tablist.classList.add( 'tabber__tabs--animate' );
-			const width = Util.getElementSize( activeTab, 'width' );
 			indicator.style.width = width + 'px';
-			indicator.style.transform = 'translateX(' +
-				( activeTab.offsetLeft - Util.roundScrollLeft( tablist.scrollLeft ) ) +
-				'px)';
-			// CSS transition is 250ms
+			indicator.style.transform = `translateX(${ transformValue }px)`;
 			setTimeout( () => {
 				indicator.classList.remove( 'tabber__indicator--visible' );
 				tablist.classList.remove( 'tabber__tabs--animate' );
@@ -245,8 +245,8 @@ class TabberAction {
 		const tablist = button
 			.closest( '.tabber__header' )
 			.querySelector( '.tabber__tabs' );
-		const scrollOffset =
-      type === 'prev' ? -tablist.offsetWidth / 2 : tablist.offsetWidth / 2;
+		const tablistWidth = tablist.offsetWidth;
+		const scrollOffset = type === 'prev' ? -tablistWidth / 2 : tablistWidth / 2;
 		TabberAction.scrollTablist( scrollOffset, tablist );
 	}
 
@@ -301,17 +301,6 @@ class TabberEvent {
 		this.onHeaderClick = this.onHeaderClick.bind( this );
 		this.onTablistScroll = this.onTablistScroll.bind( this );
 		this.onTablistKeydown = this.onTablistKeydown.bind( this );
-		// eslint-disable-next-line compat/compat
-		this.observer = new IntersectionObserver( ( entries ) => {
-			entries.forEach( ( entry ) => {
-				if ( entry.isIntersecting ) {
-					this.resume();
-				} else {
-					this.pause();
-				}
-			} );
-		} );
-		this.resume();
 	}
 
 	/**
@@ -412,7 +401,6 @@ class TabberEvent {
 		this.header.addEventListener( 'click', this.onHeaderClick );
 		this.tablist.addEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.addEventListener( 'keydown', this.onTablistKeydown );
-		this.observer.observe( this.tabber );
 
 		if ( window.ResizeObserver ) {
 			const headerOverflowObserver = new ResizeObserver( this.debounceUpdateHeaderOverflow() );
@@ -427,7 +415,26 @@ class TabberEvent {
 		this.header.removeEventListener( 'click', this.onHeaderClick );
 		this.tablist.removeEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.removeEventListener( 'keydown', this.onTablistKeydown );
-		this.observer.unobserve( this.tabber );
+	}
+
+	/**
+	 * Initializes the TabberEvent instance by creating an IntersectionObserver to handle tabber visibility.
+	 * When the tabber intersects with the viewport, it resumes event listeners for header click, tablist scroll, and tablist keydown.
+	 * Otherwise, it pauses the event listeners.
+	 */
+	init() {
+		// eslint-disable-next-line compat/compat
+		this.observer = new IntersectionObserver( ( entries ) => {
+			entries.forEach( ( entry ) => {
+				if ( entry.isIntersecting ) {
+					this.resume();
+				} else {
+					this.pause();
+				}
+			} );
+		} );
+		this.observer.observe( this.tabber );
+		this.resume();
 	}
 }
 
@@ -593,8 +600,8 @@ class TabberBuilder {
 		TabberAction.setActiveTab( firstTab );
 		TabberAction.updateHeaderOverflow( this.tabber );
 		setTimeout( () => {
-			// eslint-disable-next-line no-unused-vars
 			const tabberEvent = new TabberEvent( this.tabber, this.tablist );
+			tabberEvent.init();
 			this.tabber.classList.add( 'tabber--live' );
 		}, 10 );
 	}
