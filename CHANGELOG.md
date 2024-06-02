@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.2.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.1.1...v2.2.0) (2024-06-02)
+
+
+### Features
+
+* add home and end key shortcuts on tablist ([ac27855](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/ac27855dec668cc05d45f6f9118f767461338a4b))
+* add screen reader text to navigation button ([0904298](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/0904298948e7b7916699c156cc905ce262ab5229))
+
+
+### Bug Fixes
+
+* incorrect tab colors ([20e88b8](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/20e88b8b5a6dd1f4c91d7a0c2735316301c4dc19))
+* set tabindex -1 on hidden tabs ([7e921a4](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/7e921a4a3a4b9f7d467b22272b477a06c638f04e))
+
+
+### Miscellaneous Chores
+
+* use starcitizentools as vendor in composer ([ceb719d](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/ceb719d83a0812c448cc12e13a9b5a7bf587a38e))
+
 ## [2.1.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.1.0...v2.1.1) (2024-05-27)
 
 
