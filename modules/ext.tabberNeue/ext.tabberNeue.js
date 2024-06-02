@@ -595,9 +595,11 @@ class TabberBuilder {
 	createHeader() {
 		const prevButton = document.createElement( 'button' );
 		prevButton.classList.add( 'tabber__header__prev' );
+		prevButton.setAttribute( 'aria-label', mw.message( 'tabberneue-button-prev' ).text() );
 
 		const nextButton = document.createElement( 'button' );
 		nextButton.classList.add( 'tabber__header__next' );
+		nextButton.setAttribute( 'aria-label', mw.message( 'tabberneue-button-next' ).text() );
 
 		this.header.append( prevButton, this.tablist, nextButton );
 	}

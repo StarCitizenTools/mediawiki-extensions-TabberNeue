@@ -7,6 +7,8 @@
         ]
     },
     "tabberneue-desc": "Allows to create tabs within a page. Forked from [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
+    "tabberneue-button-next": "Next",
+    "tabberneue-button-prev": "Previous",
     "tabberneue-tabber-category": "Pages using Tabber parser tag",
     "tabberneue-tabbertransclude-category": "Pages using TabberTransclude parser tag",
     "tabberneue-visualeditor-mwtabberdialog-title": "Tabber",

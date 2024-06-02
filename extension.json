@@ -52,7 +52,9 @@
 				"ext.tabberNeue/Util.js"
 			],
 			"messages": [
-				"error"
+				"error",
+				"tabberneue-button-next",
+				"tabberneue-button-prev"
 			],
 			"styles": [
 				"ext.tabberNeue/ext.tabberNeue.less",
