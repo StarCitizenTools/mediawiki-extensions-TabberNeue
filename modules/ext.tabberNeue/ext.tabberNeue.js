@@ -164,7 +164,8 @@ class TabberAction {
 				tabpanelVisibilityUpdates.push( {
 					element: tabpanel,
 					attributes: {
-						'aria-hidden': 'false'
+						'aria-hidden': 'false',
+						tabindex: '0'
 					}
 				} );
 				if ( typeof resizeObserver !== 'undefined' && resizeObserver ) {
@@ -174,7 +175,8 @@ class TabberAction {
 				tabpanelVisibilityUpdates.push( {
 					element: tabpanel,
 					attributes: {
-						'aria-hidden': 'true'
+						'aria-hidden': 'true',
+						tabindex: '-1'
 					}
 				} );
 				if ( typeof resizeObserver !== 'undefined' && resizeObserver ) {
