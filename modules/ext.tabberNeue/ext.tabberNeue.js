@@ -313,15 +313,19 @@ class TabberEvent {
 	}
 
 	/**
-	 * Handles changing the focus to the next or previous tab based on the arrow direction.
+	 * Handles changing the focus to the tab based on the key pressed.
 	 *
-	 * @param {string} arrowDirection - The direction of the arrow key pressed ('right' or 'left').
+	 * @param {string} key - The key pressed ('home' or 'end' or 'right' or 'left').
 	 */
-	handleTabFocusChange( arrowDirection ) {
+	handleTabFocusChange( key ) {
 		this.tabs[ this.tabFocus ].setAttribute( 'tabindex', '-1' );
-		if ( arrowDirection === 'right' ) {
+		if ( key === 'home' ) {
+			this.tabFocus = 0;
+		} else if ( key === 'end' ) {
+			this.tabFocus = this.tabs.length - 1;
+		} else if ( key === 'right' ) {
 			this.tabFocus = ( this.tabFocus + 1 ) % this.tabs.length;
-		} else if ( arrowDirection === 'left' ) {
+		} else if ( key === 'left' ) {
 			this.tabFocus = ( this.tabFocus - 1 + this.tabs.length ) % this.tabs.length;
 		}
 
@@ -381,13 +385,21 @@ class TabberEvent {
 
 	/**
 	 * Handles the keydown event on the tablist element.
+	 * If the key pressed is 'Home', it changes the focus to the first tab.
+	 * If the key pressed is 'End', it changes the focus to the last tab.
 	 * If the key pressed is 'ArrowRight', it changes the focus to the next tab.
 	 * If the key pressed is 'ArrowLeft', it changes the focus to the previous tab.
 	 *
 	 * @param {Event} e - The keydown event object.
 	 */
 	onTablistKeydown( e ) {
-		if ( e.key === 'ArrowRight' ) {
+		if ( e.key === 'Home' ) {
+			e.preventDefault();
+			this.handleTabFocusChange( 'home' );
+		} else if ( e.key === 'End' ) {
+			e.preventDefault();
+			this.handleTabFocusChange( 'end' );
+		} else if ( e.key === 'ArrowRight' ) {
 			this.handleTabFocusChange( 'right' );
 		} else if ( e.key === 'ArrowLeft' ) {
 			this.handleTabFocusChange( 'left' );
