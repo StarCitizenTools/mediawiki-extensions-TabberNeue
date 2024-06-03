@@ -5,6 +5,8 @@
 		]
 	},
 	"tabberneue-desc": "אפשרות ליצור לשוניות בתוך דף. פוצל מ[https://www.mediawiki.org/wiki/Extension:Tabber ההרחבה Tabber].",
+	"tabberneue-button-next": "הבא",
+	"tabberneue-button-prev": "הקודם",
 	"tabberneue-tabber-category": "דפים המשתמשים בתג מפענח Tabber",
 	"tabberneue-tabbertransclude-category": "דפים המשתמשים בתג מפענח TabberTransclude",
 	"tabberneue-visualeditor-mwtabberdialog-title": "יוצר לשוניות",

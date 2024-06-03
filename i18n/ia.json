@@ -5,6 +5,8 @@
 		]
 	},
 	"tabberneue-desc": "Permitte crear schedas intra un pagina. Bifurcate ab [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
+	"tabberneue-button-next": "Sequente",
+	"tabberneue-button-prev": "Precedente",
 	"tabberneue-tabber-category": "Paginas que usa le etiquetta de analysator Tabber",
 	"tabberneue-tabbertransclude-category": "Paginas que usa le etiquetta de analysator TabberTransclude",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",

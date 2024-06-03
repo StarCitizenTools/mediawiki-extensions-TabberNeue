@@ -5,5 +5,7 @@
 			"Darth Kule"
 		]
 	},
-	"tabberneue-desc": "Consente di creare schede all'interno di una pagina. Proviene da [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber]."
+	"tabberneue-desc": "Consente di creare schede all'interno di una pagina. Proviene da [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
+	"tabberneue-button-next": "Successivo",
+	"tabberneue-button-prev": "Precedente"
 }
