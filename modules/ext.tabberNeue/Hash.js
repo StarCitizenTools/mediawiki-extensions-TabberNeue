@@ -52,7 +52,7 @@ class Hash {
 	 * @return {string} - A unique hash created from the title text.
 	 */
 	static build( titleText ) {
-		let hash = mw.util.escapeIdForAttribute( titleText );
+		let hash = `tabber-${ mw.util.escapeIdForAttribute( titleText ) }`;
 
 		if ( Hash.exists( hash ) ) {
 			hash = Hash.makeUnique( hash );
