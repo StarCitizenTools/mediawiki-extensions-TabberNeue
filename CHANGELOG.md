@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.2.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.2.0...v2.2.1) (2024-06-06)
+
+
+### Bug Fixes
+
+* prepend tabber ID with prefix to avoid conflict with existing header ([d150b9e](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/d150b9e3e9cfb8f395556bbea50e6cd0addb0bad))
+* refresh Tabber height when it comes into viewport ([8b39e9e](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/8b39e9e9702be1f9b977bf1a5a16358f577dfd2f)), closes [#137](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/137)
+* use resizeObserver on active tabpanel instead ([0177715](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/0177715f2b043606ce1ee61631a4117188594966))
+
 ## [2.2.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.1.1...v2.2.0) (2024-06-02)
 
 
