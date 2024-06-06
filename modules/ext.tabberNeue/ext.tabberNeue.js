@@ -420,6 +420,10 @@ class TabberEvent {
 			const headerOverflowObserver = new ResizeObserver( this.debounceUpdateHeaderOverflow() );
 			headerOverflowObserver.observe( this.tablist );
 		}
+
+		// Refresh tabber height after it comes into viewport (#137)
+		const activeTabpanel = document.getElementById( this.activeTab.getAttribute( 'aria-controls' ) );
+		TabberAction.setActiveTabpanel( activeTabpanel );
 	}
 
 	/**
