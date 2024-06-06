@@ -10,8 +10,6 @@ const Hash = require( './Hash.js' );
 const Transclude = require( './Transclude.js' );
 const Util = require( './Util.js' );
 
-let resizeObserver;
-
 /**
  * Class representing TabberAction functionality for handling tab events and animations.
  *
@@ -168,9 +166,6 @@ class TabberAction {
 						tabindex: '0'
 					}
 				} );
-				if ( typeof resizeObserver !== 'undefined' && resizeObserver ) {
-					resizeObserver.observe( activeTabpanel );
-				}
 			} else {
 				tabpanelVisibilityUpdates.push( {
 					element: tabpanel,
@@ -179,9 +174,6 @@ class TabberAction {
 						tabindex: '-1'
 					}
 				} );
-				if ( typeof resizeObserver !== 'undefined' && resizeObserver ) {
-					resizeObserver.unobserve( tabpanel );
-				}
 			}
 		} );
 
@@ -251,35 +243,6 @@ class TabberAction {
 		const scrollOffset = type === 'prev' ? -tablistWidth / 2 : tablistWidth / 2;
 		TabberAction.scrollTablist( scrollOffset, tablist );
 	}
-
-	/**
-	 * Checks if there are entries and the first entry has a target element
-	 * that is an instance of Element.
-	 * If true, calls the setActiveTabpanel method of the TabberAction class
-	 * with the activeTabpanel as the argument.
-	 *
-	 * @param {ResizeObserverEntry[]} entries
-	 */
-	static handleElementResize( entries ) {
-		if ( entries && entries.length > 0 ) {
-			const activeTabpanel = entries[ 0 ].target;
-			if ( activeTabpanel instanceof Element ) {
-				TabberAction.setActiveTabpanel( activeTabpanel );
-			}
-		}
-	}
-
-	/**
-	 * Sets up event listeners for tab elements.
-	 * Attaches a click event listener to the body content element,
-	 * delegating the click event to the tab elements.
-	 * When a tab element is clicked, it triggers the handleClick method of the TabberAction class.
-	 */
-	static attachEvents() {
-		if ( window.ResizeObserver ) {
-			resizeObserver = new ResizeObserver( TabberAction.handleElementResize );
-		}
-	}
 }
 
 /**
@@ -298,11 +261,34 @@ class TabberEvent {
 		this.activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
 		this.indicator = this.tabber.querySelector( ':scope > .tabber__header > .tabber__indicator' );
 		this.tabFocus = 0;
-		this.debouncedUpdateHeaderOverflow = mw.util.debounce( () => TabberAction.updateHeaderOverflow( this.tabber ), 250 );
+		this.debouncedUpdateHeaderOverflow = mw.util.debounce( () => TabberAction.updateHeaderOverflow( this.tabber ), 100 );
+		this.debouncedSetActiveTabpanel = mw.util.debounce( () => TabberAction.setActiveTabpanel( this.getActiveTabpanel() ), 100 );
 		this.handleTabFocusChange = this.handleTabFocusChange.bind( this );
 		this.onHeaderClick = this.onHeaderClick.bind( this );
 		this.onTablistScroll = this.onTablistScroll.bind( this );
 		this.onTablistKeydown = this.onTablistKeydown.bind( this );
+		// eslint-disable-next-line compat/compat
+		this.activeTabpanelObserver = new ResizeObserver( this.debounceSetActiveTabpanel() );
+		// eslint-disable-next-line compat/compat
+		this.headerOverflowObserver = new ResizeObserver( this.debounceUpdateHeaderOverflow() );
+	}
+
+	/**
+	 * Returns the active tab panel element based on the currently active tab.
+	 *
+	 * @return {Element} The active tab panel element.
+	 */
+	getActiveTabpanel() {
+		return document.getElementById( this.activeTab.getAttribute( 'aria-controls' ) );
+	}
+
+	/**
+	 * Returns a debounced function that updates the height of the active tabpanel
+	 *
+	 * @return {Function} A debounced function that updates the height of the active tabpanel.
+	 */
+	debounceSetActiveTabpanel() {
+		return this.debouncedSetActiveTabpanel;
 	}
 
 	/**
@@ -409,36 +395,31 @@ class TabberEvent {
 	}
 
 	/**
-	 * Adds event listeners for header click, tablist scroll, and tablist keydown.
+	 * Adds listeners for header click, tablist scroll, tablist keydown, and activeTabpanel resize.
 	 */
 	resume() {
 		this.header.addEventListener( 'click', this.onHeaderClick );
 		this.tablist.addEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.addEventListener( 'keydown', this.onTablistKeydown );
-
-		if ( window.ResizeObserver ) {
-			const headerOverflowObserver = new ResizeObserver( this.debounceUpdateHeaderOverflow() );
-			headerOverflowObserver.observe( this.tablist );
-		}
-
-		// Refresh tabber height after it comes into viewport (#137)
-		const activeTabpanel = document.getElementById( this.activeTab.getAttribute( 'aria-controls' ) );
-		TabberAction.setActiveTabpanel( activeTabpanel );
+		this.activeTabpanelObserver.observe( this.getActiveTabpanel() );
+		this.headerOverflowObserver.observe( this.tablist );
 	}
 
 	/**
-	 * Removes event listeners for header click, tablist scroll, and tablist keydown.
+	 * Removes listeners for header click, tablist scroll, tablist keydown, and activeTabpanel resize.
 	 */
 	pause() {
 		this.header.removeEventListener( 'click', this.onHeaderClick );
 		this.tablist.removeEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.removeEventListener( 'keydown', this.onTablistKeydown );
+		this.activeTabpanelObserver.unobserve( this.getActiveTabpanel() );
+		this.headerOverflowObserver.unobserve( this.tablist );
 	}
 
 	/**
 	 * Initializes the TabberEvent instance by creating an IntersectionObserver to handle tabber visibility.
-	 * When the tabber intersects with the viewport, it resumes event listeners for header click, tablist scroll, and tablist keydown.
-	 * Otherwise, it pauses the event listeners.
+	 * When the tabber intersects with the viewport, it resumes all event listeners and observers.
+	 * Otherwise, it pauses the event listeners and observers.
 	 */
 	init() {
 		// eslint-disable-next-line compat/compat
@@ -657,7 +638,6 @@ function load( tabberEls ) {
 		} );
 	}
 
-	TabberAction.attachEvents();
 	// Delay animation execution so it doesn't not animate the tab gets into position on load
 	setTimeout( () => {
 		TabberAction.toggleAnimation( true );
