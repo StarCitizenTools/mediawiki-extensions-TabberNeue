@@ -10,6 +10,8 @@ const Hash = require( './Hash.js' );
 const Transclude = require( './Transclude.js' );
 const Util = require( './Util.js' );
 
+let resizeObserver;
+
 /**
  * Class representing TabberAction functionality for handling tab events and animations.
  *
@@ -51,11 +53,10 @@ class TabberAction {
 	 * Updates the header overflow based on the scroll position of the tab list.
 	 * If the tab list is scrollable, it adds/removes classes to show/hide navigation buttons.
 	 *
-	 * @param {Element} tabberEl - The tabber element containing the header and tab list.
+	 * @param {Element} tablist - The tablist element in the tabber
 	 */
-	static updateHeaderOverflow( tabberEl ) {
-		const header = tabberEl.querySelector( ':scope > .tabber__header' );
-		const tablist = header.querySelector( ':scope > .tabber__tabs' );
+	static updateHeaderOverflow( tablist ) {
+		const header = tablist.closest( '.tabber__header' );
 		const { roundScrollLeft } = Util;
 		const tablistWidth = tablist.offsetWidth;
 		const tablistScrollWidth = tablist.scrollWidth;
@@ -243,6 +244,18 @@ class TabberAction {
 		const scrollOffset = type === 'prev' ? -tablistWidth / 2 : tablistWidth / 2;
 		TabberAction.scrollTablist( scrollOffset, tablist );
 	}
+
+	/**
+	 * Handles the resize event for the header element.
+	 * Updates the header overflow based on the scroll position of the tab list.
+	 *
+	 * @param {ResizeObserverEntry[]} entries - An array of ResizeObserverEntry objects.
+	 */
+	static handleHeaderResize( entries ) {
+		for ( const { target } of entries ) {
+			TabberAction.updateHeaderOverflow( target );
+		}
+	}
 }
 
 /**
@@ -261,7 +274,7 @@ class TabberEvent {
 		this.activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
 		this.indicator = this.tabber.querySelector( ':scope > .tabber__header > .tabber__indicator' );
 		this.tabFocus = 0;
-		this.debouncedUpdateHeaderOverflow = mw.util.debounce( () => TabberAction.updateHeaderOverflow( this.tabber ), 100 );
+		this.debouncedUpdateHeaderOverflow = mw.util.debounce( () => TabberAction.updateHeaderOverflow( this.tablist ), 100 );
 		this.debouncedSetActiveTabpanel = mw.util.debounce( () => TabberAction.setActiveTabpanel( this.getActiveTabpanel() ), 100 );
 		this.handleTabFocusChange = this.handleTabFocusChange.bind( this );
 		this.onHeaderClick = this.onHeaderClick.bind( this );
@@ -269,8 +282,6 @@ class TabberEvent {
 		this.onTablistKeydown = this.onTablistKeydown.bind( this );
 		// eslint-disable-next-line compat/compat
 		this.activeTabpanelObserver = new ResizeObserver( this.debounceSetActiveTabpanel() );
-		// eslint-disable-next-line compat/compat
-		this.headerOverflowObserver = new ResizeObserver( this.debounceUpdateHeaderOverflow() );
 	}
 
 	/**
@@ -402,7 +413,7 @@ class TabberEvent {
 		this.tablist.addEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.addEventListener( 'keydown', this.onTablistKeydown );
 		this.activeTabpanelObserver.observe( this.getActiveTabpanel() );
-		this.headerOverflowObserver.observe( this.tablist );
+		resizeObserver.observe( this.tablist );
 	}
 
 	/**
@@ -413,7 +424,7 @@ class TabberEvent {
 		this.tablist.removeEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.removeEventListener( 'keydown', this.onTablistKeydown );
 		this.activeTabpanelObserver.unobserve( this.getActiveTabpanel() );
-		this.headerOverflowObserver.unobserve( this.tablist );
+		resizeObserver.unobserve( this.tablist );
 	}
 
 	/**
@@ -599,7 +610,7 @@ class TabberBuilder {
 		this.createIndicator();
 		const firstTab = this.tablist.querySelector( '.tabber__tab' );
 		TabberAction.setActiveTab( firstTab );
-		TabberAction.updateHeaderOverflow( this.tabber );
+		TabberAction.updateHeaderOverflow( this.tablist );
 		setTimeout( () => {
 			const tabberEvent = new TabberEvent( this.tabber, this.tablist );
 			tabberEvent.init();
@@ -637,6 +648,9 @@ function load( tabberEls ) {
 			} );
 		} );
 	}
+
+	// eslint-disable-next-line compat/compat
+	resizeObserver = new ResizeObserver( mw.util.debounce( TabberAction.handleHeaderResize, 100 ) );
 
 	// Delay animation execution so it doesn't not animate the tab gets into position on load
 	setTimeout( () => {
