@@ -246,14 +246,19 @@ class TabberAction {
 	}
 
 	/**
-	 * Handles the resize event for the header element.
-	 * Updates the header overflow based on the scroll position of the tab list.
+	 * Handles the resize event for tabber elements.
+	 * Updates the header overflow if the resized element is a tab list,
+	 * or sets the active tab panel if the resized element is a tab panel.
 	 *
 	 * @param {ResizeObserverEntry[]} entries - An array of ResizeObserverEntry objects.
 	 */
-	static handleHeaderResize( entries ) {
+	static onResize( entries ) {
 		for ( const { target } of entries ) {
-			TabberAction.updateHeaderOverflow( target );
+			if ( target.classList.contains( 'tabber__tabs' ) ) {
+				TabberAction.updateHeaderOverflow( target );
+			} else if ( target.classList.contains( 'tabber__panel' ) ) {
+				TabberAction.setActiveTabpanel( target );
+			}
 		}
 	}
 }
@@ -275,13 +280,10 @@ class TabberEvent {
 		this.indicator = this.tabber.querySelector( ':scope > .tabber__header > .tabber__indicator' );
 		this.tabFocus = 0;
 		this.debouncedUpdateHeaderOverflow = mw.util.debounce( () => TabberAction.updateHeaderOverflow( this.tablist ), 100 );
-		this.debouncedSetActiveTabpanel = mw.util.debounce( () => TabberAction.setActiveTabpanel( this.getActiveTabpanel() ), 100 );
 		this.handleTabFocusChange = this.handleTabFocusChange.bind( this );
 		this.onHeaderClick = this.onHeaderClick.bind( this );
 		this.onTablistScroll = this.onTablistScroll.bind( this );
 		this.onTablistKeydown = this.onTablistKeydown.bind( this );
-		// eslint-disable-next-line compat/compat
-		this.activeTabpanelObserver = new ResizeObserver( this.debounceSetActiveTabpanel() );
 	}
 
 	/**
@@ -291,15 +293,6 @@ class TabberEvent {
 	 */
 	getActiveTabpanel() {
 		return document.getElementById( this.activeTab.getAttribute( 'aria-controls' ) );
-	}
-
-	/**
-	 * Returns a debounced function that updates the height of the active tabpanel
-	 *
-	 * @return {Function} A debounced function that updates the height of the active tabpanel.
-	 */
-	debounceSetActiveTabpanel() {
-		return this.debouncedSetActiveTabpanel;
 	}
 
 	/**
@@ -412,8 +405,8 @@ class TabberEvent {
 		this.header.addEventListener( 'click', this.onHeaderClick );
 		this.tablist.addEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.addEventListener( 'keydown', this.onTablistKeydown );
-		this.activeTabpanelObserver.observe( this.getActiveTabpanel() );
 		resizeObserver.observe( this.tablist );
+		resizeObserver.observe( this.getActiveTabpanel() );
 	}
 
 	/**
@@ -423,8 +416,8 @@ class TabberEvent {
 		this.header.removeEventListener( 'click', this.onHeaderClick );
 		this.tablist.removeEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.removeEventListener( 'keydown', this.onTablistKeydown );
-		this.activeTabpanelObserver.unobserve( this.getActiveTabpanel() );
 		resizeObserver.unobserve( this.tablist );
+		resizeObserver.unobserve( this.getActiveTabpanel() );
 	}
 
 	/**
@@ -650,7 +643,7 @@ function load( tabberEls ) {
 	}
 
 	// eslint-disable-next-line compat/compat
-	resizeObserver = new ResizeObserver( mw.util.debounce( TabberAction.handleHeaderResize, 100 ) );
+	resizeObserver = new ResizeObserver( mw.util.debounce( TabberAction.onResize, 100 ) );
 
 	// Delay animation execution so it doesn't not animate the tab gets into position on load
 	setTimeout( () => {
