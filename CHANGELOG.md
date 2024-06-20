@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.2.2](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.2.1...v2.2.2) (2024-06-20)
+
+
+### Bug Fixes
+
+* make sure that init functions are run sequentially ([8a88a43](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/8a88a43d581ff1708aafeef61e7bd8bc45f3aa5d)), closes [#148](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/148)
+
+
+### Performance Improvements
+
+* merge activeTabpanel resize observer into the main resizeObserver ([35ffe55](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/35ffe555c07fd06439db5c7e161cd1214a65d6c0))
+* only use one resizeObserver for header overflow ([a414d2d](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/a414d2df707e44c6ac629dcbd737b3c9bda4dc0d))
+
 ## [2.2.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.2.0...v2.2.1) (2024-06-06)
 
 
