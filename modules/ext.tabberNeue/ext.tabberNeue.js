@@ -26,7 +26,7 @@ class TabberAction {
 	static shouldShowAnimation() {
 		return (
 			!window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ||
-			!config.enableAnimation
+            !config.enableAnimation
 		);
 	}
 
@@ -140,73 +140,86 @@ class TabberAction {
 
 	/**
 	 * Sets the active tab in the tabber element.
-	 * Updates the visibility and attributes of tab panels and tabs based on the active tab.
+	 * Updates the attributes of tabs and tab panels to reflect the active state.
+	 * Animates the indicator to the active tab and sets the active tab panel.
 	 *
-	 * @param {Element} activeTab - The active tab element to be set.
+	 * @param {Element} activeTab - The tab element to set as active.
+	 * @return {Promise} - A promise that resolves once the active tab is set.
 	 */
 	static setActiveTab( activeTab ) {
-		const activeTabpanel = document.getElementById( activeTab.getAttribute( 'aria-controls' ) );
-		const tabberEl = activeTabpanel.closest( '.tabber' );
-		const indicator = tabberEl.querySelector( ':scope > .tabber__header > .tabber__indicator' );
-		const tabpanels = tabberEl.querySelectorAll(
-			':scope > .tabber__section > .tabber__panel'
-		);
-		const tabs = tabberEl.querySelectorAll(
-			':scope > .tabber__header > .tabber__tabs > .tabber__tab'
-		);
+		return new Promise( ( resolve ) => {
+			const activeTabpanel = document.getElementById(
+				activeTab.getAttribute( 'aria-controls' )
+			);
+			const tabberEl = activeTabpanel.closest( '.tabber' );
+			const indicator = tabberEl.querySelector(
+				':scope > .tabber__header > .tabber__indicator'
+			);
+			const tabpanels = tabberEl.querySelectorAll(
+				':scope > .tabber__section > .tabber__panel'
+			);
+			const tabs = tabberEl.querySelectorAll(
+				':scope > .tabber__header > .tabber__tabs > .tabber__tab'
+			);
 
-		const tabStateUpdates = [];
-		const tabpanelVisibilityUpdates = [];
+			const tabStateUpdates = [];
+			const tabpanelVisibilityUpdates = [];
 
-		tabpanels.forEach( ( tabpanel ) => {
-			if ( tabpanel === activeTabpanel ) {
-				tabpanelVisibilityUpdates.push( {
-					element: tabpanel,
-					attributes: {
-						'aria-hidden': 'false',
-						tabindex: '0'
-					}
-				} );
-			} else {
-				tabpanelVisibilityUpdates.push( {
-					element: tabpanel,
-					attributes: {
-						'aria-hidden': 'true',
-						tabindex: '-1'
-					}
-				} );
-			}
-		} );
-
-		tabs.forEach( ( tab ) => {
-			if ( tab === activeTab ) {
-				tabStateUpdates.push( {
-					element: tab,
-					attributes: {
-						'aria-selected': true,
-						tabindex: '0'
-					}
-				} );
-			} else {
-				tabStateUpdates.push( {
-					element: tab,
-					attributes: {
-						'aria-selected': false,
-						tabindex: '-1'
-					}
-				} );
-			}
-		} );
-
-		window.requestAnimationFrame( () => {
-			tabpanelVisibilityUpdates.forEach( ( { element, attributes } ) => {
-				Util.setAttributes( element, attributes );
+			tabpanels.forEach( ( tabpanel ) => {
+				if ( tabpanel === activeTabpanel ) {
+					tabpanelVisibilityUpdates.push( {
+						element: tabpanel,
+						attributes: {
+							'aria-hidden': 'false',
+							tabindex: '0'
+						}
+					} );
+				} else {
+					tabpanelVisibilityUpdates.push( {
+						element: tabpanel,
+						attributes: {
+							'aria-hidden': 'true',
+							tabindex: '-1'
+						}
+					} );
+				}
 			} );
-			tabStateUpdates.forEach( ( { element, attributes } ) => {
-				Util.setAttributes( element, attributes );
+
+			tabs.forEach( ( tab ) => {
+				if ( tab === activeTab ) {
+					tabStateUpdates.push( {
+						element: tab,
+						attributes: {
+							'aria-selected': true,
+							tabindex: '0'
+						}
+					} );
+				} else {
+					tabStateUpdates.push( {
+						element: tab,
+						attributes: {
+							'aria-selected': false,
+							tabindex: '-1'
+						}
+					} );
+				}
 			} );
-			TabberAction.animateIndicator( indicator, activeTab, activeTab.parentElement );
-			TabberAction.setActiveTabpanel( activeTabpanel );
+
+			window.requestAnimationFrame( () => {
+				tabpanelVisibilityUpdates.forEach( ( { element, attributes } ) => {
+					Util.setAttributes( element, attributes );
+				} );
+				tabStateUpdates.forEach( ( { element, attributes } ) => {
+					Util.setAttributes( element, attributes );
+				} );
+				TabberAction.animateIndicator(
+					indicator,
+					activeTab,
+					activeTab.parentElement
+				);
+				TabberAction.setActiveTabpanel( activeTabpanel );
+			} );
+			resolve();
 		} );
 	}
 
@@ -241,7 +254,8 @@ class TabberAction {
 			.closest( '.tabber__header' )
 			.querySelector( '.tabber__tabs' );
 		const tablistWidth = tablist.offsetWidth;
-		const scrollOffset = type === 'prev' ? -tablistWidth / 2 : tablistWidth / 2;
+		const scrollOffset =
+            type === 'prev' ? -tablistWidth / 2 : tablistWidth / 2;
 		TabberAction.scrollTablist( scrollOffset, tablist );
 	}
 
@@ -277,9 +291,14 @@ class TabberEvent {
 		this.header = this.tablist.parentElement;
 		this.tabs = this.tablist.querySelectorAll( ':scope > .tabber__tab' );
 		this.activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
-		this.indicator = this.tabber.querySelector( ':scope > .tabber__header > .tabber__indicator' );
+		this.indicator = this.tabber.querySelector(
+			':scope > .tabber__header > .tabber__indicator'
+		);
 		this.tabFocus = 0;
-		this.debouncedUpdateHeaderOverflow = mw.util.debounce( () => TabberAction.updateHeaderOverflow( this.tablist ), 100 );
+		this.debouncedUpdateHeaderOverflow = mw.util.debounce(
+			() => TabberAction.updateHeaderOverflow( this.tablist ),
+			100
+		);
 		this.handleTabFocusChange = this.handleTabFocusChange.bind( this );
 		this.onHeaderClick = this.onHeaderClick.bind( this );
 		this.onTablistScroll = this.onTablistScroll.bind( this );
@@ -292,7 +311,9 @@ class TabberEvent {
 	 * @return {Element} The active tab panel element.
 	 */
 	getActiveTabpanel() {
-		return document.getElementById( this.activeTab.getAttribute( 'aria-controls' ) );
+		return document.getElementById(
+			this.activeTab.getAttribute( 'aria-controls' )
+		);
 	}
 
 	/**
@@ -318,7 +339,8 @@ class TabberEvent {
 		} else if ( key === 'right' ) {
 			this.tabFocus = ( this.tabFocus + 1 ) % this.tabs.length;
 		} else if ( key === 'left' ) {
-			this.tabFocus = ( this.tabFocus - 1 + this.tabs.length ) % this.tabs.length;
+			this.tabFocus =
+                ( this.tabFocus - 1 + this.tabs.length ) % this.tabs.length;
 		}
 
 		this.tabs[ this.tabFocus ].setAttribute( 'tabindex', '0' );
@@ -345,7 +367,10 @@ class TabberEvent {
 				history.replaceState(
 					null,
 					'',
-					window.location.pathname + window.location.search + '#' + this.activeTab.id
+					window.location.pathname +
+                        window.location.search +
+                        '#' +
+                        this.activeTab.getAttribute( 'aria-controls' )
 				);
 			}
 			TabberAction.setActiveTab( this.activeTab );
@@ -540,75 +565,105 @@ class TabberBuilder {
 	}
 
 	/**
-	 * Creates tab elements for each tab panel in the tabber.
+	 * Creates tabs for the tabber.
 	 *
-	 * It creates a document fragment to hold the tab elements, then iterates over each tab panel
-	 * element in the tabber. For each tab panel, it calls the createTabElement method to create a
-	 * corresponding tab element and appends it to the fragment. Finally, it adds the fragment
-	 * to the tablist element, sets the necessary attributes for the tablist, and adds a
-	 * CSS class for styling.
+	 * This method creates tab elements for each tab panel in the tabber.
+	 * It appends the created tabs to the tablist element, adds necessary attributes,
+	 * and sets the role attribute for accessibility.
+	 *
+	 * @return {Promise} A promise that resolves once all tabs are created and appended to the tablist.
 	 */
 	createTabs() {
-		const fragment = document.createDocumentFragment();
-		const tabpanels = this.tabber.querySelectorAll(
-			':scope > .tabber__section > .tabber__panel'
-		);
-		tabpanels.forEach( ( tabpanel ) => {
-			fragment.append( this.createTabElement( tabpanel ) );
-		} );
+		return new Promise( ( resolve ) => {
+			const fragment = document.createDocumentFragment();
+			const tabpanels = this.tabber.querySelectorAll(
+				':scope > .tabber__section > .tabber__panel'
+			);
+			tabpanels.forEach( ( tabpanel ) => {
+				fragment.append( this.createTabElement( tabpanel ) );
+			} );
 
-		this.tablist.append( fragment );
-		this.tablist.classList.add( 'tabber__tabs' );
-		this.tablist.setAttribute( 'role', 'tablist' );
+			this.tablist.append( fragment );
+			this.tablist.classList.add( 'tabber__tabs' );
+			this.tablist.setAttribute( 'role', 'tablist' );
+			resolve();
+		} );
 	}
 
 	/**
 	 * Creates the indicator element for the tabber.
 	 *
 	 * This method creates a div element to serve as the indicator for the active tab.
-	 * It adds the 'tabber__indicator' CSS class to the indicator element and appends it to the
-	 * header of the tabber.
+	 * The indicator element is given a specific CSS class for styling and is appended to the tabber header.
+	 *
+	 * @return {Promise} A promise that resolves once the indicator element is created.
 	 */
 	createIndicator() {
-		const indicator = document.createElement( 'div' );
-		indicator.classList.add( 'tabber__indicator' );
-		this.header.append( indicator );
+		return new Promise( ( resolve ) => {
+			const indicator = document.createElement( 'div' );
+			indicator.classList.add( 'tabber__indicator' );
+			this.header.append( indicator );
+			resolve();
+		} );
 	}
 
 	/**
-	 * Creates the header elements for the tabber.
+	 * Creates the header for the tabber.
 	 *
-	 * This method creates two buttons for navigating to the previous and next tabs,
-	 * adds a tablist element. Finally, it appends all these elements to the header of the tabber.
+	 * This method creates two button elements, one for navigating to the previous tab and one for navigating to the next tab.
+	 * Each button element is created with the specified class and aria-label attributes.
+	 * The created buttons are appended to the header of the tabber.
+	 *
+	 * @return {Promise} A promise that resolves once the header is created.
 	 */
 	createHeader() {
-		const prevButton = document.createElement( 'button' );
-		prevButton.classList.add( 'tabber__header__prev' );
-		prevButton.setAttribute( 'aria-label', mw.message( 'tabberneue-button-prev' ).text() );
+		return new Promise( ( resolve ) => {
+			/**
+			 * Creates a button element with the specified class and aria-label.
+			 *
+			 * @param {string} className - The class name for the button element.
+			 * @param {string} ariaLabel - The aria-label attribute for the button element.
+			 * @return {Element} The created button element.
+			 */
+			const createButton = ( className, ariaLabel ) => {
+				const button = document.createElement( 'button' );
+				// eslint-disable-next-line mediawiki/class-doc
+				button.classList.add( className );
+				button.setAttribute( 'aria-label', ariaLabel );
+				return button;
+			};
 
-		const nextButton = document.createElement( 'button' );
-		nextButton.classList.add( 'tabber__header__next' );
-		nextButton.setAttribute( 'aria-label', mw.message( 'tabberneue-button-next' ).text() );
+			const prevButton = createButton( 'tabber__header__prev', mw.message( 'tabberneue-button-prev' ).text() );
+			const nextButton = createButton( 'tabber__header__next', mw.message( 'tabberneue-button-next' ).text() );
 
-		this.header.append( prevButton, this.tablist, nextButton );
+			this.header.append( prevButton, this.tablist, nextButton );
+			resolve();
+		} );
 	}
 
 	/**
-	 * Initializes the TabberBuilder by creating tabs, header, and indicator elements.
-	 * Also updates the indicator using TabberAction.
+	 * Initializes the tabber by creating tabs, header, and indicator elements sequentially.
+	 * Sets the first tab as active, updates the header overflow, and adds the 'tabber--live' class to the tabber.
+	 * Initializes tabber event and adds 'tabber--live' class.
 	 */
-	init() {
-		this.createTabs();
-		this.createHeader();
-		this.createIndicator();
-		const firstTab = this.tablist.querySelector( '.tabber__tab' );
-		TabberAction.setActiveTab( firstTab );
+	async init() {
+		// Create tabs, header, and indicator elements sequentially
+		await this.createTabs();
+		await this.createHeader();
+		await this.createIndicator();
+
+		// Get the first tab and set it as active
+		const firstTab = this.tablist.firstElementChild;
+		await TabberAction.setActiveTab( firstTab );
 		TabberAction.updateHeaderOverflow( this.tablist );
+
+		// Start attaching event
 		setTimeout( () => {
 			const tabberEvent = new TabberEvent( this.tabber, this.tablist );
 			tabberEvent.init();
-			this.tabber.classList.add( 'tabber--live' );
-		}, 10 );
+		}, 0 );
+
+		this.tabber.classList.add( 'tabber--live' );
 	}
 }
 
@@ -618,21 +673,21 @@ class TabberBuilder {
  * @param {NodeList} tabberEls - The elements representing tabbers to be loaded.
  * @return {void}
  */
-function load( tabberEls ) {
+async function load( tabberEls ) {
 	mw.loader.load( 'ext.tabberNeue.icons' );
 
 	Hash.init();
 
-	tabberEls.forEach( ( tabberEl ) => {
+	await Promise.all( [ ...tabberEls ].map( async ( tabberEl ) => {
 		const tabberBuilder = new TabberBuilder( tabberEl );
-		tabberBuilder.init();
-	} );
+		await tabberBuilder.init();
+	} ) );
 
-	const urlHash = window.location.hash;
+	const urlHash = window.location.hash.slice( 1 );
 	if ( Hash.exists( urlHash ) ) {
 		const activeTab = document.getElementById( `tab-${ urlHash }` );
 		const activeTabpanel = document.getElementById( urlHash );
-		TabberAction.setActiveTab( activeTab );
+		await TabberAction.setActiveTab( activeTab );
 		window.requestAnimationFrame( () => {
 			activeTabpanel.scrollIntoView( {
 				behavior: 'auto',
@@ -643,7 +698,9 @@ function load( tabberEls ) {
 	}
 
 	// eslint-disable-next-line compat/compat
-	resizeObserver = new ResizeObserver( mw.util.debounce( TabberAction.onResize, 100 ) );
+	resizeObserver = new ResizeObserver(
+		mw.util.debounce( TabberAction.onResize, 100 )
+	);
 
 	// Delay animation execution so it doesn't not animate the tab gets into position on load
 	setTimeout( () => {
