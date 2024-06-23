@@ -114,7 +114,7 @@ class Tabber {
 
 		$tabName = trim( $tabName );
 		// Fix #151
-		$tabBody = '\n' . trim( $tabBody );
+		$tabBody = "\n" . trim( $tabBody );
 
 		// Codex mode
 		if ( self::$useCodex ) {
@@ -157,6 +157,6 @@ class Tabber {
 
 		// \n is needed for #151
 		return '<article class="tabber__panel" data-mw-tabber-title="' . $tabName .
-		'">' . $tabBody . '</article>\n';
+		'">' . $tabBody . "</article>\n";
 	}
 }
