@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.4](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.2.3...v2.2.4) (2024-06-23)
+
+
+### Bug Fixes
+
+* escape new line character properly ([7e92502](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/7e92502c16c2635f8cdafe8d4fb78b2d6eaa70fe))
+
 ## [2.2.3](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.2.2...v2.2.3) (2024-06-23)
 
 
