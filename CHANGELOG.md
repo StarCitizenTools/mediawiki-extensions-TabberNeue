@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.2.3](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.2.2...v2.2.3) (2024-06-23)
+
+
+### Bug Fixes
+
+* add new lines to parsed tab content to ensure content are parsed as expected ([f4f8b4b](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/f4f8b4bfcea876c5c6b3dc7ee40b4b06c9586a42)), closes [#151](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/151)
+* attach resize observer properly to current active tabpanel ([72adfbc](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/72adfbc74ee9facac9c714fe2ce0844b61254edd))
+
+
+### Performance Improvements
+
+* only attach resize observer for active tabpanel when it is in viewport ([05e95d8](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/05e95d880daf76749e7ebdebb06b7a387a0d0f73))
+* set active tab by hash on builder phase ([ee54cc1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/ee54cc1bb3dd725990296d3f1a485e570cc33881))
+
 ## [2.2.2](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.2.1...v2.2.2) (2024-06-20)
 
 
