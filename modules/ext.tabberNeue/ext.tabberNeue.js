@@ -271,6 +271,7 @@ class TabberEvent {
 		this.header = this.tablist.parentElement;
 		this.tabs = this.tablist.querySelectorAll( ':scope > .tabber__tab' );
 		this.activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
+		this.activeTabpanel = TabberAction.getTabpanel( this.activeTab );
 		this.indicator = this.tabber.querySelector(
 			':scope > .tabber__header > .tabber__indicator'
 		);
@@ -330,6 +331,7 @@ class TabberEvent {
 			// Prevent default anchor actions
 			e.preventDefault();
 			this.activeTab = tab;
+			this.activeTabpanel = TabberAction.getTabpanel( this.activeTab );
 
 			// Update the URL hash without adding to browser history
 			if ( config.updateLocationOnTabChange ) {
@@ -400,6 +402,7 @@ class TabberEvent {
 		this.tablist.addEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.addEventListener( 'keydown', this.onTablistKeydown );
 		resizeObserver.observe( this.tablist );
+		resizeObserver.observe( this.activeTabpanel );
 	}
 
 	/**
@@ -410,6 +413,7 @@ class TabberEvent {
 		this.tablist.removeEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.removeEventListener( 'keydown', this.onTablistKeydown );
 		resizeObserver.unobserve( this.tablist );
+		resizeObserver.unobserve( this.activeTabpanel );
 	}
 
 	/**
@@ -429,6 +433,8 @@ class TabberEvent {
 			} );
 		} );
 		this.observer.observe( this.tabber );
+		// Need to unobserve active tabpanels first so that only the ones in viewport are observed
+		resizeObserver.unobserve( this.activeTabpanel );
 		this.resume();
 	}
 }
