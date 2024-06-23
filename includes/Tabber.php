@@ -113,7 +113,8 @@ class Tabber {
 		[ $tabName, $tabBody ] = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
 		$tabName = trim( $tabName );
-		$tabBody = trim( $tabBody );
+		// Fix #151
+		$tabBody = '\n' . trim( $tabBody );
 
 		// Codex mode
 		if ( self::$useCodex ) {
@@ -154,7 +155,8 @@ class Tabber {
 			$tabBody = '<p>' . $tabBody . '</p>';
 		}
 
+		// \n is needed for #151
 		return '<article class="tabber__panel" data-mw-tabber-title="' . $tabName .
-		'">' . $tabBody . '</article>';
+		'">' . $tabBody . '</article>\n';
 	}
 }
