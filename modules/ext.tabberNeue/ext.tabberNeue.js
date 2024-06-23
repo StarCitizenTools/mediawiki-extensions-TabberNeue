@@ -99,16 +99,24 @@ class TabberAction {
 		const width = Util.getElementSize( activeTab, 'width' );
 		const transformValue = activeTab.offsetLeft - tablistScrollLeft;
 
-		window.requestAnimationFrame( () => {
-			indicator.classList.add( 'tabber__indicator--visible' );
-			tablist.classList.add( 'tabber__tabs--animate' );
-			indicator.style.width = width + 'px';
-			indicator.style.transform = `translateX(${ transformValue }px)`;
-			setTimeout( () => {
-				indicator.classList.remove( 'tabber__indicator--visible' );
-				tablist.classList.remove( 'tabber__tabs--animate' );
-			}, 250 );
-		} );
+		indicator.classList.add( 'tabber__indicator--visible' );
+		tablist.classList.add( 'tabber__tabs--animate' );
+		indicator.style.width = width + 'px';
+		indicator.style.transform = `translateX(${ transformValue }px)`;
+		setTimeout( () => {
+			indicator.classList.remove( 'tabber__indicator--visible' );
+			tablist.classList.remove( 'tabber__tabs--animate' );
+		}, 250 );
+	}
+
+	/**
+	 * Returns the tabpanel element based on the tab element
+	 *
+	 * @param {Element} tab - The tab element
+	 * @return {Element} The tabpanel element.
+	 */
+	static getTabpanel( tab ) {
+		return document.getElementById( tab.getAttribute( 'aria-controls' ) );
 	}
 
 	/**
@@ -118,8 +126,9 @@ class TabberAction {
 	 * Scrolls the section to make the active tab panel visible.
 	 *
 	 * @param {Element} activeTabpanel - The active tab panel element to be set.
+	 * @param {Element|null} currentActiveTabpanel - The current active tab panel element
 	 */
-	static setActiveTabpanel( activeTabpanel ) {
+	static setActiveTabpanel( activeTabpanel, currentActiveTabpanel = null ) {
 		const section = activeTabpanel.closest( '.tabber__section' );
 
 		if ( activeTabpanel.dataset.mwTabberLoadUrl ) {
@@ -136,6 +145,11 @@ class TabberAction {
 			// Scroll to tab
 			section.scrollLeft = activeTabpanel.offsetLeft;
 		} );
+
+		if ( currentActiveTabpanel ) {
+			resizeObserver.unobserve( currentActiveTabpanel );
+		}
+		resizeObserver.observe( activeTabpanel );
 	}
 
 	/**
@@ -148,77 +162,43 @@ class TabberAction {
 	 */
 	static setActiveTab( activeTab ) {
 		return new Promise( ( resolve ) => {
-			const activeTabpanel = document.getElementById(
-				activeTab.getAttribute( 'aria-controls' )
-			);
+			const activeTabpanel = TabberAction.getTabpanel( activeTab );
 			const tabberEl = activeTabpanel.closest( '.tabber' );
 			const indicator = tabberEl.querySelector(
 				':scope > .tabber__header > .tabber__indicator'
 			);
-			const tabpanels = tabberEl.querySelectorAll(
-				':scope > .tabber__section > .tabber__panel'
-			);
-			const tabs = tabberEl.querySelectorAll(
-				':scope > .tabber__header > .tabber__tabs > .tabber__tab'
-			);
 
-			const tabStateUpdates = [];
-			const tabpanelVisibilityUpdates = [];
+			const currentActiveTab = tabberEl.querySelector( ':scope > .tabber__header > .tabber__tabs > .tabber__tab[aria-selected="true"]' );
+			let currentActiveTabpanel;
 
-			tabpanels.forEach( ( tabpanel ) => {
-				if ( tabpanel === activeTabpanel ) {
-					tabpanelVisibilityUpdates.push( {
-						element: tabpanel,
-						attributes: {
-							'aria-hidden': 'false',
-							tabindex: '0'
-						}
-					} );
-				} else {
-					tabpanelVisibilityUpdates.push( {
-						element: tabpanel,
-						attributes: {
-							'aria-hidden': 'true',
-							tabindex: '-1'
-						}
-					} );
-				}
-			} );
-
-			tabs.forEach( ( tab ) => {
-				if ( tab === activeTab ) {
-					tabStateUpdates.push( {
-						element: tab,
-						attributes: {
-							'aria-selected': true,
-							tabindex: '0'
-						}
-					} );
-				} else {
-					tabStateUpdates.push( {
-						element: tab,
-						attributes: {
-							'aria-selected': false,
-							tabindex: '-1'
-						}
-					} );
-				}
-			} );
+			if ( currentActiveTab ) {
+				currentActiveTabpanel = TabberAction.getTabpanel( currentActiveTab );
+			}
 
 			window.requestAnimationFrame( () => {
-				tabpanelVisibilityUpdates.forEach( ( { element, attributes } ) => {
-					Util.setAttributes( element, attributes );
-				} );
-				tabStateUpdates.forEach( ( { element, attributes } ) => {
-					Util.setAttributes( element, attributes );
-				} );
+				if ( currentActiveTab ) {
+					currentActiveTab.setAttribute( 'aria-selected', 'false' );
+					currentActiveTab.setAttribute( 'tabindex', '-1' );
+
+					if ( currentActiveTabpanel ) {
+						currentActiveTabpanel.setAttribute( 'aria-hidden', 'true' );
+						currentActiveTabpanel.setAttribute( 'tabindex', '-1' );
+					}
+				}
+
+				activeTab.setAttribute( 'aria-selected', 'true' );
+				activeTab.setAttribute( 'tabindex', '0' );
+				activeTabpanel.setAttribute( 'aria-hidden', 'false' );
+				activeTabpanel.setAttribute( 'tabindex', '0' );
+
 				TabberAction.animateIndicator(
 					indicator,
 					activeTab,
 					activeTab.parentElement
 				);
-				TabberAction.setActiveTabpanel( activeTabpanel );
+				TabberAction.setActiveTabpanel( activeTabpanel, currentActiveTabpanel );
 			} );
+
 			resolve();
 		} );
 	}
@@ -303,17 +283,6 @@ class TabberEvent {
 		this.onHeaderClick = this.onHeaderClick.bind( this );
 		this.onTablistScroll = this.onTablistScroll.bind( this );
 		this.onTablistKeydown = this.onTablistKeydown.bind( this );
-	}
-
-	/**
-	 * Returns the active tab panel element based on the currently active tab.
-	 *
-	 * @return {Element} The active tab panel element.
-	 */
-	getActiveTabpanel() {
-		return document.getElementById(
-			this.activeTab.getAttribute( 'aria-controls' )
-		);
 	}
 
 	/**
@@ -431,7 +400,6 @@ class TabberEvent {
 		this.tablist.addEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.addEventListener( 'keydown', this.onTablistKeydown );
 		resizeObserver.observe( this.tablist );
-		resizeObserver.observe( this.getActiveTabpanel() );
 	}
 
 	/**
@@ -442,7 +410,6 @@ class TabberEvent {
 		this.tablist.removeEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.removeEventListener( 'keydown', this.onTablistKeydown );
 		resizeObserver.unobserve( this.tablist );
-		resizeObserver.unobserve( this.getActiveTabpanel() );
 	}
 
 	/**
@@ -698,9 +665,7 @@ async function load( tabberEls ) {
 	}
 
 	// eslint-disable-next-line compat/compat
-	resizeObserver = new ResizeObserver(
-		mw.util.debounce( TabberAction.onResize, 100 )
-	);
+	resizeObserver = new ResizeObserver( TabberAction.onResize );
 
 	// Delay animation execution so it doesn't not animate the tab gets into position on load
 	setTimeout( () => {
