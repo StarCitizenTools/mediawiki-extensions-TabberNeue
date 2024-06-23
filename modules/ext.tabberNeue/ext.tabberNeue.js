@@ -177,19 +177,33 @@ class TabberAction {
 
 			window.requestAnimationFrame( () => {
 				if ( currentActiveTab ) {
-					currentActiveTab.setAttribute( 'aria-selected', 'false' );
-					currentActiveTab.setAttribute( 'tabindex', '-1' );
+					const currentActiveTabAttributes = {
+						tabindex: -1,
+						'aria-selected': 'false'
+					};
+					Util.setAttributes( currentActiveTab, currentActiveTabAttributes );
 
 					if ( currentActiveTabpanel ) {
-						currentActiveTabpanel.setAttribute( 'aria-hidden', 'true' );
-						currentActiveTabpanel.setAttribute( 'tabindex', '-1' );
+						const currentActiveTabpanelAttributes = {
+							tabindex: -1,
+							'aria-hidden': 'true'
+						};
+						Util.setAttributes( currentActiveTabpanel, currentActiveTabpanelAttributes );
 					}
 				}
 
-				activeTab.setAttribute( 'aria-selected', 'true' );
-				activeTab.setAttribute( 'tabindex', '0' );
-				activeTabpanel.setAttribute( 'aria-hidden', 'false' );
-				activeTabpanel.setAttribute( 'tabindex', '0' );
+				const activeTabAttributes = {
+					tabindex: 0,
+					'aria-selected': 'true'
+				};
+
+				const activeTabpanelAttributes = {
+					tabindex: 0,
+					'aria-hidden': 'false'
+				};
+
+				Util.setAttributes( activeTab, activeTabAttributes );
+				Util.setAttributes( activeTabpanel, activeTabpanelAttributes );
 
 				TabberAction.animateIndicator(
 					indicator,
@@ -461,11 +475,12 @@ class TabberBuilder {
 	setTabAttributes( tab, tabId ) {
 		const tabAttributes = {
 			class: 'tabber__tab',
-			role: 'tab',
-			'aria-selected': false,
-			'aria-controls': tabId,
 			href: '#' + tabId,
-			id: 'tab-' + tabId
+			id: 'tab-' + tabId,
+			role: 'tab',
+			tabindex: '-1',
+			'aria-selected': false,
+			'aria-controls': tabId
 		};
 
 		Util.setAttributes( tab, tabAttributes );
@@ -500,9 +515,11 @@ class TabberBuilder {
 	 */
 	setTabpanelAttributes( tabpanel, tabId ) {
 		const tabpanelAttributes = {
+			id: tabId,
 			role: 'tabpanel',
-			'aria-labelledby': `tab-${ tabId }`,
-			id: tabId
+			tabindex: '-1',
+			'aria-hidden': 'true',
+			'aria-labelledby': `tab-${ tabId }`
 		};
 
 		Util.setAttributes( tabpanel, tabpanelAttributes );
@@ -616,18 +633,20 @@ class TabberBuilder {
 
 	/**
 	 * Initializes the tabber by creating tabs, header, and indicator elements sequentially.
-	 * Sets the first tab as active, updates the header overflow, and adds the 'tabber--live' class to the tabber.
-	 * Initializes tabber event and adds 'tabber--live' class.
+	 * Sets the active tab based on the URL hash, and updates the header overflow.
+	 * Attaches event listeners for tabber interaction.
+	 *
+	 * @param {string} urlHash - The URL hash used to set the active tab.
+	 * @return {void}
 	 */
-	async init() {
+	async init( urlHash ) {
 		// Create tabs, header, and indicator elements sequentially
 		await this.createTabs();
 		await this.createHeader();
 		await this.createIndicator();
 
-		// Get the first tab and set it as active
-		const firstTab = this.tablist.firstElementChild;
-		await TabberAction.setActiveTab( firstTab );
+		const activeTab = this.tablist.querySelector( `#tab-${ urlHash }` ) || this.tablist.firstElementChild;
+		TabberAction.setActiveTab( activeTab );
 		TabberAction.updateHeaderOverflow( this.tablist );
 
 		// Start attaching event
@@ -647,31 +666,19 @@ class TabberBuilder {
  * @return {void}
  */
 async function load( tabberEls ) {
+	const urlHash = window.location.hash.slice( 1 );
+
 	mw.loader.load( 'ext.tabberNeue.icons' );
 
 	Hash.init();
 
-	await Promise.all( [ ...tabberEls ].map( async ( tabberEl ) => {
-		const tabberBuilder = new TabberBuilder( tabberEl );
-		await tabberBuilder.init();
-	} ) );
-
-	const urlHash = window.location.hash.slice( 1 );
-	if ( Hash.exists( urlHash ) ) {
-		const activeTab = document.getElementById( `tab-${ urlHash }` );
-		const activeTabpanel = document.getElementById( urlHash );
-		await TabberAction.setActiveTab( activeTab );
-		window.requestAnimationFrame( () => {
-			activeTabpanel.scrollIntoView( {
-				behavior: 'auto',
-				block: 'end',
-				inline: 'nearest'
-			} );
-		} );
-	}
-
 	// eslint-disable-next-line compat/compat
 	resizeObserver = new ResizeObserver( TabberAction.onResize );
+
+	await Promise.all( [ ...tabberEls ].map( async ( tabberEl ) => {
+		const tabberBuilder = new TabberBuilder( tabberEl );
+		await tabberBuilder.init( urlHash );
+	} ) );
 
 	// Delay animation execution so it doesn't not animate the tab gets into position on load
 	setTimeout( () => {
