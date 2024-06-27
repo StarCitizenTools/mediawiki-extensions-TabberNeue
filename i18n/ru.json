@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
+			"Dirruw'o",
 			"Lockal"
 		]
 	},
-	"tabberneue-desc": "Позволяет создавать вкладки внутри страницы"
+	"tabberneue-desc": "Позволяет создавать вкладки внутри страницы",
+	"tabberneue-button-next": "Далее"
 }

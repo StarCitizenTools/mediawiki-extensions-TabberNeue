@@ -2,10 +2,13 @@
 	"@metadata": {
 		"authors": [
 			"GenerationFallout",
+			"SleaY",
 			"Verdy p"
 		]
 	},
 	"tabberneue-desc": "Permet de créer des onglets dans une page. Dérivée de l’ancienne [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
+	"tabberneue-button-next": "Suivant",
+	"tabberneue-button-prev": "Précédent",
 	"tabberneue-tabber-category": "Pages utilisant la balise de l’analyseur Tabber",
 	"tabberneue-tabbertransclude-category": "Pages utilisant la balise de l’analyseur TabberTransclude",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",

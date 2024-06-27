@@ -1,8 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
+			"Romaine",
 			"SPQRobin"
 		]
 	},
-	"tabberneue-desc": "Maakt het mogelijk om tabbladen binnen een pagina te maken"
+	"tabberneue-desc": "Maakt het mogelijk om tabbladen binnen een pagina te maken",
+	"tabberneue-button-next": "Volgende",
+	"tabberneue-button-prev": "Vorige"
 }
