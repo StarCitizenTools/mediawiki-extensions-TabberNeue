@@ -2,10 +2,13 @@
 	"@metadata": {
 		"authors": [
 			"Justincheng12345",
+			"Kly",
 			"Lakejason0"
 		]
 	},
-	"tabberneue-desc": "容許於頁面內創建分頁",
+	"tabberneue-desc": "容許於頁面內創建分頁。衍生自 [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber]。",
+	"tabberneue-button-next": "下一個",
+	"tabberneue-button-prev": "上一個",
 	"tabberneue-tabber-category": "使用Tabber解析器標籤的頁面",
 	"tabberneue-tabbertransclude-category": "使用TabberTransclude解析器標籤的頁面",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
