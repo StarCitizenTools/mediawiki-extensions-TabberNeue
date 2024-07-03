@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.3.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.2.4...v2.3.0) (2024-07-03)
+
+
+### Features
+
+* change tab when URL hash matches one of the tabs ([421c42b](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/421c42b6f082ca3cc81d9a89db8490143ff8180b)), closes [#150](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/150)
+
+
+### Bug Fixes
+
+* prevent browser from scrolling to the tab before Tabber updates the aria attributes ([1e5ad65](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/1e5ad6592b822f945e2ab1756b396b9f0bdedf9d)), closes [#161](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/161)
+* square brackets should be correctly rendered in tab names ([3bacdb7](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/3bacdb7c87b1076bd7e036c929ff91ee6edc2a86)), closes [#158](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/158)
+* URL hash should be escaped when used as selector ([d453add](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/d453adde074fe9a465e0ed83f11f70c9b80bfde5))
+
 ## [2.2.4](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.2.3...v2.2.4) (2024-06-23)
 
 
