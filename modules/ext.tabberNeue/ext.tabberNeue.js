@@ -680,9 +680,16 @@ async function load( tabberEls ) {
 		await tabberBuilder.init( urlHash );
 	} ) );
 
-	// Delay animation execution so it doesn't not animate the tab gets into position on load
 	setTimeout( () => {
+		// Delay animation execution so it doesn't not animate the tab gets into position on load
 		TabberAction.toggleAnimation( true );
+		window.addEventListener( 'hashchange', () => {
+			const newHash = window.location.hash.slice( 1 );
+			const tab = document.getElementById( `tab-${ CSS.escape( newHash ) }` );
+			if ( tab ) {
+				tab.click();
+			}
+		} );
 	}, 250 );
 }
 
