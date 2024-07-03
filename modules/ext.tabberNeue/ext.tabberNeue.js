@@ -645,7 +645,7 @@ class TabberBuilder {
 		await this.createHeader();
 		await this.createIndicator();
 
-		const activeTab = this.tablist.querySelector( `#tab-${ urlHash }` ) || this.tablist.firstElementChild;
+		const activeTab = this.tablist.querySelector( `#tab-${ CSS.escape( urlHash ) }` ) || this.tablist.firstElementChild;
 		TabberAction.setActiveTab( activeTab );
 		TabberAction.updateHeaderOverflow( this.tablist );
 
