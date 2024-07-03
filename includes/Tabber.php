@@ -86,9 +86,6 @@ class Tabber {
 
 			return sprintf( '[%s]', $tab );
 		}
-		$htmlTabs = preg_replace( '/\\\n/', '', $htmlTabs );
-		$htmlTabs = preg_replace( '/\\\*/', '', $htmlTabs );
-		$htmlTabs = str_replace( [ '"[', ']"' ], [ '[', ']' ], $htmlTabs );
 
 		return '<div class="tabber">' .
 			'<header class="tabber__header"></header>' .
