@@ -279,3 +279,25 @@
 		background-position: 100em 0;
 	}
 }
+
+@media print {
+	.tabber__header {
+		display: none;
+	}
+
+	/* Show all tab contents */
+	.tabber__section {
+		/* stylelint-disable-next-line declaration-no-important */
+		height: auto !important;
+		gap: 1em;
+		grid-auto-flow: row;
+	}
+
+	/* Show tab header */
+	.tabber__panel::before {
+		display: block;
+		margin: 1em 0;
+		content: attr( data-mw-tabber-title );
+		font-weight: bold;
+	}
+}
