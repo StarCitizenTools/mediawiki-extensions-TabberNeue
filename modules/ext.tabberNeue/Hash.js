@@ -49,10 +49,14 @@ class Hash {
 	 * Builds a unique hash based on the provided title text.
 	 *
 	 * @param {string} titleText - The title text to generate the hash from.
+	 * @param {boolean} useLegacyTabIds - Whether to use the legacy tab ID format.
 	 * @return {string} - A unique hash created from the title text.
 	 */
-	static build( titleText ) {
-		let hash = `tabber-${ mw.util.escapeIdForAttribute( titleText ) }`;
+	static build( titleText, useLegacyTabIds ) {
+		let hash = mw.util.escapeIdForAttribute( titleText );
+		if ( !useLegacyTabIds ) {
+			hash = `tabber-${ hash }`;
+		}
 
 		if ( Hash.exists( hash ) ) {
 			hash = Hash.makeUnique( hash );

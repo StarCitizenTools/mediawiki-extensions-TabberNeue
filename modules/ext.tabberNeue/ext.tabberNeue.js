@@ -544,10 +544,12 @@ class TabberBuilder {
 
 		let tabId;
 		if ( config.parseTabName ) {
-			tabId = Hash.build( Util.extractTextFromHtml( titleAttr ) );
+			tabId = Util.extractTextFromHtml( titleAttr );
 		} else {
-			tabId = Hash.build( titleAttr );
+			tabId = titleAttr;
 		}
+
+		tabId = Hash.build( tabId, config.useLegacyTabIds );
 
 		this.setTabpanelAttributes( tabpanel, tabId );
 
