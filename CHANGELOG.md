@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.4.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.3.0...v2.4.0) (2024-07-17)
+
+
+### Features
+
+* add print styles ([2037cf3](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/2037cf38eb15e6aaace1a920e28e88ec55043e71))
+
+
+### Bug Fixes
+
+* incorrect conditions for shouldShowAnimation ([#165](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/165)) ([2f7e652](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/2f7e652e2808571f86ee1c32fbc1ed4266a0d8eb))
+
 ## [2.3.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.2.4...v2.3.0) (2024-07-03)
 
 
