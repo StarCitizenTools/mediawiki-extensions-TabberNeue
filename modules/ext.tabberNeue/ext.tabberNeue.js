@@ -25,8 +25,8 @@ class TabberAction {
 	 */
 	static shouldShowAnimation() {
 		return (
-			!window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ||
-            !config.enableAnimation
+			!window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches &&
+            config.enableAnimation
 		);
 	}
 
