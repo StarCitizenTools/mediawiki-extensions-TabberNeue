@@ -1,11 +1,18 @@
 {
 	"@metadata": {
 		"authors": [
+			"McDutchie",
 			"Romaine",
 			"SPQRobin"
 		]
 	},
 	"tabberneue-desc": "Maakt het mogelijk om tabbladen binnen een pagina te maken",
 	"tabberneue-button-next": "Volgende",
-	"tabberneue-button-prev": "Vorige"
+	"tabberneue-button-prev": "Vorige",
+	"tabberneue-tabber-category": "Pagina's die de Tabber-parsertag gebruiken",
+	"tabberneue-tabbertransclude-category": "Pagina's die de TabberTransclude-parsertag gebruiken",
+	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
+	"tabberneue-visualeditor-mwtabberdialog-desc": "Lees de [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documentatie] voor aanwijzingen over het gebruik.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (ingevoegd)",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Zie de [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentatie] voor aanwijzingen over het gebruik."
 }
