@@ -211,9 +211,9 @@ class TabberAction {
 					activeTab.parentElement
 				);
 				TabberAction.setActiveTabpanel( activeTabpanel, currentActiveTabpanel );
-			} );
 
-			resolve();
+				resolve();
+			} );
 		} );
 	}
 
@@ -646,14 +646,12 @@ class TabberBuilder {
 		await this.createIndicator();
 
 		const activeTab = this.tablist.querySelector( `#tab-${ CSS.escape( urlHash ) }` ) || this.tablist.firstElementChild;
-		TabberAction.setActiveTab( activeTab );
+		await TabberAction.setActiveTab( activeTab );
 		TabberAction.updateHeaderOverflow( this.tablist );
 
 		// Start attaching event
-		setTimeout( () => {
-			const tabberEvent = new TabberEvent( this.tabber, this.tablist );
-			tabberEvent.init();
-		}, 0 );
+		const tabberEvent = new TabberEvent( this.tabber, this.tablist );
+		tabberEvent.init();
 
 		this.tabber.classList.add( 'tabber--live' );
 	}
