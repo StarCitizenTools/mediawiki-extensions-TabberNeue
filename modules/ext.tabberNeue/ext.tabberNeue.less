@@ -1,13 +1,13 @@
 .tabber {
 	// Codex tokens aren't avaliable in older MW version
-	--tabber-color-progressive: #36c;
-	--tabber-color-progressive--hover: #447ff5;
-	--tabber-color-progressive--active: #2a4b8d;
-	--tabber-color-base: #202122;
-	--tabber-color-subtle: #54595d;
-	--tabber-background-color-button-quiet--hover: rgba( 0, 24, 73, 0.027 );
-	--tabber-background-color-button-quiet--active: rgba( 0, 24, 73, 0.082 );
-	--tabber-border-color-base: #a2a9b1;
+	--tabber-color-progressive: var( --color-progressive, #36c ); // @color-progressive
+	--tabber-color-progressive--hover: var( --color-progressive--hover, #447ff5 ); // @color-progressive--hover
+	--tabber-color-progressive--active: var( --color-progressive--active, #2a4b8d ); // @color-progressive--active
+	--tabber-color-base: var( --color-base, #202122 ); // @color-base
+	--tabber-color-subtle: var( --color-subtle, #54595d ); // @color-subtle
+	--tabber-background-color-button-quiet--hover: var( --background-color-button-quiet--hover, rgba( 0, 24, 73, 0.027 ) ); // @background-color-button-quiet--hover
+	--tabber-background-color-button-quiet--active: var( --background-color-button-quiet--active, rgba( 0, 24, 73, 0.082 ) ); // @background-color-button-quiet--active
+	--tabber-border-color-base: var( --border-color-base, #a2a9b1 ); // @border-color-base
 	--tabber-height-indicator: 2px;
 	position: relative;
 	display: flex;
