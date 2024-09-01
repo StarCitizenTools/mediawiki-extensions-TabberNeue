@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.5.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.4.0...v2.5.0) (2024-09-01)
+
+
+### Features
+
+* include Codex CSS variables in Tabber variables ([3d86ed5](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/3d86ed5baad2ce9d3186f48f9aecd2e216db1263))
+
+
+### Bug Fixes
+
+* ensure that the active tab is set before the tabber event is initialized ([#173](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/173)) ([795c76b](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/795c76b4bd8285650c860ddc0b6ff2aa3e7c1b23))
+
 ## [2.4.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.3.0...v2.4.0) (2024-07-17)
 
 
