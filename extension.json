@@ -44,7 +44,8 @@
 					"config": {
 						"enableAnimation": "TabberNeueEnableAnimation",
 						"parseTabName": "TabberNeueParseTabName",
-						"updateLocationOnTabChange": "TabberNeueUpdateLocationOnTabChange"
+						"updateLocationOnTabChange": "TabberNeueUpdateLocationOnTabChange",
+						"useLegacyTabIds": "TabberNeueUseLegacyTabIds"
 					}
 				},
 				"ext.tabberNeue/Hash.js",
@@ -161,6 +162,11 @@
 		"TabberNeueUpdateLocationOnTabChange": {
 			"value": true,
 			"description": "If enabled, when a tab is selected, the URL displayed on the browser changes. Opening this URL makes that tab initially selected.",
+			"public": true
+		},
+		"TabberNeueUseLegacyTabIds": {
+			"value": false,
+			"description": "If enabled, tab IDs will not be prepended with \"tabber-\". This provides better compatibility with the old Tabber extension, but will cause issues if there are headings with the same name as an existing tab.",
 			"public": true
 		}
 	},
