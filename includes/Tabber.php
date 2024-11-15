@@ -23,9 +23,6 @@ use Sanitizer;
 
 class Tabber {
 
-	/** @var int */
-	private static $count = 0;
-
 	/** @var bool Flag that checks if this is a nested tabber */
 	private static $isNested = false;
 
@@ -51,15 +48,15 @@ class Tabber {
 
 		self::$parseTabName = $config->get( 'TabberNeueParseTabName' );
 		self::$useCodex = $config->get( 'TabberNeueUseCodex' );
-		self::$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
+		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
 
-		$html = self::render( $input ?? '', $parser, $frame );
+		$html = self::render( $input ?? '', $count, $parser, $frame );
 
 		if ( $input === null ) {
 			return '';
 		}
 
-		$parserOutput->appendExtensionData( 'tabber-count', self::$count++ );
+		$parserOutput->appendExtensionData( 'tabber-count', $count++ );
 
 		if ( self::$useCodex === true ) {
 			$parser->getOutput()->addModules( [ 'ext.tabberNeue.codex' ] );
@@ -76,18 +73,19 @@ class Tabber {
 	 * Renders the necessary HTML for a <tabber> tag.
 	 *
 	 * @param string $input The input URL between the beginning and ending tags.
+	 * @param int $count Current Tabber count
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 */
-	public static function render( string $input, Parser $parser, PPFrame $frame ): string {
+	public static function render( string $input, int $count, Parser $parser, PPFrame $frame ): string {
 		$arr = explode( '|-|', $input );
 		$tabs = '';
 		$tabpanels = '';
 
 		foreach ( $arr as $tab ) {
-			$tabData = self::getTabData( $tab, $parser, $frame );
+			$tabData = self::getTabData( $tab, $count, $parser, $frame );
 			if ( $tabData === [] ) {
 				continue;
 			}
@@ -109,7 +107,7 @@ class Tabber {
 			return sprintf( '[%s]', $tabpanels );
 		}
 
-		return '<div class="tabber tabber--init">' .
+		return "<div id='tabber-$count' class='tabber tabber--init'>" .
 			'<header class="tabber__header"></header>' .
 			// '<header class="tabber__header"><nav class="tabber__tabs" role="tablist">' . $tabs . '</nav></header>' .
 			'<section class="tabber__section">' . $tabpanels . '</section></div>';
@@ -182,12 +180,13 @@ class Tabber {
 	 * Get individual tab data from wikitext.
 	 *
 	 * @param string $tab tab wikitext
+	 * @param int $count Current Tabber count
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return array<string, string>
 	 */
-	private static function getTabData( string $tab, Parser $parser, PPFrame $frame ): array {
+	private static function getTabData( string $tab, int $count, Parser $parser, PPFrame $frame ): array {
 		$data = [];
 		if ( empty( trim( $tab ) ) ) {
 			return $data;
@@ -203,7 +202,7 @@ class Tabber {
 
 		$data['content'] = self::getTabContent( $content, $parser, $frame );
 
-		$id = Sanitizer::escapeIdForAttribute( htmlspecialchars( $data['label'] ) ) . '-' . self::$count;
+		$id = Sanitizer::escapeIdForAttribute( htmlspecialchars( $data['label'] ) ) . '-' . $count;
 		$data['id'] = $id;
 		return $data;
 	}
