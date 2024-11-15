@@ -39,7 +39,7 @@ class TabberTransclude {
 		}
 
 		$parser->getOutput()->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
-		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
+		//$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
 
 		$parser->addTrackingCategory( 'tabberneue-tabbertransclude-category' );
 		return $html;
@@ -60,7 +60,7 @@ class TabberTransclude {
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {
 			$tabData = self::getTabData( $tab );
-			if ( $tabData['label'] === '' ) {
+			if ( $tabData === [] ) {
 				continue;
 			}
 			try {
@@ -84,10 +84,7 @@ class TabberTransclude {
 	 * @return array<string, string>
 	 */
 	private static function getTabData( string $tab ): array {
-		$data = [
-			'label' => '',
-			'content' => ''
-		];
+		$data = [];
 		if ( empty( trim( $tab ) ) ) {
 			return $data;
 		}

@@ -16,26 +16,6 @@
 	overflow: hidden;
 	flex-direction: column;
 
-	&__tabs {
-		display: flex;
-		overflow: auto hidden;
-		scrollbar-width: none;
-
-		&::-webkit-scrollbar {
-			width: 0;
-			height: 0;
-		}
-	}
-
-	&__section {
-		display: grid;
-		overflow: hidden;
-		block-size: 100%;
-		grid-auto-columns: 100%;
-		grid-auto-flow: column;
-		scroll-snap-type: x mandatory;
-	}
-
 	&__header {
 		position: relative;
 		display: flex;
@@ -103,16 +83,6 @@
 		}
 	}
 
-	&__header,
-	&__section {
-		scrollbar-width: none;
-
-		&::-webkit-scrollbar {
-			width: 0;
-			height: 0;
-		}
-	}
-
 	&__indicator {
 		display: none;
 		margin-top: ~'calc( var( --tabber-height-indicator ) * -1 )';
@@ -126,49 +96,17 @@
 	}
 
 	&__tab {
-		padding: 0.5em 0.75em;
-		color: var( --tabber-color );
-		font-weight: bold;
-		text-decoration: none;
-		white-space: nowrap;
-
-		&:visited {
-			color: var( --tabber-color );
-		}
-
-		&:hover,
-		&:active,
-		&:focus {
-			text-decoration: none;
-		}
-
 		&[ aria-selected='true' ] {
-			box-shadow: 0 -2px 0 var( --tabber-color-progressive ) inset;
+			box-shadow: 0 -2px 0 var( --color-progressive, #36c ) inset;
 		}
 
 		&[ aria-selected='true' ],
 		&[ aria-selected='true' ]:visited {
-			color: var( --tabber-color-progressive );
-		}
-	}
-
-	&__tabs--animate {
-		.tabber__tab[ aria-selected='true' ] {
-			box-shadow: none;
+			color: var( --color-progressive, #36c );
 		}
 	}
 
 	&__panel {
-		height: max-content;
-		overflow-x: auto;
-		scroll-snap-align: start;
-
-		// Hide edit buttons for non-transclusion tabs since they don't work
-		/* stylelint-disable-next-line selector-class-pattern */
-		&:not( [ data-mw-tabber-page-title ] ) .mw-editsection {
-			display: none;
-		}
-
 		&--loading {
 			.tabber__transclusion {
 				opacity: 0.1;
@@ -213,10 +151,6 @@
 			scroll-behavior: smooth;
 		}
 
-		&__indicator {
-			transition: transform 250ms ease, width 250ms ease;
-		}
-
 		&__section,
 		&__tabs {
 			@media ( min-width: 720px ) {
@@ -244,16 +178,6 @@
 
 @media ( hover: hover ) {
 	.tabber {
-		&__tab {
-			&:hover {
-				color: var( --tabber-color-progressive--hover );
-			}
-
-			&:active {
-				color: var( --tabber-color-progressive--active );
-			}
-		}
-
 		&__header {
 			&__prev,
 			&__next {
