@@ -40,7 +40,6 @@ function initApp( tabber ) {
  */
 function main() {
 	const tabbers = document.querySelectorAll( '.tabber:not( .tabber--live )' );
-
 	tabbers.forEach( initApp );
 }
 

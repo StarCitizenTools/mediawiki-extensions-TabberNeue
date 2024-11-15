@@ -76,11 +76,17 @@ class Tabber {
 		$htmlTabs = '';
 
 		foreach ( $arr as $tab ) {
-			$tabData = self::getTabData( $tab, $parser );
+			$tabData = self::getTabData( $tab, $parser, $frame );
 			if ( $tabData['label'] === '' ) {
 				continue;
 			}
-			$htmlTabs .= self::buildTabpanel( $tabData, $parser, $frame );
+
+			if ( self::$useCodex && self::$isNested ) {
+				$htmlTabs .= self::getCodexNestedTabJSON( $tabData );
+				continue;
+			}
+
+			$htmlTabs .= self::buildTabpanel( $tabData );
 		}
 
 		if ( self::$useCodex && self::$isNested ) {
@@ -128,16 +134,31 @@ class Tabber {
 	 * Get parsed tab content
 	 *
 	 * @param string $content tab content wikitext
+	 * @param Parser $parser Mediawiki Parser Object
+	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string
 	 */
-	private static function getTabContent( string $content ): string {
+	private static function getTabContent( string $content, Parser $parser, PPFrame $frame ): string {
 		$content = trim( $content );
 		if ( $content === '' ) {
 			return '';
 		}
-		// Fix #151
-		$content = "\n" . $content;
+		// Fix #151, some wikitext magic
+		$content = "\n" . $content . "\n";
+		if ( !self::$useCodex ) {
+			$content = $parser->recursiveTagParse( $content, $frame );
+		} else {
+			// A nested tabber which should return json in codex
+			if ( strpos( $content, '{{#tag:tabber' ) !== false ) {
+				self::$isNested = true;
+				$content = $parser->recursiveTagParse( $content, $frame );
+				self::$isNested = false;
+			// The outermost tabber that must be parsed fully in codex for correct json
+			} else {
+				$content = $parser->recursiveTagParseFully( $content, $frame );
+			}
+		}
 		return $content;
 	}
 
@@ -146,10 +167,11 @@ class Tabber {
 	 *
 	 * @param string $tab tab wikitext
 	 * @param Parser $parser Mediawiki Parser Object
+	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return array<string, string>
 	 */
-	private static function getTabData( string $tab, Parser $parser ): array {
+	private static function getTabData( string $tab, Parser $parser, PPFrame $frame ): array {
 		$data = [
 			'label' => '',
 			'content' => ''
@@ -166,7 +188,7 @@ class Tabber {
 			return $data;
 		}
 
-		$data['content'] = self::getTabContent( $content );
+		$data['content'] = self::getTabContent( $content, $parser, $frame );
 		return $data;
 	}
 
@@ -174,47 +196,38 @@ class Tabber {
 	 * Build individual tabpanel.
 	 *
 	 * @param array $tabData Tab data
-	 * @param Parser $parser Mediawiki Parser Object
-	 * @param PPFrame $frame Mediawiki PPFrame Object
+	 *
+	 * @return string HTML
+	 */
+	private static function buildTabpanel( array $tabData ): string {
+		$label = $tabData['label'];
+		$content = $tabData['content'];
+
+		$isContentHTML = strpos( $content, '<' ) === 0;
+		if ( $content && !$isContentHTML ) {
+			// If $content does not have any HTML element (i.e. just a text node), wrap it in <p/>
+			$content = '<p>' . $content . '</p>';
+		}
+
+		return '<article class="tabber__panel" data-mw-tabber-title="' . $label .
+		'">' . $content . "</article>";
+	}
+
+	/**
+	 * Get JSON representation of a nested tab for Codex
+	 *
+	 * @param array $tabData Tab data
 	 *
 	 * @return string HTML
 	 * @throws JsonException
 	 */
-	private static function buildTabpanel( array $tabData, Parser $parser, PPFrame $frame ): string {
-		$tabName = $tabData['label'];
-		$tabBody = $tabData['content'];
-
-		// Codex mode
-		if ( self::$useCodex ) {
-			// A nested tabber which should return json in codex
-			if ( strpos( $tabBody, '{{#tag:tabber' ) !== false ) {
-				self::$isNested = true;
-				$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
-				self::$isNested = false;
-			// The outermost tabber that must be parsed fully in codex for correct json
-			} else {
-				$tabBody = $parser->recursiveTagParseFully( $tabBody, $frame );
-			}
-
-			if ( self::$isNested ) {
-				return json_encode( [
-					'label' => $tabName,
-					'content' => $tabBody
-				],
-					JSON_THROW_ON_ERROR
-				);
-			}
-		}
-
-		$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
-
-		// If $tabBody does not have any HTML element (i.e. just a text node), wrap it in <p/>
-		if ( $tabBody && $tabBody[0] !== '<' ) {
-			$tabBody = '<p>' . $tabBody . '</p>';
-		}
-
-		// \n is needed for #151
-		return '<article class="tabber__panel" data-mw-tabber-title="' . $tabName .
-		'">' . $tabBody . "</article>\n";
+	private static function getCodexNestedTabJSON( array $tabData ): string {
+		// A nested tabber which should return json in codex
+		return json_encode( [
+			'label' => $tabData['label'],
+			'content' => $tabData['content']
+		],
+			JSON_THROW_ON_ERROR
+		);
 	}
 }
