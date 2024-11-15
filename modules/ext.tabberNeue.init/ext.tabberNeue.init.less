@@ -1,72 +1,92 @@
-/**
- * Critial rendering styles
- *
- * Since ext.tabberNeue is loaded a while after page load,
- * inline styles are needed to create an inital state and
- * avoid potential layout shifts. This should be kept as
- * small as possible.
- */
+.tabber {
+	&__header {
+		box-shadow: inset 0 -1px 0 0 var( --border-color-base, #a2a9b1 );
+	}
 
-/* stylelint-disable selector-class-pattern */
+	&__tabs {
+		display: flex;
+		overflow: auto hidden;
+	}
 
-/* Only apply skeleton UI when Tabber will be loaded */
-.client-js {
-	.tabber:not( .tabber--live ) {
-		.tabber__header {
-			height: 2.6em;
-			box-shadow: inset 0 -1px 0 0;
-			opacity: 0.1;
+	&__tab {
+		padding: 0.5em 0.75em;
+		color: var( --color-base, #202122 );
+		font-weight: 700;
+		white-space: nowrap;
 
-			&::after {
-				position: absolute;
-				width: 16ch;
-				height: 0.5em;
-				border-radius: 40px;
-				margin-top: 1em;
-				margin-left: 0.75em;
-				animation-duration: 10s;
-				animation-fill-mode: forwards;
-				animation-iteration-count: infinite;
-				animation-name: skeletonload;
-				animation-timing-function: linear;
-				background: #000;
-				background: linear-gradient( to right, #202122 8%, #54595d 18%, #202122 33% );
-				/* Use double quote in PHP */
-				content: '';
+		&,
+		&:visited {
+			color: var( --color-base, #202122 );
+		}
+
+		&:hover {
+			@media ( hover: hover ) {
+				color: var( --color-progressive--hover, #447ff5 );
+				box-shadow: inset 0 -2px 0 0 var( --box-shadow-color-progressive-selected--hover, #447ff5 );
 			}
 		}
 
-		/**
-		* Avoid layout shift by assigning the grid property early on
-		* Because display:block does not take into account of bottom margin of the content
-		*/
-		.tabber__section {
-			display: grid;
+		&:active {
+			@media ( hover: hover ) {
+				color: var( --color-progressive--active, #2a4b8d );
+			}
 		}
 
-		/**
-		* Hide all other panels
-		* All panels are stacked vertically initially
-		* then panels are stacked horizontally after Tabber is loaded
-		* Causing lots of layout shift
-		*/
-		.tabber__panel:not( :first-child ) {
+		&,
+		&:hover,
+		&:active,
+		&:focus {
+			text-decoration: none;
+		}
+	}
+
+	&__section {
+		display: grid;
+		overflow: hidden;
+		block-size: 100%;
+		grid-auto-columns: 100%;
+		grid-auto-flow: column;
+		scroll-snap-type: x mandatory;
+	}
+
+	&__panel {
+		height: max-content;
+		overflow-x: auto;
+		scroll-snap-align: start;
+
+		// Hide edit buttons for non-transclusion tabs since they don't work
+		/* stylelint-disable-next-line selector-class-pattern */
+		&:not( [ data-mw-tabber-page-title ] ) .mw-editsection {
 			display: none;
 		}
 	}
+}
 
-	/* Hide no script message */
-	.tabber__noscript {
-		display: none;
+// Set tabber height to the height of first tabpanel by
+// setting subsequent tabpanels to have 0 height
+.client-js {
+	.tabber {
+		&__tabs {
+			scrollbar-width: none;
+
+			&::-webkit-scrollbar {
+				width: 0;
+				height: 0;
+			}
+		}
+
+		&--init {
+			.tabber__panel ~ .tabber__panel {
+				height: 0;
+			}
+		}
 	}
 }
 
-@keyframes skeletonload {
-	0% {
-		background-position: 0 0;
-	}
-
-	100% {
-		background-position: 100em 0;
+// Basic nojs support
+.client-nojs {
+	.tabber__panel {
+		scroll-padding-top: 3rem;
+		height: auto;
 	}
 }

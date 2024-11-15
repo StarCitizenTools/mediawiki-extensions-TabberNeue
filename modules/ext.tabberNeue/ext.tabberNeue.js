@@ -655,6 +655,7 @@ class TabberBuilder {
 		const tabberEvent = new TabberEvent( this.tabber, this.tablist );
 		tabberEvent.init();
 
+		this.tabber.classList.remove( 'tabber--init' );
 		this.tabber.classList.add( 'tabber--live' );
 	}
 }
