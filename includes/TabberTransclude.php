@@ -39,7 +39,7 @@ class TabberTransclude {
 		}
 
 		$parser->getOutput()->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
-		//$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
+		// $parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
 
 		$parser->addTrackingCategory( 'tabberneue-tabbertransclude-category' );
 		return $html;
