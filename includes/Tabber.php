@@ -74,8 +74,13 @@ class Tabber {
 	public static function render( string $input, Parser $parser, PPFrame $frame ): string {
 		$arr = explode( '|-|', $input );
 		$htmlTabs = '';
+
 		foreach ( $arr as $tab ) {
-			$htmlTabs .= self::buildTab( $tab, $parser, $frame );
+			$tabData = self::getTabData( $tab, $parser );
+			if ( $tabData['label'] === '' ) {
+				continue;
+			}
+			$htmlTabs .= self::buildTabpanel( $tabData, $parser, $frame );
 		}
 
 		if ( self::$useCodex && self::$isNested ) {
@@ -93,30 +98,94 @@ class Tabber {
 	}
 
 	/**
-	 * Build individual tab.
+	 * Get parsed tab labels
 	 *
-	 * @param string $tab Tab information
+	 * @param string $label tab label wikitext
+	 * @param Parser $parser Mediawiki Parser Object
+	 *
+	 * @return string
+	 */
+	private static function getTabLabel( string $label, Parser $parser ): string {
+		$label = trim( $label );
+		if ( $label === '' ) {
+			return '';
+		}
+
+		if ( !self::$parseTabName || self::$useCodex ) {
+			// Only plain text is needed
+			// Use language converter to get variant title and also escape html
+			$label = $parser->getTargetLanguageConverter()->convertHtml( $label );
+		} else {
+			// Might contains HTML
+			$label = $parser->recursiveTagParseFully( $label );
+			$label = $parser->stripOuterParagraph( $label );
+			$label = htmlentities( $label );
+		}
+		return $label;
+	}
+
+	/**
+	 * Get parsed tab content
+	 *
+	 * @param string $content tab content wikitext
+	 *
+	 * @return string
+	 */
+	private static function getTabContent( string $content ): string {
+		$content = trim( $content );
+		if ( $content === '' ) {
+			return '';
+		}
+		// Fix #151
+		$content = "\n" . $content;
+		return $content;
+	}
+
+	/**
+	 * Get individual tab data from wikitext.
+	 *
+	 * @param string $tab tab wikitext
+	 * @param Parser $parser Mediawiki Parser Object
+	 *
+	 * @return array<string, string>
+	 */
+	private static function getTabData( string $tab, Parser $parser ): array {
+		$data = [
+			'label' => '',
+			'content' => ''
+		];
+		if ( empty( trim( $tab ) ) ) {
+			return $data;
+		}
+		// Use array_pad to make sure at least 2 array values are always returned
+		[ $label, $content ] = array_pad( explode( '=', $tab, 2 ), 2, '' );
+
+		$data['label'] = self::getTabLabel( $label, $parser );
+		// Label is empty, we cannot generate tabber
+		if ( $data['label'] === '' ) {
+			return $data;
+		}
+
+		$data['content'] = self::getTabContent( $content );
+		return $data;
+	}
+
+	/**
+	 * Build individual tabpanel.
+	 *
+	 * @param array $tabData Tab data
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 * @throws JsonException
 	 */
-	private static function buildTab( string $tab, Parser $parser, PPFrame $frame ): string {
-		if ( empty( trim( $tab ) ) ) {
-			return '';
-		}
-		// Use array_pad to make sure at least 2 array values are always returned
-		[ $tabName, $tabBody ] = array_pad( explode( '=', $tab, 2 ), 2, '' );
-
-		$tabName = trim( $tabName );
-		// Fix #151
-		$tabBody = "\n" . trim( $tabBody );
+	private static function buildTabpanel( array $tabData, Parser $parser, PPFrame $frame ): string {
+		$tabName = $tabData['label'];
+		$tabBody = $tabData['content'];
 
 		// Codex mode
 		if ( self::$useCodex ) {
-			// Use language converter to get variant title and also escape html
-			$tabName = $parser->getTargetLanguageConverter()->convertHtml( $tabName );
 			// A nested tabber which should return json in codex
 			if ( strpos( $tabBody, '{{#tag:tabber' ) !== false ) {
 				self::$isNested = true;
@@ -137,14 +206,6 @@ class Tabber {
 			}
 		}
 
-		// Normal mode
-		if ( self::$parseTabName ) {
-			$tabName = $parser->recursiveTagParseFully( $tabName );
-			$tabName = $parser->stripOuterParagraph( $tabName );
-			$tabName = htmlentities( $tabName );
-		} else {
-			$tabName = $parser->getTargetLanguageConverter()->convertHtml( $tabName );
-		}
 		$tabBody = $parser->recursiveTagParse( $tabBody, $frame );
 
 		// If $tabBody does not have any HTML element (i.e. just a text node), wrap it in <p/>

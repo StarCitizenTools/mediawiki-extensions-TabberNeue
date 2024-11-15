@@ -59,8 +59,12 @@ class TabberTransclude {
 		$arr = explode( "\n", $input );
 		$htmlTabs = '';
 		foreach ( $arr as $tab ) {
+			$tabData = self::getTabData( $tab );
+			if ( $tabData['label'] === '' ) {
+				continue;
+			}
 			try {
-				$htmlTabs .= self::buildTabTransclude( $tab, $parser, $frame, $selected );
+				$htmlTabs .= self::buildTabTransclude( $tabData, $parser, $frame, $selected );
 			} catch ( Exception $e ) {
 				// This can happen if a $currentTitle is null
 				continue;
@@ -73,9 +77,32 @@ class TabberTransclude {
 	}
 
 	/**
+	 * Get individual tab data from wikitext.
+	 *
+	 * @param string $tab tab wikitext
+	 *
+	 * @return array<string, string>
+	 */
+	private static function getTabData( string $tab ): array {
+		$data = [
+			'label' => '',
+			'content' => ''
+		];
+		if ( empty( trim( $tab ) ) ) {
+			return $data;
+		}
+		// Transclude uses a different syntax: Page name|Tab label
+		// Use array_pad to make sure at least 2 array values are always returned
+		[ $content, $label ] = array_pad( explode( '|', $tab, 2 ), 2, '' );
+		$data['label'] = trim( $label );
+		$data['content'] = trim( $content );
+		return $data;
+	}
+
+	/**
 	 * Build individual tab.
 	 *
-	 * @param string $tab Tab information
+	 * @param array $tabData Tab data
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 * @param bool &$selected The tab is the selected one
@@ -83,14 +110,11 @@ class TabberTransclude {
 	 * @return string HTML
 	 * @throws Exception
 	 */
-	private static function buildTabTransclude( string $tab, Parser $parser, PPFrame $frame, bool &$selected ): string {
-		if ( empty( trim( $tab ) ) ) {
-			return '';
-		}
+	private static function buildTabTransclude( array $tabData, Parser $parser, PPFrame $frame, bool &$selected ): string {
+		$tabName = $tabData['label'];
+		$pageName = $tabData['content'];
 
 		$dataProps = [];
-		// Use array_pad to make sure at least 2 array values are always returned
-		[ $pageName, $tabName ] = array_pad( explode( '|', $tab, 2 ), 2, '' );
 		$title = Title::newFromText( trim( $pageName ) );
 		if ( !$title ) {
 			if ( empty( $tabName ) ) {
