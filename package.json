@@ -9,7 +9,7 @@
 		"lint:i18n": "banana-checker --requireLowerCase=0 i18n/"
 	},
 	"devDependencies": {
-		"@wikimedia/codex": "^1.15.0",
+		"@wikimedia/codex": "^1.16.0",
 		"@wikimedia/types-wikimedia": "0.4.4",
 		"eslint-config-wikimedia": "0.28.2",
 		"eslint-plugin-no-jquery": "3.0.2",
