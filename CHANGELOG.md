@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.6.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.5.0...v2.6.0) (2024-11-15)
+
+
+### Features
+
+* add TabberNeueUseLegacyTabIds config option ([#184](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/184)) ([1b60511](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/1b60511ae701670eb279ee7991d9cfab14a2a80d))
+
+
+### Bug Fixes
+
+* keep arrow button icon inside its parent ([#186](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/186)) ([201238c](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/201238ccd85a6bc5a3c8ce21a30d866609066b39))
+
 ## [2.5.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.4.0...v2.5.0) (2024-09-01)
 
 
