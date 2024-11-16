@@ -1,0 +1,13 @@
+{{!
+	int count Current Tabber count
+	string html-tabs
+	string html-tabpanels
+}}
+<div id="tabber-{{count}}" class='tabber tabber--init'>
+	<header class="tabber__header">
+		<button class="tabber__header__prev" aria-hidden="true"></button>
+		<nav class="tabber__tabs" role="tablist">{{{html-tabs}}}</nav>
+		<button class="tabber__header__next" aria-hidden="true"></button>
+	</header>
+	<section class="tabber__section">{{{html-tabpanels}}}</section>
+</div>

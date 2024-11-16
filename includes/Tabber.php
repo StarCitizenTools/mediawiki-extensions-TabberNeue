@@ -19,6 +19,7 @@ use JsonException;
 use MediaWiki\MediaWikiServices;
 use Parser;
 use PPFrame;
+use TemplateParser;
 use Sanitizer;
 
 class Tabber {
@@ -107,11 +108,13 @@ class Tabber {
 			return sprintf( '[%s]', $tabpanels );
 		}
 
-		return "<div id='tabber-$count' class='tabber tabber--init'>" .
-			'<header class="tabber__header"><button class="tabber__header__prev" aria-hidden="true"></button>' .
-			'<nav class="tabber__tabs" role="tablist">' . $tabs . '</nav>' .
-			'<button class="tabber__header__next" aria-hidden="true"></button></header>' .
-			'<section class="tabber__section">' . $tabpanels . '</section></div>';
+		$templateParser = new TemplateParser( __DIR__ . '/templates' );
+		$data = [
+			'count' => $count,
+			'html-tabs' => $tabs,
+			'html-tabpanels' => $tabpanels
+		];
+		return $templateParser->processTemplate( 'Tabber', $data );
 	}
 
 	/**
