@@ -63,7 +63,7 @@ class Tabber {
 
 		$html = self::render( $input, $count, $parser, $frame );
 
-		$parserOutput->appendExtensionData( 'tabber-count', $count++ );
+		$parserOutput->appendExtensionData( 'tabber-count', ++$count );
 
 		if ( self::$useCodex === true ) {
 			$parser->getOutput()->addModules( [ 'ext.tabberNeue.codex' ] );
