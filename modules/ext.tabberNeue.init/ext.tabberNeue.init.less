@@ -1,4 +1,7 @@
 .tabber {
+	position: relative;
+	overflow: hidden;
+
 	&__header {
 		box-shadow: inset 0 -1px 0 0 var( --border-color-base, #a2a9b1 );
 
@@ -10,7 +13,8 @@
 
 	&__tabs {
 		display: flex;
-		overflow: auto hidden;
+		overflow-x: auto;
+		overflow-y: hidden;
 	}
 
 	&__tab {

@@ -6,12 +6,12 @@
  * TODO: Split classes into different modules
  */
 const config = require( './config.json' );
-const Hash = require( './Hash.js' );
 const Transclude = require( './Transclude.js' );
 const Util = require( './Util.js' );
 
 let resizeObserver;
 
+const previousWidths = new WeakMap();
 /**
  * Class representing TabberAction functionality for handling tab events and animations.
  *
@@ -98,9 +98,8 @@ class TabberAction {
 	 * Scrolls the section to make the active tab panel visible.
 	 *
 	 * @param {Element} activeTabpanel - The active tab panel element to be set.
-	 * @param {Element|null} currentActiveTabpanel - The current active tab panel element
 	 */
-	static setActiveTabpanel( activeTabpanel, currentActiveTabpanel = null ) {
+	static setActiveTabpanel( activeTabpanel ) {
 		const section = activeTabpanel.closest( '.tabber__section' );
 
 		if ( activeTabpanel.dataset.mwTabberLoadUrl ) {
@@ -118,11 +117,6 @@ class TabberAction {
 			// Scroll to tab
 			section.scrollLeft = activeTabpanel.offsetLeft;
 		} );
-
-		if ( currentActiveTabpanel ) {
-			resizeObserver.unobserve( currentActiveTabpanel );
-		}
-		resizeObserver.observe( activeTabpanel );
 	}
 
 	/**
@@ -138,11 +132,6 @@ class TabberAction {
 			const tabberEl = activeTabpanel.closest( '.tabber' );
 
 			const currentActiveTab = tabberEl.querySelector( ':scope > .tabber__header > .tabber__tabs > .tabber__tab[aria-selected="true"]' );
-			let currentActiveTabpanel;
-
-			if ( currentActiveTab ) {
-				currentActiveTabpanel = TabberAction.getTabpanel( currentActiveTab );
-			}
 
 			if ( currentActiveTab ) {
 				const currentActiveTabAttributes = {
@@ -150,11 +139,6 @@ class TabberAction {
 					'aria-selected': 'false'
 				};
 				Util.setAttributes( currentActiveTab, currentActiveTabAttributes );
-
-				if ( currentActiveTabpanel ) {
-					const currentActiveTabpanelAttributes = { tabindex: -1 };
-					Util.setAttributes( currentActiveTabpanel, currentActiveTabpanelAttributes );
-				}
 			}
 
 			const activeTabAttributes = {
@@ -162,11 +146,8 @@ class TabberAction {
 				'aria-selected': 'true'
 			};
 
-			const activeTabpanelAttributes = { tabindex: 0 };
-
 			Util.setAttributes( activeTab, activeTabAttributes );
-			Util.setAttributes( activeTabpanel, activeTabpanelAttributes );
-			TabberAction.setActiveTabpanel( activeTabpanel, currentActiveTabpanel );
+			TabberAction.setActiveTabpanel( activeTabpanel );
 
 			resolve();
 		} );
@@ -213,17 +194,19 @@ class TabberAction {
 
 	/**
 	 * Handles the resize event for tabber elements.
-	 * Updates the header overflow if the resized element is a tab list,
-	 * or sets the active tab panel if the resized element is a tab panel.
+	 * Updates the header overflow if the resized element is a tablist
 	 *
 	 * @param {ResizeObserverEntry[]} entries - An array of ResizeObserverEntry objects.
 	 */
 	static onResize( entries ) {
 		for ( const { target } of entries ) {
-			if ( target.classList.contains( 'tabber__tabs' ) ) {
-				TabberAction.updateHeaderOverflow( target );
-			} else if ( target.classList.contains( 'tabber__panel' ) ) {
-				TabberAction.setActiveTabpanel( target );
+			switch ( true ) {
+				case target.classList.contains( 'tabber__tabs' ):
+					TabberAction.updateHeaderOverflow( target );
+					break;
+				case target.classList.contains( 'tabber__panel' ):
+					TabberAction.setActiveTabpanel( target );
+					break;
 			}
 		}
 	}
@@ -433,6 +416,31 @@ class TabberBuilder {
 	}
 
 	/**
+	 * Get the active tab in init state
+	 *
+	 * @param {string} urlHash - The URL hash used to set the active tab.
+	 * @return {HTMLElement}
+	 */
+	getActiveTab( urlHash ) {
+		const activeTab = this.tablist.firstElementChild;
+		if ( !urlHash ) {
+			return activeTab;
+		}
+		const idFromUrlHash = urlHash.replace( 'tabber-tabpanel-', 'tabber-tab-' );
+		if ( idFromUrlHash === urlHash ) {
+			return activeTab;
+		}
+		const activeTabFromUrlHash = document.getElementById( idFromUrlHash );
+		if ( !activeTabFromUrlHash ) {
+			return activeTab;
+		}
+		if ( activeTabFromUrlHash.closest( '.tabber__tabs' ) !== this.tablist ) {
+			return activeTab;
+		}
+		return activeTabFromUrlHash;
+	}
+
+	/**
 	 * Sets the tabs attributes
 	 * Sets the active tab based on the URL hash, and updates the header overflow.
 	 * Attaches event listeners for tabber interaction.
@@ -441,7 +449,7 @@ class TabberBuilder {
 	 * @return {void}
 	 */
 	async init( urlHash ) {
-		const activeTab = this.tablist.querySelector( `#tabber-tab-${ CSS.escape( urlHash ) }` ) || this.tablist.firstElementChild;
+		const activeTab = this.getActiveTab( urlHash );
 		this.setTabsAttributes();
 		await TabberAction.setActiveTab( activeTab );
 		TabberAction.updateHeaderOverflow( this.tablist );
@@ -451,6 +459,7 @@ class TabberBuilder {
 		tabberEvent.init();
 		this.tabber.classList.remove( 'tabber--init' );
 		this.tabber.classList.add( 'tabber--live' );
+		TabberAction.setActiveTab( activeTab );
 	}
 }
 
@@ -465,8 +474,6 @@ async function load( tabberEls ) {
 
 	mw.loader.load( 'ext.tabberNeue.icons' );
 
-	Hash.init();
-
 	// eslint-disable-next-line compat/compat
 	resizeObserver = new ResizeObserver( TabberAction.onResize );
 
@@ -479,8 +486,8 @@ async function load( tabberEls ) {
 		// Delay animation execution so it doesn't not animate the tab gets into position on load
 		TabberAction.toggleAnimation( true );
 		window.addEventListener( 'hashchange', ( event ) => {
-			const newHash = window.location.hash.slice( 1 );
-			const tab = document.getElementById( `tabber-tab-${ CSS.escape( newHash ) }` );
+			const hash = window.location.hash.slice( 1 );
+			const tab = document.getElementById( `tabber-tab-${ CSS.escape( hash ) }` );
 			if ( tab ) {
 				event.preventDefault();
 				tab.click();

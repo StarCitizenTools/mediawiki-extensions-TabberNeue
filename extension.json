@@ -48,7 +48,6 @@
 						"useLegacyTabIds": "TabberNeueUseLegacyTabIds"
 					}
 				},
-				"ext.tabberNeue/Hash.js",
 				"ext.tabberNeue/Transclude.js",
 				"ext.tabberNeue/Util.js"
 			],
