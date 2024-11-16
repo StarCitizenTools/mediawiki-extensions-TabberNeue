@@ -43,14 +43,14 @@ function main() {
 	tabbers.forEach( initApp );
 }
 
-mw.hook( 'wikipage.content' ).add( function () {
+mw.hook( 'wikipage.content' ).add( () => {
 	main();
 } );
 
 /*
  * Add hooks for Tabber when Visual Editor is used.
 */
-mw.loader.using( 'ext.visualEditor.desktopArticleTarget.init', function () {
+mw.loader.using( 'ext.visualEditor.desktopArticleTarget.init', () => {
 	// After saving edits
 	mw.hook( 'postEdit.afterRemoval' ).add( () => {
 		main();
