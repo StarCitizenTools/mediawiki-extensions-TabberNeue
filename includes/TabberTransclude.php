@@ -15,9 +15,12 @@ declare( strict_types=1 );
 namespace MediaWiki\Extension\TabberNeue;
 
 use Exception;
+use Html;
 use MediaWiki\MediaWikiServices;
 use Parser;
 use PPFrame;
+use Sanitizer;
+use TemplateParser;
 use Title;
 
 class TabberTransclude {
@@ -32,14 +35,18 @@ class TabberTransclude {
 	 * @return string HTML
 	 */
 	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ) {
-		$html = self::render( $input, $parser, $frame );
-
 		if ( $input === null ) {
 			return '';
 		}
 
+		$parserOutput = $parser->getOutput();
+
+		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
+
+		$html = self::render( $input, $count, $parser, $frame );
+
 		$parser->getOutput()->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
-		// $parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
+		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
 
 		$parser->addTrackingCategory( 'tabberneue-tabbertransclude-category' );
 		return $html;
@@ -49,31 +56,39 @@ class TabberTransclude {
 	 * Renders the necessary HTML for a <tabbertransclude> tag.
 	 *
 	 * @param string $input The input URL between the beginning and ending tags.
+	 * @param int $count Current Tabber count
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 */
-	public static function render( string $input, Parser $parser, PPFrame $frame ): string {
+	public static function render( string $input, int $count, Parser $parser, PPFrame $frame ): string {
 		$selected = true;
 		$arr = explode( "\n", $input );
-		$htmlTabs = '';
+		$tabs = '';
+		$tabpanels = '';
+
 		foreach ( $arr as $tab ) {
 			$tabData = self::getTabData( $tab );
 			if ( $tabData === [] ) {
 				continue;
 			}
+			$tabs .= self::getTabHTML( $tabData );
 			try {
-				$htmlTabs .= self::buildTabTransclude( $tabData, $parser, $frame, $selected );
+				$tabpanels .= self::buildTabTransclude( $tabData, $parser, $frame, $selected );
 			} catch ( Exception $e ) {
 				// This can happen if a $currentTitle is null
 				continue;
 			}
 		}
 
-		return '<div class="tabber">' .
-			'<header class="tabber__header"></header>' .
-			'<section class="tabber__section">' . $htmlTabs . '</section></div>';
+		$templateParser = new TemplateParser( __DIR__ . '/templates' );
+		$data = [
+			'count' => $count,
+			'html-tabs' => $tabs,
+			'html-tabpanels' => $tabpanels
+		];
+		return $templateParser->processTemplate( 'Tabber', $data );
 	}
 
 	/**
@@ -91,9 +106,33 @@ class TabberTransclude {
 		// Transclude uses a different syntax: Page name|Tab label
 		// Use array_pad to make sure at least 2 array values are always returned
 		[ $content, $label ] = array_pad( explode( '|', $tab, 2 ), 2, '' );
+
 		$data['label'] = trim( $label );
+		// Label is empty, we cannot generate tabber
+		if ( $data['label'] === '' ) {
+			return $data;
+		}
 		$data['content'] = trim( $content );
+		$data['id'] = Sanitizer::escapeIdForAttribute( htmlspecialchars( $data['label'] ) );
 		return $data;
+	}
+
+	/**
+	 * Get the HTML for a tab.
+	 *
+	 * @param array $tabData Tab data
+	 *
+	 * @return string HTML
+	 */
+	private static function getTabHTML( array $tabData ): string {
+		$tabpanelId = "tabber-tabpanel-{$tabData['id']}";
+		return Html::rawElement( 'a', [
+			'class' => 'tabber__tab',
+			'id' => "tabber-tab-{$tabData['id']}",
+			'href' => "#$tabpanelId",
+			'role' => 'tab',
+			'aria-controls' => $tabpanelId
+		], $tabData['label'] );
 	}
 
 	/**
@@ -166,7 +205,7 @@ class TabberTransclude {
 			);
 		}
 
-		$tab = '<article class="tabber__panel" data-mw-tabber-title="' . htmlspecialchars( $tabName ) . '"';
+		$tab = '<article id="tabber-tabpanel-' . $tabData['id'] . '" class="tabber__panel" data-mw-tabber-title="' . htmlspecialchars( $tabName ) . '"';
 		$tab .= implode( array_map( static function ( $prop, $value ) {
 			return sprintf( ' data-mw-tabber-%s="%s"', $prop, htmlspecialchars( $value ) );
 		}, array_keys( $dataProps ), $dataProps ) );

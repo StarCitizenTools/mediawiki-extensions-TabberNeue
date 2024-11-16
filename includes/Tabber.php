@@ -48,6 +48,10 @@ class Tabber {
 	 * @return string HTML
 	 */
 	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ) {
+		if ( $input === null ) {
+			return '';
+		}
+
 		$config = MediaWikiServices::getInstance()->getMainConfig();
 		$parserOutput = $parser->getOutput();
 
@@ -57,11 +61,7 @@ class Tabber {
 
 		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
 
-		$html = self::render( $input ?? '', $count, $parser, $frame );
-
-		if ( $input === null ) {
-			return '';
-		}
+		$html = self::render( $input, $count, $parser, $frame );
 
 		$parserOutput->appendExtensionData( 'tabber-count', $count++ );
 
