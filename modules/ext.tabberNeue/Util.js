@@ -5,18 +5,6 @@
  */
 class Util {
 	/**
-	 * Extracts text content from the given HTML string.
-	 *
-	 * @param {string} html - The HTML string to extract text content from.
-	 * @return {string} The extracted text content.
-	 */
-	static extractTextFromHtml( html ) {
-		const tmp = document.createElement( 'div' );
-		tmp.innerHTML = html;
-		return tmp.textContent;
-	}
-
-	/**
 	 * Returns the size (width or height) of the provided element.
 	 * Required to calculate the size of hidden elements (e.g. nested tabs)
 	 *
