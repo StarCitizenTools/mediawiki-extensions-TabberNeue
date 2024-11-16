@@ -424,8 +424,9 @@ class TabberBuilder {
 		if ( !urlHash ) {
 			return activeTab;
 		}
-		const idFromUrlHash = urlHash.replace( 'tabber-tabpanel-', 'tabber-tab-' );
-		if ( idFromUrlHash === urlHash ) {
+		const escapedHash = mw.util.escapeIdForAttribute( urlHash );
+		const idFromUrlHash = escapedHash.replace( 'tabber-tabpanel-', 'tabber-tab-' );
+		if ( idFromUrlHash === escapedHash ) {
 			return activeTab;
 		}
 		const activeTabFromUrlHash = document.getElementById( idFromUrlHash );
