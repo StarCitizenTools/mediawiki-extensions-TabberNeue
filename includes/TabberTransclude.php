@@ -126,7 +126,7 @@ class TabberTransclude {
 	 */
 	private static function getTabHTML( array $tabData ): string {
 		$tabpanelId = "tabber-tabpanel-{$tabData['id']}";
-		return Html::rawElement( 'a', [
+		return Html::element( 'a', [
 			'class' => 'tabber__tab',
 			'id' => "tabber-tab-{$tabData['id']}",
 			'href' => "#$tabpanelId",
