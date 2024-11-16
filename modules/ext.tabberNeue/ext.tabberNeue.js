@@ -10,8 +10,6 @@ const Transclude = require( './Transclude.js' );
 const Util = require( './Util.js' );
 
 let resizeObserver;
-
-const previousWidths = new WeakMap();
 /**
  * Class representing TabberAction functionality for handling tab events and animations.
  *
