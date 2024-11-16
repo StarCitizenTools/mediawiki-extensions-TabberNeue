@@ -48,15 +48,27 @@ class Transclude {
 	 *                    and rejects with an Error if there is an issue with the network request.
 	 */
 	async fetchDataFromUrl() {
+		// eslint-disable-next-line compat/compat
+		const controller = new AbortController();
+		const timeoutId = setTimeout( () => controller.abort(), 5000 );
 		try {
 			// eslint-disable-next-line n/no-unsupported-features/node-builtins
-			const response = await fetch( this.url, { method: 'GET', timeout: 5000, credentials: 'same-origin' } );
+			const response = await fetch( this.url, {
+				method: 'GET',
+				credentials: 'same-origin',
+				signal: controller.signal
+			} );
+			clearTimeout( timeoutId );
 			if ( !response.ok ) {
-				throw new Error( `Network response was not ok: ${ response.status } - ${ response.statusText }` );
+				throw new Error( `[TabberNeue] Network response was not ok: ${ response.status } - ${ response.statusText }` );
 			}
 			return Promise.resolve( response.text() );
 		} catch ( error ) {
-			return Promise.reject( `[TabberNeue] Error fetching data from URL: ${ this.url }`, error );
+			if ( error.name === 'AbortError' ) {
+				return Promise.reject( new Error( '[TabberNeue] Request timed out after 5000ms' ) );
+			} else {
+				return Promise.reject( new Error( `[TabberNeue] Error fetching data from URL: ${ this.url } - ${ error }` ) );
+			}
 		}
 	}
 
