@@ -406,7 +406,7 @@ class TabberBuilder {
 	setTabsAttributes() {
 		const tabAttributes = {
 			tabindex: '-1',
-			'aria-selected': false
+			'aria-selected': 'false'
 		};
 		for ( const tab of this.tablist.children ) {
 			Util.setAttributes( tab, tabAttributes );
@@ -457,7 +457,6 @@ class TabberBuilder {
 		tabberEvent.init();
 		this.tabber.classList.remove( 'tabber--init' );
 		this.tabber.classList.add( 'tabber--live' );
-		TabberAction.setActiveTab( activeTab );
 	}
 }
 

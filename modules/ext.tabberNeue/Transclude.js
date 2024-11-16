@@ -58,17 +58,18 @@ class Transclude {
 				credentials: 'same-origin',
 				signal: controller.signal
 			} );
-			clearTimeout( timeoutId );
 			if ( !response.ok ) {
 				throw new Error( `[TabberNeue] Network response was not ok: ${ response.status } - ${ response.statusText }` );
 			}
-			return Promise.resolve( response.text() );
+			return response.text();
 		} catch ( error ) {
 			if ( error.name === 'AbortError' ) {
 				return Promise.reject( new Error( '[TabberNeue] Request timed out after 5000ms' ) );
 			} else {
 				return Promise.reject( new Error( `[TabberNeue] Error fetching data from URL: ${ this.url } - ${ error }` ) );
 			}
+		} finally {
+			clearTimeout( timeoutId );
 		}
 	}
 
