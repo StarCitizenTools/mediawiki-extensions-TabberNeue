@@ -96,7 +96,7 @@ class TabberTransclude {
 	 *
 	 * @param string $tab tab wikitext
 	 *
-	 * @return array<string, string>
+	 * @return array
 	 */
 	private static function getTabData( string $tab ): array {
 		$data = [];
