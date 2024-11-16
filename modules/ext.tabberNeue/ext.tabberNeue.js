@@ -41,12 +41,10 @@ class TabberAction {
 		if ( !TabberAction.shouldShowAnimation() ) {
 			return;
 		}
-		window.requestAnimationFrame( () => {
-			document.documentElement.classList.toggle(
-				'tabber-animations-ready',
-				enableAnimations
-			);
-		} );
+		document.documentElement.classList.toggle(
+			'tabber-animations-ready',
+			enableAnimations
+		);
 	}
 
 	/**
@@ -63,10 +61,8 @@ class TabberAction {
 		const isScrollable = tablistScrollWidth > tablistWidth;
 
 		if ( !isScrollable ) {
-			window.requestAnimationFrame( () => {
-				header.classList.remove( 'tabber__header--next-visible' );
-				header.classList.remove( 'tabber__header--prev-visible' );
-			} );
+			header.classList.remove( 'tabber__header--next-visible' );
+			header.classList.remove( 'tabber__header--prev-visible' );
 			return;
 		}
 
@@ -75,16 +71,14 @@ class TabberAction {
 		const isAtEnd = scrollLeft + tablistWidth >= tablistScrollWidth;
 		const isAtMiddle = !isAtStart && !isAtEnd;
 
-		window.requestAnimationFrame( () => {
-			header.classList.toggle(
-				'tabber__header--next-visible',
-				isAtStart || isAtMiddle
-			);
-			header.classList.toggle(
-				'tabber__header--prev-visible',
-				isAtEnd || isAtMiddle
-			);
-		} );
+		header.classList.toggle(
+			'tabber__header--next-visible',
+			isAtStart || isAtMiddle
+		);
+		header.classList.toggle(
+			'tabber__header--prev-visible',
+			isAtEnd || isAtMiddle
+		);
 	}
 
 	/**
@@ -150,39 +144,31 @@ class TabberAction {
 				currentActiveTabpanel = TabberAction.getTabpanel( currentActiveTab );
 			}
 
-			window.requestAnimationFrame( () => {
-				if ( currentActiveTab ) {
-					const currentActiveTabAttributes = {
-						tabindex: -1,
-						'aria-selected': 'false'
-					};
-					Util.setAttributes( currentActiveTab, currentActiveTabAttributes );
+			if ( currentActiveTab ) {
+				const currentActiveTabAttributes = {
+					tabindex: -1,
+					'aria-selected': 'false'
+				};
+				Util.setAttributes( currentActiveTab, currentActiveTabAttributes );
 
-					if ( currentActiveTabpanel ) {
-						const currentActiveTabpanelAttributes = {
-							tabindex: -1,
-							'aria-hidden': 'true'
-						};
-						Util.setAttributes( currentActiveTabpanel, currentActiveTabpanelAttributes );
-					}
+				if ( currentActiveTabpanel ) {
+					const currentActiveTabpanelAttributes = { tabindex: -1 };
+					Util.setAttributes( currentActiveTabpanel, currentActiveTabpanelAttributes );
 				}
+			}
 
-				const activeTabAttributes = {
-					tabindex: 0,
-					'aria-selected': 'true'
-				};
+			const activeTabAttributes = {
+				tabindex: 0,
+				'aria-selected': 'true'
+			};
 
-				const activeTabpanelAttributes = {
-					tabindex: 0,
-					'aria-hidden': 'false'
-				};
+			const activeTabpanelAttributes = { tabindex: 0 };
 
-				Util.setAttributes( activeTab, activeTabAttributes );
-				Util.setAttributes( activeTabpanel, activeTabpanelAttributes );
-				TabberAction.setActiveTabpanel( activeTabpanel, currentActiveTabpanel );
+			Util.setAttributes( activeTab, activeTabAttributes );
+			Util.setAttributes( activeTabpanel, activeTabpanelAttributes );
+			TabberAction.setActiveTabpanel( activeTabpanel, currentActiveTabpanel );
 
-				resolve();
-			} );
+			resolve();
 		} );
 	}
 
@@ -193,13 +179,16 @@ class TabberAction {
 	 * @param {Element} tablist - The tab list element to scroll.
 	 */
 	static scrollTablist( offset, tablist ) {
-		const scrollLeft = Util.roundScrollLeft( tablist.scrollLeft ) + offset;
-
-		window.requestAnimationFrame( () => {
-			tablist.scrollLeft = Math.min(
+		const getToScroll = () => {
+			const scrollLeft = Util.roundScrollLeft( tablist.scrollLeft ) + offset;
+			return Math.min(
 				Math.max( scrollLeft, 0 ),
 				tablist.scrollWidth - tablist.offsetWidth
 			);
+		};
+		const toScroll = getToScroll();
+		window.requestAnimationFrame( () => {
+			tablist.scrollLeft = toScroll;
 		} );
 	}
 
