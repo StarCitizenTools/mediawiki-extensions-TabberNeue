@@ -19,8 +19,8 @@ use JsonException;
 use MediaWiki\MediaWikiServices;
 use Parser;
 use PPFrame;
-use TemplateParser;
 use Sanitizer;
+use TemplateParser;
 
 class Tabber {
 
