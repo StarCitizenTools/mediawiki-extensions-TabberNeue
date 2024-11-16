@@ -163,7 +163,7 @@
 		},
 		"TabberNeueUseLegacyTabIds": {
 			"value": false,
-			"description": "If enabled, tab IDs will not be prepended with \"tabber-\". This provides better compatibility with the old Tabber extension, but will cause issues if there are headings with the same name as an existing tab.",
+			"description": "If enabled, tabpanel IDs will not be prepended with \"tabber-tabpanel-\". This provides better compatibility with the old Tabber extension, but will cause issues if there are headings with the same name as an existing tab.",
 			"public": true
 		}
 	},

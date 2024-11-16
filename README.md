@@ -94,7 +94,8 @@ Third Page Name|Third Tab Title
 ## Configurations
 Name | Description | Values | Default
 :--- | :--- | :--- | :---
-`$wgTabberNeueParseTabName` | Parse tab name as wikitext. This can have a performance impact and cause unexpected behaviors. |`true` - enable; `false` - disable | `false`
-`$wgTabberNeueUseCodex` | Use Codex to render Tabber. It is experimental and many features might not work as expected |`true` - enable; `false` - disable | `false`
 `$wgTabberNeueEnableAnimation` | Enable or disable smooth scroll animation |`true` - enable; `false` - disable | `true`
+`$wgTabberNeueParseTabName` | Parse tab name as wikitext. This can have a performance impact and cause unexpected behaviors. |`true` - enable; `false` - disable | `false`
 `$wgTabberNeueUpdateLocationOnTabChange` | If enabled, when a tab is selected, the URL displayed on the browser changes. Opening this URL makes that tab initially selected |`true` - enable; `false` - disable | `true`
+`$wgTabberNeueUseCodex` | Use Codex to render Tabber. It is experimental and many features might not work as expected |`true` - enable; `false` - disable | `false`
+`$wgTabberNeueUseLegacyTabIds` | If enabled, tabpanel IDs will not be prepended with "tabber-tabpanel-". This provides better compatibility with the old Tabber extension, but will cause issues if there are headings with the same name as an existing tab |`true` - enable; `false` - disable | `false`
