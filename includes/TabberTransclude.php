@@ -169,8 +169,9 @@ class TabberTransclude {
 					$frame
 				);
 			} else {
+				$service = MediaWikiServices::getInstance();
 				// Add a link placeholder, as a fallback if JavaScript doesn't execute
-				$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+				$linkRenderer = $service->getLinkRenderer();
 				$tabBody = sprintf(
 					'<div class="tabber__transclusion">%s</div>',
 					$linkRenderer->makeLink( $title, null, [ 'rel' => 'nofollow' ] )
@@ -182,13 +183,13 @@ class TabberTransclude {
 					urlencode( $pageName )
 				);
 
-				$utils = MediaWikiServices::getInstance()->getUrlUtils();
+				$utils = $service->getUrlUtils();
 				$utils->expand( wfScript( 'api' ) . $query, PROTO_CANONICAL );
 
 				$dataProps['load-url'] = $utils->expand( wfScript( 'api' ) . $query, PROTO_CANONICAL );
 				$oldTabBody = $tabBody;
 				// Allow extensions to update the lazy loaded tab
-				MediaWikiServices::getInstance()->getHookContainer()->run(
+				$service->getHookContainer()->run(
 					'TabberNeueRenderLazyLoadedTab',
 					[ &$tabBody, &$dataProps, $parser, $frame ]
 				);
