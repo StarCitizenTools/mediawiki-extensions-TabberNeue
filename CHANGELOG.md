@@ -1,5 +1,33 @@
 # Changelog
 
+## [2.6.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.5.0...v2.6.0) (2024-11-16)
+
+
+### Features
+
+* add TabberNeueUseLegacyTabIds config option ([#184](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/184)) ([1b60511](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/1b60511ae701670eb279ee7991d9cfab14a2a80d))
+* assign unique IDs to Tabber container ([de2ced5](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/de2ced5a363a39e3405575e7bfd53d20d59a8ad2))
+* only add empty paragraph for wikitext list elements ([f24ddb5](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/f24ddb58eef800cec92d2d47500e5358a52e906d)), closes [#151](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/151)
+* render all HTML server-side ([1e1d3de](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/1e1d3de9cd2f2832826efda2019048752b5dbc64))
+* simplify implementation and drop hash usage ([56619bf](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/56619bf56f9b0ada30f299cf99ecdccb52e2dbe5))
+* throw exception when duplicated label is found under legacy ID mode ([ab8e306](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/ab8e306fc6efc9707f391ac0a10cc191bad71cd3))
+* use Codex CSS variable directly ([bd5738a](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/bd5738afe86615e913be0fe273b3af0e6b10e709))
+
+
+### Bug Fixes
+
+* drop unused variable ([f87c43e](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/f87c43e8e4465d8522cdfbf151dc46a85d0b9f49))
+* fix various issues raised by code review ([9e8ac87](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/9e8ac878cc0b21ff0e4291ceeec851ad77ec6aa4))
+* keep arrow button icon inside its parent ([#186](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/186)) ([201238c](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/201238ccd85a6bc5a3c8ce21a30d866609066b39))
+* no need to apply hover:hover to active state ([70f632a](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/70f632a4db41953a983594b14dddd456f129fa0a))
+* various issues found in code review ([1f75afc](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/1f75afc2174994fe9894c534d6276e2956394fed))
+
+
+### Performance Improvements
+
+* drop incorrect usage of rAF and do not set aria-hidden on tabpanels ([910f5c7](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/910f5c72f4ff422aec3d470059ba796f1cfedbb6))
+* only call one instance of MediaWikiServices ([724e347](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/724e347ca10e4f452d250bdaffcd4d4d88b3d6f4))
+
 ## [2.5.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.4.0...v2.5.0) (2024-09-01)
 
 
