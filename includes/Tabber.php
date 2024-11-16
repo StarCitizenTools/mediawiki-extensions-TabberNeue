@@ -17,6 +17,7 @@ namespace MediaWiki\Extension\TabberNeue;
 use Html;
 use JsonException;
 use MediaWiki\MediaWikiServices;
+use InvalidArgumentException;
 use Parser;
 use PPFrame;
 use Sanitizer;
@@ -28,10 +29,13 @@ class Tabber {
 	private static $isNested = false;
 
 	/** @var bool */
+	private static $parseTabName = false;
+
+	/** @var bool */
 	private static $useCodex = false;
 
 	/** @var bool */
-	private static $parseTabName = false;
+	private static $useLegacyId = false;
 
 	/**
 	 * Parser callback for <tabber> tag
@@ -49,6 +53,8 @@ class Tabber {
 
 		self::$parseTabName = $config->get( 'TabberNeueParseTabName' );
 		self::$useCodex = $config->get( 'TabberNeueUseCodex' );
+		self::$useLegacyId = $config->get( 'TabberNeueUseLegacyTabIds' );
+
 		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
 
 		$html = self::render( $input ?? '', $count, $parser, $frame );
@@ -189,6 +195,7 @@ class Tabber {
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return array<string, string>
+	 * @throws MWException
 	 */
 	private static function getTabData( string $tab, int $count, Parser $parser, PPFrame $frame ): array {
 		$data = [];
@@ -206,7 +213,20 @@ class Tabber {
 
 		$data['content'] = self::getTabContent( $content, $parser, $frame );
 
-		$id = Sanitizer::escapeIdForAttribute( htmlspecialchars( $data['label'] ) ) . '-' . $count;
+		$id = Sanitizer::escapeIdForAttribute( htmlspecialchars( $data['label'] ) );
+		if ( self::$useLegacyId === true ) {
+			$parserOutput = $parser->getOutput();
+			$existingIds = $parserOutput->getExtensionData( 'tabber-ids' ) ?? [];
+			if ( in_array( $id, $existingIds ) ) {
+				throw new InvalidArgumentException(
+					'Duplicated Tabber labels is not allowed with $wgTabberNeueUseLegacyTabIds = true.' .
+					'Label was: ' . $label
+				);
+			}
+			$parserOutput->appendExtensionData( 'tabber-ids', $id );
+		} else {
+			$id = "$id-$count";
+		}
 		$data['id'] = $id;
 		return $data;
 	}
