@@ -43,9 +43,7 @@
 					"name": "ext.tabberNeue/config.json",
 					"config": {
 						"enableAnimation": "TabberNeueEnableAnimation",
-						"parseTabName": "TabberNeueParseTabName",
-						"updateLocationOnTabChange": "TabberNeueUpdateLocationOnTabChange",
-						"useLegacyTabIds": "TabberNeueUseLegacyTabIds"
+						"updateLocationOnTabChange": "TabberNeueUpdateLocationOnTabChange"
 					}
 				},
 				"ext.tabberNeue/Transclude.js",
