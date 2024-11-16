@@ -15,10 +15,17 @@
 
 	&__tab {
 		padding: 0.5em 0.75em;
-		color: var( --color-base, #202122 );
-		font-weight: 700;
+		font-weight: bold;
 		white-space: nowrap;
 
+		&,
+		&:hover,
+		&:active,
+		&:focus {
+			text-decoration: none;
+		}
+
+		/* stylelint-disable-next-line no-descending-specificity */
 		&,
 		&:visited {
 			color: var( --color-base, #202122 );
@@ -26,8 +33,8 @@
 
 		&:hover {
 			@media ( hover: hover ) {
-				color: var( --color-progressive--hover, #447ff5 );
 				box-shadow: inset 0 -2px 0 0 var( --box-shadow-color-progressive-selected--hover, #447ff5 );
+				color: var( --color-progressive--hover, #447ff5 );
 			}
 		}
 
@@ -35,13 +42,6 @@
 			@media ( hover: hover ) {
 				color: var( --color-progressive--active, #2a4b8d );
 			}
-		}
-
-		&,
-		&:hover,
-		&:active,
-		&:focus {
-			text-decoration: none;
 		}
 	}
 
@@ -67,8 +67,18 @@
 	}
 }
 
+// Basic nojs support
+/* stylelint-disable-next-line selector-class-pattern */
+.client-nojs {
+	.tabber__panel {
+		height: auto;
+		scroll-padding-top: 3rem;
+	}
+}
+
 // Set tabber height to the height of first tabpanel by
 // setting subsequent tabpanels to have 0 height
+/* stylelint-disable-next-line selector-class-pattern */
 .client-js {
 	.tabber {
 		&__tabs {
@@ -85,13 +95,5 @@
 				height: 0;
 			}
 		}
-	}
-}
-
-// Basic nojs support
-.client-nojs {
-	.tabber__panel {
-		scroll-padding-top: 3rem;
-		height: auto;
 	}
 }
