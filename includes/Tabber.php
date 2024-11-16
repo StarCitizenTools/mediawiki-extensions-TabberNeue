@@ -15,9 +15,9 @@ declare( strict_types=1 );
 namespace MediaWiki\Extension\TabberNeue;
 
 use Html;
+use InvalidArgumentException;
 use JsonException;
 use MediaWiki\MediaWikiServices;
-use InvalidArgumentException;
 use Parser;
 use PPFrame;
 use Sanitizer;
