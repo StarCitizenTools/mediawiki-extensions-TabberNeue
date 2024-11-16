@@ -9,12 +9,6 @@
 	--tabber-background-color-button-quiet--active: var( --background-color-button-quiet--active, rgba( 0, 24, 73, 0.082 ) ); // @background-color-button-quiet--active
 	--tabber-border-color-base: var( --border-color-base, #a2a9b1 ); // @border-color-base
 	--tabber-height-indicator: 2px;
-	position: relative;
-	display: flex;
-
-	/* establish primary containing box */
-	overflow: hidden;
-	flex-direction: column;
 
 	&__header {
 		position: relative;
@@ -43,10 +37,10 @@
 		& &__prev,
 		& &__next {
 			position: absolute;
+			display: none; // Required as all:unset also unset display:none
 			z-index: 1;
 			top: 0;
 			bottom: 0;
-			display: none;
 			width: 20px;
 			border-radius: 4px;
 			cursor: pointer;
@@ -79,18 +73,6 @@
 
 		&--prev-visible .tabber__header__prev,
 		&--next-visible .tabber__header__next {
-			display: block;
-		}
-	}
-
-	&__indicator {
-		display: none;
-		margin-top: ~'calc( var( --tabber-height-indicator ) * -1 )';
-		background: var( --tabber-color-progressive );
-		block-size: var( --tabber-height-indicator );
-		inline-size: 0;
-
-		&--visible {
 			display: block;
 		}
 	}

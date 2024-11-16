@@ -88,28 +88,6 @@ class TabberAction {
 	}
 
 	/**
-	 * Animate and update the indicator position and width based on the active tab.
-	 *
-	 * @param {Element} indicator - The indicator element (optional, defaults to the first '.tabber__indicator' found in the parent).
-	 * @param {Element} activeTab - The currently active tab.
-	 * @param {Element} tablist - The parent element containing the tabs.
-	 */
-	static animateIndicator( indicator, activeTab, tablist ) {
-		const tablistScrollLeft = Util.roundScrollLeft( tablist.scrollLeft );
-		const width = Util.getElementSize( activeTab, 'width' );
-		const transformValue = activeTab.offsetLeft - tablistScrollLeft;
-
-		indicator.classList.add( 'tabber__indicator--visible' );
-		tablist.classList.add( 'tabber__tabs--animate' );
-		indicator.style.width = width + 'px';
-		indicator.style.transform = `translateX(${ transformValue }px)`;
-		setTimeout( () => {
-			indicator.classList.remove( 'tabber__indicator--visible' );
-			tablist.classList.remove( 'tabber__tabs--animate' );
-		}, 250 );
-	}
-
-	/**
 	 * Returns the tabpanel element based on the tab element
 	 *
 	 * @param {Element} tab - The tab element
@@ -136,12 +114,13 @@ class TabberAction {
 			transclude.loadPage();
 		}
 
+		const activeTabpanelHeight = Util.getElementSize(
+			activeTabpanel,
+			'height'
+		);
+		section.style.height = activeTabpanelHeight + 'px';
+
 		window.requestAnimationFrame( () => {
-			const activeTabpanelHeight = Util.getElementSize(
-				activeTabpanel,
-				'height'
-			);
-			section.style.height = activeTabpanelHeight + 'px';
 			// Scroll to tab
 			section.scrollLeft = activeTabpanel.offsetLeft;
 		} );
@@ -155,7 +134,6 @@ class TabberAction {
 	/**
 	 * Sets the active tab in the tabber element.
 	 * Updates the attributes of tabs and tab panels to reflect the active state.
-	 * Animates the indicator to the active tab and sets the active tab panel.
 	 *
 	 * @param {Element} activeTab - The tab element to set as active.
 	 * @return {Promise} - A promise that resolves once the active tab is set.
@@ -164,9 +142,6 @@ class TabberAction {
 		return new Promise( ( resolve ) => {
 			const activeTabpanel = TabberAction.getTabpanel( activeTab );
 			const tabberEl = activeTabpanel.closest( '.tabber' );
-			const indicator = tabberEl.querySelector(
-				':scope > .tabber__header > .tabber__indicator'
-			);
 
 			const currentActiveTab = tabberEl.querySelector( ':scope > .tabber__header > .tabber__tabs > .tabber__tab[aria-selected="true"]' );
 			let currentActiveTabpanel;
@@ -204,12 +179,6 @@ class TabberAction {
 
 				Util.setAttributes( activeTab, activeTabAttributes );
 				Util.setAttributes( activeTabpanel, activeTabpanelAttributes );
-
-				TabberAction.animateIndicator(
-					indicator,
-					activeTab,
-					activeTab.parentElement
-				);
 				TabberAction.setActiveTabpanel( activeTabpanel, currentActiveTabpanel );
 
 				resolve();
@@ -286,9 +255,6 @@ class TabberEvent {
 		this.tabs = this.tablist.querySelectorAll( ':scope > .tabber__tab' );
 		this.activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
 		this.activeTabpanel = TabberAction.getTabpanel( this.activeTab );
-		this.indicator = this.tabber.querySelector(
-			':scope > .tabber__header > .tabber__indicator'
-		);
 		this.tabFocus = 0;
 		this.debouncedUpdateHeaderOverflow = mw.util.debounce(
 			() => TabberAction.updateHeaderOverflow( this.tablist ),
@@ -454,187 +420,31 @@ class TabberEvent {
 }
 
 /**
- * Class responsible for creating tabs, headers, and indicators for a tabber element.
+ * Class responsible for initalizing a tabber element.
  *
  * @class TabberBuilder
  */
 class TabberBuilder {
 	constructor( tabber ) {
 		this.tabber = tabber;
-		this.header = this.tabber.querySelector( ':scope > .tabber__header' );
-		this.tablist = document.createElement( 'nav' );
-		this.indicator = document.createElement( 'div' );
+		this.tablist = tabber.querySelector( ':scope > .tabber__header > .tabber__tabs' );
 	}
 
 	/**
 	 * Sets the attributes of a tab element.
-	 *
-	 * @param {Element} tab - The tab element to set attributes for.
-	 * @param {string} tabId - The ID of the tab element.
 	 */
-	setTabAttributes( tab, tabId ) {
+	setTabsAttributes() {
 		const tabAttributes = {
-			class: 'tabber__tab',
-			href: '#' + tabId,
-			id: 'tab-' + tabId,
-			role: 'tab',
 			tabindex: '-1',
-			'aria-selected': false,
-			'aria-controls': tabId
+			'aria-selected': false
 		};
-
-		Util.setAttributes( tab, tabAttributes );
-	}
-
-	/**
-	 * Creates a tab element with the given title attribute and tab ID.
-	 *
-	 * @param {string} titleAttr - The title attribute for the tab element.
-	 * @param {string} tabId - The ID of the tab element.
-	 * @return {Element} The created tab element.
-	 */
-	createTab( titleAttr, tabId ) {
-		const tab = document.createElement( 'a' );
-
-		if ( config.parseTabName ) {
-			tab.innerHTML = titleAttr;
-		} else {
-			tab.textContent = titleAttr;
+		for ( const tab of this.tablist.children ) {
+			Util.setAttributes( tab, tabAttributes );
 		}
-
-		this.setTabAttributes( tab, tabId );
-
-		return tab;
 	}
 
 	/**
-	 * Sets the attributes of a tab panel element.
-	 *
-	 * @param {Element} tabpanel - The tab panel element to set attributes for.
-	 * @param {string} tabId - The ID of the tab panel element.
-	 */
-	setTabpanelAttributes( tabpanel, tabId ) {
-		const tabpanelAttributes = {
-			id: tabId,
-			role: 'tabpanel',
-			tabindex: '-1',
-			'aria-hidden': 'true',
-			'aria-labelledby': `tab-${ tabId }`
-		};
-
-		Util.setAttributes( tabpanel, tabpanelAttributes );
-	}
-
-	/**
-	 * Creates a tab element based on the provided tab panel.
-	 *
-	 * @param {Element} tabpanel - The tab panel element to create a tab element for.
-	 * @return {Element|false} The created tab element, or false if the title attribute is missing
-	 * or malformed.
-	 */
-	createTabElement( tabpanel ) {
-		const titleAttr = tabpanel.dataset.mwTabberTitle;
-
-		if ( !titleAttr ) {
-			mw.log.error(
-				'[TabberNeue] Missing or malformed `data-mw-tabber-title` attribute'
-			);
-			return false;
-		}
-
-		let tabId;
-		if ( config.parseTabName ) {
-			tabId = Util.extractTextFromHtml( titleAttr );
-		} else {
-			tabId = titleAttr;
-		}
-
-		tabId = Hash.build( tabId, config.useLegacyTabIds );
-
-		this.setTabpanelAttributes( tabpanel, tabId );
-
-		return this.createTab( titleAttr, tabId );
-	}
-
-	/**
-	 * Creates tabs for the tabber.
-	 *
-	 * This method creates tab elements for each tab panel in the tabber.
-	 * It appends the created tabs to the tablist element, adds necessary attributes,
-	 * and sets the role attribute for accessibility.
-	 *
-	 * @return {Promise} A promise that resolves once all tabs are created and appended to the tablist.
-	 */
-	createTabs() {
-		return new Promise( ( resolve ) => {
-			const fragment = document.createDocumentFragment();
-			const tabpanels = this.tabber.querySelectorAll(
-				':scope > .tabber__section > .tabber__panel'
-			);
-			tabpanels.forEach( ( tabpanel ) => {
-				fragment.append( this.createTabElement( tabpanel ) );
-			} );
-
-			this.tablist.append( fragment );
-			this.tablist.classList.add( 'tabber__tabs' );
-			this.tablist.setAttribute( 'role', 'tablist' );
-			resolve();
-		} );
-	}
-
-	/**
-	 * Creates the indicator element for the tabber.
-	 *
-	 * This method creates a div element to serve as the indicator for the active tab.
-	 * The indicator element is given a specific CSS class for styling and is appended to the tabber header.
-	 *
-	 * @return {Promise} A promise that resolves once the indicator element is created.
-	 */
-	createIndicator() {
-		return new Promise( ( resolve ) => {
-			const indicator = document.createElement( 'div' );
-			indicator.classList.add( 'tabber__indicator' );
-			this.header.append( indicator );
-			resolve();
-		} );
-	}
-
-	/**
-	 * Creates the header for the tabber.
-	 *
-	 * This method creates two button elements, one for navigating to the previous tab and one for navigating to the next tab.
-	 * Each button element is created with the specified class and aria-label attributes.
-	 * The created buttons are appended to the header of the tabber.
-	 *
-	 * @return {Promise} A promise that resolves once the header is created.
-	 */
-	createHeader() {
-		return new Promise( ( resolve ) => {
-			/**
-			 * Creates a button element with the specified class and aria-label.
-			 *
-			 * @param {string} className - The class name for the button element.
-			 * @param {string} ariaLabel - The aria-label attribute for the button element.
-			 * @return {Element} The created button element.
-			 */
-			const createButton = ( className, ariaLabel ) => {
-				const button = document.createElement( 'button' );
-				// eslint-disable-next-line mediawiki/class-doc
-				button.classList.add( className );
-				button.setAttribute( 'aria-label', ariaLabel );
-				return button;
-			};
-
-			const prevButton = createButton( 'tabber__header__prev', mw.message( 'tabberneue-button-prev' ).text() );
-			const nextButton = createButton( 'tabber__header__next', mw.message( 'tabberneue-button-next' ).text() );
-
-			this.header.append( prevButton, this.tablist, nextButton );
-			resolve();
-		} );
-	}
-
-	/**
-	 * Initializes the tabber by creating tabs, header, and indicator elements sequentially.
+	 * Sets the tabs attributes
 	 * Sets the active tab based on the URL hash, and updates the header overflow.
 	 * Attaches event listeners for tabber interaction.
 	 *
@@ -642,19 +452,14 @@ class TabberBuilder {
 	 * @return {void}
 	 */
 	async init( urlHash ) {
-		// Create tabs, header, and indicator elements sequentially
-		await this.createTabs();
-		await this.createHeader();
-		await this.createIndicator();
-
-		const activeTab = this.tablist.querySelector( `#tab-${ CSS.escape( urlHash ) }` ) || this.tablist.firstElementChild;
+		const activeTab = this.tablist.querySelector( `#tabber-tab-${ CSS.escape( urlHash ) }` ) || this.tablist.firstElementChild;
+		this.setTabsAttributes();
 		await TabberAction.setActiveTab( activeTab );
 		TabberAction.updateHeaderOverflow( this.tablist );
 
 		// Start attaching event
 		const tabberEvent = new TabberEvent( this.tabber, this.tablist );
 		tabberEvent.init();
-
 		this.tabber.classList.remove( 'tabber--init' );
 		this.tabber.classList.add( 'tabber--live' );
 	}
@@ -686,7 +491,7 @@ async function load( tabberEls ) {
 		TabberAction.toggleAnimation( true );
 		window.addEventListener( 'hashchange', ( event ) => {
 			const newHash = window.location.hash.slice( 1 );
-			const tab = document.getElementById( `tab-${ CSS.escape( newHash ) }` );
+			const tab = document.getElementById( `tabber-tab-${ CSS.escape( newHash ) }` );
 			if ( tab ) {
 				event.preventDefault();
 				tab.click();
@@ -702,7 +507,7 @@ async function load( tabberEls ) {
  * each tabber element.
  */
 function main() {
-	const tabberEls = document.querySelectorAll( '.tabber:not(.tabber--live)' );
+	const tabberEls = document.querySelectorAll( '.tabber--init' );
 
 	if ( tabberEls.length === 0 ) {
 		return;

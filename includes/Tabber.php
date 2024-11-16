@@ -108,8 +108,9 @@ class Tabber {
 		}
 
 		return "<div id='tabber-$count' class='tabber tabber--init'>" .
-			'<header class="tabber__header"></header>' .
-			// '<header class="tabber__header"><nav class="tabber__tabs" role="tablist">' . $tabs . '</nav></header>' .
+			'<header class="tabber__header"><button class="tabber__header__prev" aria-hidden="true"></button>' .
+			'<nav class="tabber__tabs" role="tablist">' . $tabs . '</nav>' .
+			'<button class="tabber__header__next" aria-hidden="true"></button></header>' .
 			'<section class="tabber__section">' . $tabpanels . '</section></div>';
 	}
 
@@ -215,11 +216,13 @@ class Tabber {
 	 * @return string HTML
 	 */
 	private static function getTabHTML( array $tabData ): string {
+		$tabpanelId = "tabber-tabpanel-{$tabData['id']}";
 		return Html::rawElement( 'a', [
 			'class' => 'tabber__tab',
 			'id' => "tabber-tab-{$tabData['id']}",
-			'href' => "#tabber-tabpanel-{$tabData['id']}",
+			'href' => "#$tabpanelId",
 			'role' => 'tab',
+			'aria-controls' => $tabpanelId
 		], $tabData['label'] );
 	}
 
@@ -239,8 +242,10 @@ class Tabber {
 		}
 		return Html::rawElement( 'article', [
 			'class' => 'tabber__panel',
-			// 'id' => "tabber-tabpanel-{$tabData['id']}",
-			'data-mw-tabber-title' => $tabData['label'],
+			'id' => "tabber-tabpanel-{$tabData['id']}",
+			'role' => 'tabpanel',
+			'tabindex' => 0,
+			'aria-labelledby' => "tabber-tab-{$tabData['id']}"
 		], $content );
 	}
 
