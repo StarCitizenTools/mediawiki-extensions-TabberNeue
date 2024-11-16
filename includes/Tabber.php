@@ -14,20 +14,22 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue;
 
+use Html;
 use JsonException;
 use MediaWiki\MediaWikiServices;
 use Parser;
 use PPFrame;
+use Sanitizer;
 
 class Tabber {
-	/**
-	 * Flag that checks if this is a nested tabber
-	 * @var bool
-	 */
+
+	/** @var bool Flag that checks if this is a nested tabber */
 	private static $isNested = false;
 
+	/** @var bool */
 	private static $useCodex = false;
 
+	/** @var bool */
 	private static $parseTabName = false;
 
 	/**
@@ -42,14 +44,19 @@ class Tabber {
 	 */
 	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ) {
 		$config = MediaWikiServices::getInstance()->getMainConfig();
+		$parserOutput = $parser->getOutput();
+
 		self::$parseTabName = $config->get( 'TabberNeueParseTabName' );
 		self::$useCodex = $config->get( 'TabberNeueUseCodex' );
+		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
 
-		$html = self::render( $input ?? '', $parser, $frame );
+		$html = self::render( $input ?? '', $count, $parser, $frame );
 
 		if ( $input === null ) {
 			return '';
 		}
+
+		$parserOutput->appendExtensionData( 'tabber-count', $count++ );
 
 		if ( self::$useCodex === true ) {
 			$parser->getOutput()->addModules( [ 'ext.tabberNeue.codex' ] );
@@ -66,41 +73,45 @@ class Tabber {
 	 * Renders the necessary HTML for a <tabber> tag.
 	 *
 	 * @param string $input The input URL between the beginning and ending tags.
+	 * @param int $count Current Tabber count
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 */
-	public static function render( string $input, Parser $parser, PPFrame $frame ): string {
+	public static function render( string $input, int $count, Parser $parser, PPFrame $frame ): string {
 		$arr = explode( '|-|', $input );
-		$htmlTabs = '';
+		$tabs = '';
+		$tabpanels = '';
 
 		foreach ( $arr as $tab ) {
-			$tabData = self::getTabData( $tab, $parser, $frame );
-			if ( $tabData['label'] === '' ) {
+			$tabData = self::getTabData( $tab, $count, $parser, $frame );
+			if ( $tabData === [] ) {
 				continue;
 			}
 
 			if ( self::$useCodex && self::$isNested ) {
-				$htmlTabs .= self::getCodexNestedTabJSON( $tabData );
+				$tabpanels .= self::getCodexNestedTabJSON( $tabData );
 				continue;
 			}
 
-			$htmlTabs .= self::buildTabpanel( $tabData );
+			$tabs .= self::getTabHTML( $tabData );
+			$tabpanels .= self::getTabpanelHTML( $tabData );
 		}
 
 		if ( self::$useCodex && self::$isNested ) {
-			$tab = rtrim( implode( '},', explode( '}', $htmlTabs ) ), ',' );
-			$tab = strip_tags( html_entity_decode( $tab ) );
-			$tab = str_replace( ',,', ',', $tab );
-			$tab = str_replace( ',]', ']', $tab );
-
-			return sprintf( '[%s]', $tab );
+			$tabpanels = rtrim( implode( '},', explode( '}', $tabpanels ) ), ',' );
+			$tabpanels = strip_tags( html_entity_decode( $tab ) );
+			$tabpanels = str_replace( ',,', ',', $tabpanels );
+			$tabpanels = str_replace( ',]', ']', $tabpanels );
+			return sprintf( '[%s]', $tabpanels );
 		}
 
-		return '<div class="tabber">' .
-			'<header class="tabber__header"></header>' .
-			'<section class="tabber__section">' . $htmlTabs . '</section></div>';
+		return "<div id='tabber-$count' class='tabber tabber--init'>" .
+			'<header class="tabber__header"><button class="tabber__header__prev" aria-hidden="true"></button>' .
+			'<nav class="tabber__tabs" role="tablist">' . $tabs . '</nav>' .
+			'<button class="tabber__header__next" aria-hidden="true"></button></header>' .
+			'<section class="tabber__section">' . $tabpanels . '</section></div>';
 	}
 
 	/**
@@ -125,7 +136,6 @@ class Tabber {
 			// Might contains HTML
 			$label = $parser->recursiveTagParseFully( $label );
 			$label = $parser->stripOuterParagraph( $label );
-			$label = htmlentities( $label );
 		}
 		return $label;
 	}
@@ -144,21 +154,26 @@ class Tabber {
 		if ( $content === '' ) {
 			return '';
 		}
-		// Fix #151, some wikitext magic
-		$content = "\n" . $content . "\n";
+
 		if ( !self::$useCodex ) {
-			$content = $parser->recursiveTagParse( $content, $frame );
-		} else {
-			// A nested tabber which should return json in codex
-			if ( strpos( $content, '{{#tag:tabber' ) !== false ) {
-				self::$isNested = true;
-				$content = $parser->recursiveTagParse( $content, $frame );
-				self::$isNested = false;
-			// The outermost tabber that must be parsed fully in codex for correct json
-			} else {
-				$content = $parser->recursiveTagParseFully( $content, $frame );
+			$wikitextListMarkers = [ '*', '#', ';', ':' ];
+			$isWikitextList = in_array( substr( $content, 0, 1 ), $wikitextListMarkers );
+			if ( $isWikitextList ) {
+				// Fix #151, some wikitext magic
+				// Seems like there is no way to get rid of the mw-empty-elt paragraphs sadly
+				$content = "\n$content\n";
 			}
+			return $parser->recursiveTagParse( $content, $frame );
 		}
+
+		// The outermost tabber that must be parsed fully in codex for correct json
+		if ( strpos( $content, '{{#tag:tabber' ) === false ) {
+			return $parser->recursiveTagParseFully( $content, $frame );
+		}
+
+		self::$isNested = true;
+		$content = $parser->recursiveTagParse( $content, $frame );
+		self::$isNested = false;
 		return $content;
 	}
 
@@ -166,16 +181,14 @@ class Tabber {
 	 * Get individual tab data from wikitext.
 	 *
 	 * @param string $tab tab wikitext
+	 * @param int $count Current Tabber count
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return array<string, string>
 	 */
-	private static function getTabData( string $tab, Parser $parser, PPFrame $frame ): array {
-		$data = [
-			'label' => '',
-			'content' => ''
-		];
+	private static function getTabData( string $tab, int $count, Parser $parser, PPFrame $frame ): array {
+		$data = [];
 		if ( empty( trim( $tab ) ) ) {
 			return $data;
 		}
@@ -189,28 +202,51 @@ class Tabber {
 		}
 
 		$data['content'] = self::getTabContent( $content, $parser, $frame );
+
+		$id = Sanitizer::escapeIdForAttribute( htmlspecialchars( $data['label'] ) ) . '-' . $count;
+		$data['id'] = $id;
 		return $data;
 	}
 
 	/**
-	 * Build individual tabpanel.
+	 * Get the HTML for a tab.
 	 *
 	 * @param array $tabData Tab data
 	 *
 	 * @return string HTML
 	 */
-	private static function buildTabpanel( array $tabData ): string {
-		$label = $tabData['label'];
-		$content = $tabData['content'];
+	private static function getTabHTML( array $tabData ): string {
+		$tabpanelId = "tabber-tabpanel-{$tabData['id']}";
+		return Html::rawElement( 'a', [
+			'class' => 'tabber__tab',
+			'id' => "tabber-tab-{$tabData['id']}",
+			'href' => "#$tabpanelId",
+			'role' => 'tab',
+			'aria-controls' => $tabpanelId
+		], $tabData['label'] );
+	}
 
+	/**
+	 * Get the HTML for a tabpanel.
+	 *
+	 * @param array $tabData Tab data
+	 *
+	 * @return string HTML
+	 */
+	private static function getTabpanelHTML( array $tabData ): string {
+		$content = $tabData['content'];
 		$isContentHTML = strpos( $content, '<' ) === 0;
 		if ( $content && !$isContentHTML ) {
 			// If $content does not have any HTML element (i.e. just a text node), wrap it in <p/>
-			$content = '<p>' . $content . '</p>';
+			$content = Html::rawElement( 'p', [], $content );
 		}
-
-		return '<article class="tabber__panel" data-mw-tabber-title="' . $label .
-		'">' . $content . "</article>";
+		return Html::rawElement( 'article', [
+			'class' => 'tabber__panel',
+			'id' => "tabber-tabpanel-{$tabData['id']}",
+			'role' => 'tabpanel',
+			'tabindex' => 0,
+			'aria-labelledby' => "tabber-tab-{$tabData['id']}"
+		], $content );
 	}
 
 	/**

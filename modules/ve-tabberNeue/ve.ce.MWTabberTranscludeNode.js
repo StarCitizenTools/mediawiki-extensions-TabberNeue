@@ -70,7 +70,7 @@ ve.ce.MWTabberTranscludeNode.prototype.renderHeader = function ( tabber ) {
 		indicator = document.createElement( 'div' ),
 		fragment = new DocumentFragment();
 
-	Array.prototype.forEach.call( tabPanels, function ( tabPanel, index ) {
+	Array.prototype.forEach.call( tabPanels, ( tabPanel, index ) => {
 		const tab = document.createElement( 'a' );
 
 		tab.innerText = tabPanel.getAttribute( 'data-mw-tabber-title' );

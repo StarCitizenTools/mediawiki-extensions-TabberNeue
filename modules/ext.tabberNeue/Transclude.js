@@ -49,6 +49,7 @@ class Transclude {
 	 */
 	async fetchDataFromUrl() {
 		try {
+			// eslint-disable-next-line n/no-unsupported-features/node-builtins
 			const response = await fetch( this.url, { method: 'GET', timeout: 5000, credentials: 'same-origin' } );
 			if ( !response.ok ) {
 				throw new Error( `Network response was not ok: ${ response.status } - ${ response.statusText }` );
