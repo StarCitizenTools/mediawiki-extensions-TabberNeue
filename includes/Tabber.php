@@ -194,7 +194,7 @@ class Tabber {
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
-	 * @return array<string, string>
+	 * @return array
 	 * @throws MWException
 	 */
 	private static function getTabData( string $tab, int $count, Parser $parser, PPFrame $frame ): array {
