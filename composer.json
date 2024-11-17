@@ -46,6 +46,9 @@
 		],
 		"phan": "phan -d . --long-progress-bar"
 	},
+	"extra": {
+		"installer-name": "TabberNeue"
+	},
 	"config": {
 		"allow-plugins": {
 			"composer/installers": true,
