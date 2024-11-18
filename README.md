@@ -1,7 +1,9 @@
-# TabberNeue
-![](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/workflows/MediaWiki%20CI/badge.svg)
-
 ![](https://upload.wikimedia.org/wikipedia/commons/d/d7/TabberNeue-icon-ltr.svg)
+<div align="center">
+<h1>TabberNeue</h1>
+
+![](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/workflows/MediaWiki%20CI/badge.svg)
+</div>
 
 The TabberNeue extension allows wikis to create tabs within a page. It is a forked and rewritten version of [Extension:Tabber](https://www.mediawiki.org/wiki/Extension:Tabber). It includes multiple improvements such as page transclusion, responsive layout support, ARIA support, and conform to Wikimedia UI. **TabberNeue is a complete replacement of Tabber, please disable or remove Tabber before enabling TabberNeue.**
 
@@ -99,3 +101,12 @@ Name | Description | Values | Default
 `$wgTabberNeueUpdateLocationOnTabChange` | If enabled, when a tab is selected, the URL displayed on the browser changes. Opening this URL makes that tab initially selected |`true` - enable; `false` - disable | `true`
 `$wgTabberNeueUseCodex` | Use Codex to render Tabber. It is experimental and many features might not work as expected |`true` - enable; `false` - disable | `false`
 `$wgTabberNeueUseLegacyTabIds` | If enabled, tabpanel IDs will not be prepended with "tabber-tabpanel-". This provides better compatibility with the old Tabber extension, but will cause issues if there are headings with the same name as an existing tab |`true` - enable; `false` - disable | `false`
+
+#### Tracking category
+TabberNeue adds a tracking category to all pages using Tabber for maintenance purposes. There are two ways to suppress the category from viewers:
+1. Hide the categories by putting `__HIDDENCAT__` in the category page
+2. Remove the categories by creating the following pages and empty the page:
+```
+MediaWiki:Tabberneue-tabber-category
+MediaWiki:Tabberneue-tabbertransclude-category
+```
