@@ -56,7 +56,7 @@ class Tabber {
 
 		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
 
-		$html = self::render( $input, $count, $parser, $frame );
+		$html = self::render( $input, $count, $args, $parser, $frame );
 
 		$parserOutput->appendExtensionData( 'tabber-count', ++$count );
 
@@ -72,15 +72,17 @@ class Tabber {
 	 *
 	 * @param string $input The input URL between the beginning and ending tags.
 	 * @param int $count Current Tabber count
+	 * @param array $args
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 */
-	public static function render( string $input, int $count, Parser $parser, PPFrame $frame ): string {
+	public static function render( string $input, int $count, array $args = [], Parser $parser, PPFrame $frame ): string {
 		$arr = explode( '|-|', $input );
 		$data = [
-			'count' => $count,
+			'id' => isset( $args['id'] ) ? $args['id'] : "tabber-$count",
+			'class' => isset( $args['class'] ) ? $args['class'] : '',
 			'array-tabs' => []
 		];
 

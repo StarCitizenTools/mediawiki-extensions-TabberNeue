@@ -49,7 +49,7 @@ class TabberTransclude {
 
 		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
 
-		$html = self::render( $input, $count, $parser, $frame );
+		$html = self::render( $input, $count, $args, $parser, $frame );
 
 		$parser->getOutput()->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
@@ -63,16 +63,18 @@ class TabberTransclude {
 	 *
 	 * @param string $input The input URL between the beginning and ending tags.
 	 * @param int $count Current Tabber count
+	 * @param array $args
 	 * @param Parser $parser Mediawiki Parser Object
 	 * @param PPFrame $frame Mediawiki PPFrame Object
 	 *
 	 * @return string HTML
 	 */
-	public static function render( string $input, int $count, Parser $parser, PPFrame $frame ): string {
+	public static function render( string $input, int $count, array $args = [], Parser $parser, PPFrame $frame ): string {
 		$selected = true;
 		$arr = explode( "\n", $input );
 		$data = [
-			'count' => $count,
+			'id' => isset( $args['id'] ) ? $args['id'] : "tabber-$count",
+			'class' => isset( $args['class'] ) ? $args['class'] : '',
 			'array-tabs' => []
 		];
 
