@@ -88,7 +88,13 @@ class Tabber {
 	 */
 	public static function render( string $input, int $count, Parser $parser, PPFrame $frame ): string {
 		$arr = explode( '|-|', $input );
-		$tabs = '';
+		$data = [
+			'count' => $count,
+			'array-tabs' => []
+		];
+
+		// For Codex use only
+		// TODO: Maybe we should redo the whole Codex implementation
 		$tabpanels = '';
 
 		foreach ( $arr as $tab ) {
@@ -97,13 +103,17 @@ class Tabber {
 				continue;
 			}
 
+			$data['array-tabs'][] = [
+				'content' => $tabData['content'],
+				'label' => $tabData['label'],
+				'tabId' => "tabber-tab-{$tabData['id']}",
+				'tabpanelId' => self::$useLegacyId ? $tabData['id'] : "tabber-tabpanel-{$tabData['id']}"
+			];
+
 			if ( self::$useCodex && self::$isNested ) {
 				$tabpanels .= self::getCodexNestedTabJSON( $tabData );
 				continue;
 			}
-
-			$tabs .= self::getTabHTML( $tabData );
-			$tabpanels .= self::getTabpanelHTML( $tabData );
 		}
 
 		if ( self::$useCodex && self::$isNested ) {
@@ -115,11 +125,6 @@ class Tabber {
 		}
 
 		$templateParser = new TemplateParser( __DIR__ . '/templates' );
-		$data = [
-			'count' => $count,
-			'html-tabs' => $tabs,
-			'html-tabpanels' => $tabpanels
-		];
 		return $templateParser->processTemplate( 'Tabber', $data );
 	}
 
@@ -212,6 +217,11 @@ class Tabber {
 		}
 
 		$data['content'] = self::getTabContent( $content, $parser, $frame );
+		$isContentHTML = strpos( $content, '<' ) === 0;
+		if ( $data['content'] && !$isContentHTML ) {
+			// If $content does not have any HTML element (i.e. just a text node), wrap it in <p/>
+			$data['content'] = Html::rawElement( 'p', [], $data['content'] );
+		}
 
 		$id = Sanitizer::escapeIdForAttribute( htmlspecialchars( $data['label'] ) );
 		if ( self::$useLegacyId === true ) {
@@ -229,47 +239,6 @@ class Tabber {
 		}
 		$data['id'] = $id;
 		return $data;
-	}
-
-	/**
-	 * Get the HTML for a tab.
-	 *
-	 * @param array $tabData Tab data
-	 *
-	 * @return string HTML
-	 */
-	private static function getTabHTML( array $tabData ): string {
-		$tabpanelId = "tabber-tabpanel-{$tabData['id']}";
-		return Html::rawElement( 'a', [
-			'class' => 'tabber__tab',
-			'id' => "tabber-tab-{$tabData['id']}",
-			'href' => "#$tabpanelId",
-			'role' => 'tab',
-			'aria-controls' => $tabpanelId
-		], $tabData['label'] );
-	}
-
-	/**
-	 * Get the HTML for a tabpanel.
-	 *
-	 * @param array $tabData Tab data
-	 *
-	 * @return string HTML
-	 */
-	private static function getTabpanelHTML( array $tabData ): string {
-		$content = $tabData['content'];
-		$isContentHTML = strpos( $content, '<' ) === 0;
-		if ( $content && !$isContentHTML ) {
-			// If $content does not have any HTML element (i.e. just a text node), wrap it in <p/>
-			$content = Html::rawElement( 'p', [], $content );
-		}
-		return Html::rawElement( 'article', [
-			'class' => 'tabber__panel',
-			'id' => "tabber-tabpanel-{$tabData['id']}",
-			'role' => 'tabpanel',
-			'tabindex' => 0,
-			'aria-labelledby' => "tabber-tab-{$tabData['id']}"
-		], $content );
 	}
 
 	/**

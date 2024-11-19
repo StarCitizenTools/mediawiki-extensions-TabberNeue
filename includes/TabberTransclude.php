@@ -15,7 +15,6 @@ declare( strict_types=1 );
 namespace MediaWiki\Extension\TabberNeue;
 
 use Exception;
-use Html;
 use MediaWiki\MediaWikiServices;
 use Parser;
 use PPFrame;
@@ -24,6 +23,10 @@ use TemplateParser;
 use Title;
 
 class TabberTransclude {
+
+	/** @var bool */
+	private static $useLegacyId = false;
+
 	/**
 	 * Parser callback for <tabbertransclude> tag
 	 *
@@ -39,7 +42,10 @@ class TabberTransclude {
 			return '';
 		}
 
+		$config = MediaWikiServices::getInstance()->getMainConfig();
 		$parserOutput = $parser->getOutput();
+
+		self::$useLegacyId = $config->get( 'TabberNeueUseLegacyTabIds' );
 
 		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
 
@@ -65,29 +71,34 @@ class TabberTransclude {
 	public static function render( string $input, int $count, Parser $parser, PPFrame $frame ): string {
 		$selected = true;
 		$arr = explode( "\n", $input );
-		$tabs = '';
-		$tabpanels = '';
+		$data = [
+			'count' => $count,
+			'array-tabs' => []
+		];
 
 		foreach ( $arr as $tab ) {
 			$tabData = self::getTabData( $tab );
 			if ( $tabData === [] ) {
 				continue;
 			}
-			$tabs .= self::getTabHTML( $tabData );
+
+			$tabpanelHtml = '';
 			try {
-				$tabpanels .= self::buildTabTransclude( $tabData, $parser, $frame, $selected );
+				$tabpanelHtml = self::buildTabTransclude( $tabData, $parser, $frame, $selected );
 			} catch ( Exception $e ) {
 				// This can happen if a $currentTitle is null
 				continue;
 			}
+
+			$data['array-tabs'][] = [
+				'html-tabpanel' => $tabpanelHtml,
+				'label' => $tabData['label'],
+				'tabId' => "tabber-tab-{$tabData['id']}",
+				'tabpanelId' => self::$useLegacyId ? $tabData['id'] : "tabber-tabpanel-{$tabData['id']}"
+			];
 		}
 
 		$templateParser = new TemplateParser( __DIR__ . '/templates' );
-		$data = [
-			'count' => $count,
-			'html-tabs' => $tabs,
-			'html-tabpanels' => $tabpanels
-		];
 		return $templateParser->processTemplate( 'Tabber', $data );
 	}
 
@@ -115,24 +126,6 @@ class TabberTransclude {
 		$data['content'] = trim( $content );
 		$data['id'] = Sanitizer::escapeIdForAttribute( htmlspecialchars( $data['label'] ) );
 		return $data;
-	}
-
-	/**
-	 * Get the HTML for a tab.
-	 *
-	 * @param array $tabData Tab data
-	 *
-	 * @return string HTML
-	 */
-	private static function getTabHTML( array $tabData ): string {
-		$tabpanelId = "tabber-tabpanel-{$tabData['id']}";
-		return Html::element( 'a', [
-			'class' => 'tabber__tab',
-			'id' => "tabber-tab-{$tabData['id']}",
-			'href' => "#$tabpanelId",
-			'role' => 'tab',
-			'aria-controls' => $tabpanelId
-		], $tabData['label'] );
 	}
 
 	/**
