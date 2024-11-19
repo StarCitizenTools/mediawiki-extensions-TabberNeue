@@ -165,11 +165,11 @@ class Tabber {
 		}
 
 		if ( !self::$useCodex ) {
-			$wikitextListMarkers = [ '*', '#', ';', ':' ];
-			$isWikitextList = in_array( substr( $content, 0, 1 ), $wikitextListMarkers );
-			if ( $isWikitextList ) {
-				// Fix #151, some wikitext magic
-				// Seems like there is no way to get rid of the mw-empty-elt paragraphs sadly
+			// Insert a new line for these characters in wikitext (#151)
+			// Seems like there is no way to get rid of the mw-empty-elt paragraphs sadly
+			$wikitextCharacters = [ '*', '#', ';', ':', '['  ];
+			$needsNewLine = in_array( substr( $content, 0, 1 ), $wikitextCharacters );
+			if ( $needsNewLine ) {
 				$content = "\n$content\n";
 			}
 			return $parser->recursiveTagParse( $content, $frame );
