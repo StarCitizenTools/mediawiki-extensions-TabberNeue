@@ -93,6 +93,19 @@ Third Page Name|Third Tab Title
 </tabbertransclude>
 ```
 
+### Custom IDs and class
+You can configure the ID and class of the tabber element
+```html
+<tabber id="very-awesome-tabber" class="awesome-tabber">
+|-|Awesome Tab Title 1=
+Awesome first tab content goes here.
+|-|Awesome Tab Title 2=
+Awesome second tab content goes here.
+|-|Awesome Tab Title 3=
+Awesome third tab content goes here.
+</tabber>
+```
+
 ## Configurations
 Name | Description | Values | Default
 :--- | :--- | :--- | :---
