@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.7.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.6.0...v2.7.0) (2024-11-19)
+
+
+### Features
+
+* allow id and class attributes to be set on Tabber ([d5f9e03](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/d5f9e03d470e7c090e4687e9915f5f925eedc990))
+* drop Codex tabs ([2f82785](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/2f827857dc15448b608223e0864477cefeff93b4))
+
+
+### Bug Fixes
+
+* properly wrap text in paragraph if it is a wikitext link ([dc1d16c](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/dc1d16c2765ae2fc902a2a75e900109683a660f2))
+
+
+### Miscellaneous Chores
+
+* set installer-name for composer ([7cee4f4](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/7cee4f44eb4ca2d790465b234d18e0ebf1e0cd5c))
+
 ## [2.6.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.5.0...v2.6.0) (2024-11-16)
 
 
