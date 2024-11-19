@@ -35,7 +35,6 @@ class TabberParsoid extends ExtensionTagHandler implements ExtensionModule {
 	/** @inheritDoc */
 	public function sourceToDom( ParsoidExtensionAPI $extApi, string $src, array $extArgs ) {
 		$html = self::render( $extApi, $src );
-		$extApi->getMetadata()->addModules( [ 'ext.tabberNeue.codex' ] );
 		return $extApi->htmlToDom( $html );
 	}
 

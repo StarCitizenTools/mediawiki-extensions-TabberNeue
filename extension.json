@@ -67,24 +67,6 @@
 				"mobile"
 			]
 		},
-		"ext.tabberNeue.codex": {
-			"packageFiles": [
-				"ext.tabberNeue.codex/ext.tabberNeue.codex.js",
-				"ext.tabberNeue.codex/App.vue",
-				"ext.tabberNeue.codex/TabContent.vue"
-			],
-			"styles": [
-				"ext.tabberNeue.codex/ext.tabberNeue.codex.less"
-			],
-			"dependencies": [
-				"@wikimedia/codex",
-				"mediawiki.util"
-			],
-			"targets": [
-				"desktop",
-				"mobile"
-			]
-		},
 		"ext.tabberNeue.visualEditor": {
 			"scripts": [
 				"ve-tabberNeue/ve.ce.MWTabberNode.js",
@@ -144,11 +126,6 @@
 		"TabberNeueParseTabName": {
 			"value": false,
 			"description": "Parse tab name as wikitext. This can have a performance impact and cause unexpected behaviors.",
-			"public": true
-		},
-		"TabberNeueUseCodex": {
-			"value": false,
-			"description": "Use Codex to render Tabber. It is experimental and many features might not work as expected.",
 			"public": true
 		},
 		"TabberNeueEnableAnimation": {

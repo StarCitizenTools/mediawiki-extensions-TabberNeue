@@ -32,9 +32,6 @@ class Tabber {
 	private static $parseTabName = false;
 
 	/** @var bool */
-	private static $useCodex = false;
-
-	/** @var bool */
 	private static $useLegacyId = false;
 
 	/**
@@ -56,7 +53,6 @@ class Tabber {
 		$parserOutput = $parser->getOutput();
 
 		self::$parseTabName = $config->get( 'TabberNeueParseTabName' );
-		self::$useCodex = $config->get( 'TabberNeueUseCodex' );
 		self::$useLegacyId = $config->get( 'TabberNeueUseLegacyTabIds' );
 
 		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
@@ -65,12 +61,8 @@ class Tabber {
 
 		$parserOutput->appendExtensionData( 'tabber-count', ++$count );
 
-		if ( self::$useCodex === true ) {
-			$parser->getOutput()->addModules( [ 'ext.tabberNeue.codex' ] );
-		} else {
-			$parser->getOutput()->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
-			$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
-		}
+		$parserOutput->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
+		$parserOutput->addModules( [ 'ext.tabberNeue' ] );
 
 		$parser->addTrackingCategory( 'tabberneue-tabber-category' );
 		return $html;
@@ -93,10 +85,6 @@ class Tabber {
 			'array-tabs' => []
 		];
 
-		// For Codex use only
-		// TODO: Maybe we should redo the whole Codex implementation
-		$tabpanels = '';
-
 		foreach ( $arr as $tab ) {
 			$tabData = self::getTabData( $tab, $count, $parser, $frame );
 			if ( $tabData === [] ) {
@@ -109,19 +97,6 @@ class Tabber {
 				'tabId' => "tabber-tab-{$tabData['id']}",
 				'tabpanelId' => self::$useLegacyId ? $tabData['id'] : "tabber-tabpanel-{$tabData['id']}"
 			];
-
-			if ( self::$useCodex && self::$isNested ) {
-				$tabpanels .= self::getCodexNestedTabJSON( $tabData );
-				continue;
-			}
-		}
-
-		if ( self::$useCodex && self::$isNested ) {
-			$tabpanels = rtrim( implode( '},', explode( '}', $tabpanels ) ), ',' );
-			$tabpanels = strip_tags( html_entity_decode( $tab ) );
-			$tabpanels = str_replace( ',,', ',', $tabpanels );
-			$tabpanels = str_replace( ',]', ']', $tabpanels );
-			return sprintf( '[%s]', $tabpanels );
 		}
 
 		$templateParser = new TemplateParser( __DIR__ . '/templates' );
@@ -142,7 +117,7 @@ class Tabber {
 			return '';
 		}
 
-		if ( !self::$parseTabName || self::$useCodex ) {
+		if ( !self::$parseTabName ) {
 			// Only plain text is needed
 			// Use language converter to get variant title and also escape html
 			$label = $parser->getTargetLanguageConverter()->convertHtml( $label );
@@ -169,26 +144,14 @@ class Tabber {
 			return '';
 		}
 
-		if ( !self::$useCodex ) {
-			// Insert a new line for these characters in wikitext (#151)
-			// Seems like there is no way to get rid of the mw-empty-elt paragraphs sadly
-			$wikitextCharacters = [ '*', '#', ';', ':', '['  ];
-			$needsNewLine = in_array( substr( $content, 0, 1 ), $wikitextCharacters );
-			if ( $needsNewLine ) {
-				$content = "\n$content\n";
-			}
-			return $parser->recursiveTagParse( $content, $frame );
+		// Insert a new line for these characters in wikitext (#151)
+		// Seems like there is no way to get rid of the mw-empty-elt paragraphs sadly
+		$wikitextCharacters = [ '*', '#', ';', ':', '['  ];
+		$needsNewLine = in_array( substr( $content, 0, 1 ), $wikitextCharacters );
+		if ( $needsNewLine ) {
+			$content = "\n$content\n";
 		}
-
-		// The outermost tabber that must be parsed fully in codex for correct json
-		if ( strpos( $content, '{{#tag:tabber' ) === false ) {
-			return $parser->recursiveTagParseFully( $content, $frame );
-		}
-
-		self::$isNested = true;
-		$content = $parser->recursiveTagParse( $content, $frame );
-		self::$isNested = false;
-		return $content;
+		return $parser->recursiveTagParse( $content, $frame );
 	}
 
 	/**
@@ -239,23 +202,5 @@ class Tabber {
 		}
 		$data['id'] = $id;
 		return $data;
-	}
-
-	/**
-	 * Get JSON representation of a nested tab for Codex
-	 *
-	 * @param array $tabData Tab data
-	 *
-	 * @return string HTML
-	 * @throws JsonException
-	 */
-	private static function getCodexNestedTabJSON( array $tabData ): string {
-		// A nested tabber which should return json in codex
-		return json_encode( [
-			'label' => $tabData['label'],
-			'content' => $tabData['content']
-		],
-			JSON_THROW_ON_ERROR
-		);
 	}
 }
