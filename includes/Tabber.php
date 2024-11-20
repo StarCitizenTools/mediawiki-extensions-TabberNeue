@@ -24,9 +24,6 @@ use TemplateParser;
 
 class Tabber {
 
-	/** @var bool Flag that checks if this is a nested tabber */
-	private static $isNested = false;
-
 	/** @var bool */
 	private static $parseTabName = false;
 
