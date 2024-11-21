@@ -69,7 +69,7 @@ class TabberTransclude {
 	 *
 	 * @return string HTML
 	 */
-	public static function render( string $input, int $count, array $args = [], Parser $parser, PPFrame $frame ): string {
+	public static function render( string $input, int $count, array $args, Parser $parser, PPFrame $frame ): string {
 		$selected = true;
 		$arr = explode( "\n", $input );
 		$data = [
