@@ -53,7 +53,7 @@ class Tabber {
 
 		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
 
-		$html = self::render( $input, $count, $args, $parser, $frame );
+		$html = self::render( $input, $count, $parser, $frame, $args );
 
 		$parserOutput->appendExtensionData( 'tabber-count', ++$count );
 
@@ -75,24 +75,22 @@ class Tabber {
 	 *
 	 * @return string HTML
 	 */
-	public static function render( string $input, int $count, array $args = [], Parser $parser, PPFrame $frame ): string {
+	public static function render( string $input, int $count, Parser $parser, PPFrame $frame, array $args = [] ): string {
 		$arr = explode( '|-|', $input );
 		$data = [
 			'id' => isset( $args['id'] ) ? $args['id'] : "tabber-$count",
 			'class' => isset( $args['class'] ) ? $args['class'] : '',
-			'style' => isset( $args['style'] ) ? 'style=\"' . Sanitizer::escapeAttributeValue($args['class']) . '\"' : '',
-			'data-attributes' => '';
+			'data-attributes' => '',
 			'array-tabs' => []
 		];
+
 
 		// Regex for validating data-* attribute names and values
 		$namePattern = '/^data-[A-Za-z0-9-]+$/';  	// must start with "data-", allows alphanumeric and -
 		$valuePattern = '/^[A-Za-z0-9-_.\/]+$/';	// disallows empty string, allows alphanumeric - _ . and /
 		foreach ( $args as $name => $value ) {
-			if ( preg_match( $namePattern, $name ) ) {
-				if ( preg_match( $valuePattern, $value)) {
-					$data['data-attributes'] .= " {$name}=\"" . htmlspecialchars( $value ) . '\"';
-				}
+			if ( preg_match( $namePattern, $name ) && !str_starts_with( $name, 'data-mw-' ) && preg_match( $valuePattern, $value ) ) {
+				$data['data-attributes'] .= ' ' . $name . '=' . htmlspecialchars( $value );
 			}
 		}
 
