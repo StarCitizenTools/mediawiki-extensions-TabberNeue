@@ -81,7 +81,7 @@ class Tabber {
 			'class' => 'tabber tabber--init'
 		];
 
-		foreach( $args as $attribute => $value ) {
+		foreach ( $args as $attribute => $value ) {
 			$attr = Sanitizer::mergeAttributes( $attr, [ $attribute => $value ] );
 		}
 
