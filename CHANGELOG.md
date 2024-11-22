@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.7.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.0...v2.7.1) (2024-11-22)
+
+
+### Features
+
+* add support for custom attributes ([f553e95](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/f553e95d0a80747ba12b39c8472c66445968e6a0))
+
+
+### Bug Fixes
+
+* optional parameter $args declared before required parameter $frame is implicitly treated as a required parameter" ([#195](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/195)) ([422c60a](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/422c60a573df251e9d197fcc44fd09d1d4c59cb4))
+
+
+### Miscellaneous Chores
+
+* release 2.7.1 ([7866996](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/786699690cc5a268e7f4f01d31fc75ea26c1928f))
+
 ## [2.7.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.6.0...v2.7.0) (2024-11-19)
 
 
