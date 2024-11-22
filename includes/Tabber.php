@@ -76,13 +76,21 @@ class Tabber {
 	 * @return string HTML
 	 */
 	public static function render( string $input, int $count, array $args, Parser $parser, PPFrame $frame ): string {
-		$arr = explode( '|-|', $input );
-		$data = [
-			'id' => isset( $args['id'] ) ? $args['id'] : "tabber-$count",
-			'class' => isset( $args['class'] ) ? $args['class'] : '',
-			'array-tabs' => []
+		$attr = [
+			'id' => "tabber-$count",
+			'class' => 'tabber tabber--init'
 		];
 
+		foreach( $args as $attribute => $value ) {
+			$attr = Sanitizer::mergeAttributes( $attr, [ $attribute => $value ] );
+		}
+
+		$data = [
+			'array-tabs' => [],
+			'html-attributes' => Sanitizer::safeEncodeTagAttributes( Sanitizer::validateTagAttributes( $attr, 'div' ) )
+		];
+
+		$arr = explode( '|-|', $input );
 		foreach ( $arr as $tab ) {
 			$tabData = self::getTabData( $tab, $count, $parser, $frame );
 			if ( $tabData === [] ) {
