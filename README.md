@@ -93,10 +93,10 @@ Third Page Name|Third Tab Title
 </tabbertransclude>
 ```
 
-### Custom IDs and class
-You can configure the ID and class of the tabber element
+### HTML attributes
+You can add HTML attributes such as ID and class to the tabber element.
 ```html
-<tabber id="very-awesome-tabber" class="awesome-tabber">
+<tabber id="very-awesome-tabber" class="awesome-tabber" data-test="awesome-data">
 |-|Awesome Tab Title 1=
 Awesome first tab content goes here.
 |-|Awesome Tab Title 2=
