@@ -16,6 +16,6 @@
 		"oojs": "^7.0.1",
 		"oojs-ui": "^0.51.2",
 		"stylelint-config-idiomatic-order": "10.0.0",
-		"stylelint-config-wikimedia": "0.17.2"
+		"stylelint-config-wikimedia": "0.18.0"
 	}
 }
