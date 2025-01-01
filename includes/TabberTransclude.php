@@ -143,10 +143,10 @@ class TabberTransclude {
 	 */
 	private static function buildTabTransclude( array $tabData, Parser $parser, PPFrame $frame, bool &$selected ): string {
 		$tabName = $tabData['label'];
-		$pageName = $tabData['content'];
+		$pageName = $tabData['content'] ?? '';
 
 		$dataProps = [];
-		$title = Title::newFromText( trim( $pageName ) );
+		$title = Title::newFromText( trim( $pageName  ) );
 		if ( !$title ) {
 			if ( empty( $tabName ) ) {
 				$tabName = $pageName;
