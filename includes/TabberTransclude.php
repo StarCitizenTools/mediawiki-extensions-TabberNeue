@@ -146,7 +146,7 @@ class TabberTransclude {
 		$pageName = $tabData['content'] ?? '';
 
 		$dataProps = [];
-		$title = Title::newFromText( trim( $pageName  ) );
+		$title = Title::newFromText( trim( $pageName ) );
 		if ( !$title ) {
 			if ( empty( $tabName ) ) {
 				$tabName = $pageName;
