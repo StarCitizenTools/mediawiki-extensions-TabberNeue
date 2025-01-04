@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.7.2](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.1...v2.7.2) (2025-01-04)
+
+
+### Bug Fixes
+
+* drop unused mediawiki.Uri module ([55c7499](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/55c7499688b7685b33632a9e537e0448a8ce8d3c))
+* incorrect empty return value for getTabData ([ec1dfe2](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/ec1dfe27a20b7de73b41223171c0a5a62663d345)), closes [#204](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/204)
+* invalid Tabber HTML for TabberTransclude ([3b59751](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/3b597511a5369a972e66073cf5972f0eed365a32))
+* TabberTransclude should add to Tabber count ([3bfa000](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/3bfa000dac4778b344379fdd11e227c90b54ef6e))
+* unescaped XSS in TabberTransclude page name ([f229cab](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/f229cab099c69006e25d4bad3579954e481dc566))
+
+
+### Miscellaneous Chores
+
+* **dev-deps:** drop oojs since it is unused ([74ba94e](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/74ba94ec847057e249029b8abd0bb979a894c2ba))
+
 ## [2.7.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.0...v2.7.1) (2024-11-22)
 
 
