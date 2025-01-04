@@ -151,7 +151,7 @@ class TabberTransclude {
 			if ( empty( $tabName ) ) {
 				$tabName = $pageName;
 			}
-			$tabBody = sprintf( '<div class="error">Invalid title: %s</div>', $pageName );
+			$tabBody = sprintf( '<div class="error">Invalid title: %s</div>', Sanitizer::escapeHtmlAllowEntities( $pageName ) );
 		} else {
 			$pageName = $title->getPrefixedText();
 			if ( empty( $tabName ) ) {
