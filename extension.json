@@ -59,7 +59,6 @@
 				"ext.tabberNeue/ext.tabberNeue.mobile.less"
 			],
 			"dependencies": [
-				"mediawiki.Uri",
 				"mediawiki.util"
 			],
 			"targets": [
