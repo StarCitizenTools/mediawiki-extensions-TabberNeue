@@ -72,10 +72,18 @@ class TabberTransclude {
 	public static function render( string $input, int $count, array $args, Parser $parser, PPFrame $frame ): string {
 		$selected = true;
 		$arr = explode( "\n", $input );
+		$attr = [
+			'id' => "tabber-$count",
+			'class' => 'tabber tabber--init'
+		];
+
+		foreach ( $args as $attribute => $value ) {
+			$attr = Sanitizer::mergeAttributes( $attr, [ $attribute => $value ] );
+		}
+
 		$data = [
-			'id' => isset( $args['id'] ) ? $args['id'] : "tabber-$count",
-			'class' => isset( $args['class'] ) ? $args['class'] : '',
-			'array-tabs' => []
+			'array-tabs' => [],
+			'html-attributes' => Sanitizer::safeEncodeTagAttributes( Sanitizer::validateTagAttributes( $attr, 'div' ) )
 		];
 
 		foreach ( $arr as $tab ) {
