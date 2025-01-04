@@ -112,22 +112,25 @@ class TabberTransclude {
 	 * @return array
 	 */
 	private static function getTabData( string $tab ): array {
-		$data = [];
 		if ( empty( trim( $tab ) ) ) {
-			return $data;
+			return [];
 		}
+
 		// Transclude uses a different syntax: Page name|Tab label
 		// Use array_pad to make sure at least 2 array values are always returned
 		[ $content, $label ] = array_pad( explode( '|', $tab, 2 ), 2, '' );
 
-		$data['label'] = trim( $label );
+		$label = trim( $label );
 		// Label is empty, we cannot generate tabber
-		if ( $data['label'] === '' ) {
-			return $data;
+		if ( $label === '' ) {
+			return [];
 		}
-		$data['content'] = trim( $content );
-		$data['id'] = Sanitizer::escapeIdForAttribute( htmlspecialchars( $data['label'] ) );
-		return $data;
+
+		return [
+			'label' => $label,
+			'content' => trim( $content ),
+			'id' => Sanitizer::escapeIdForAttribute( htmlspecialchars( $label ) )
+		];
 	}
 
 	/**

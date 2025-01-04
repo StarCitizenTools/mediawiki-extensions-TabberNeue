@@ -172,27 +172,29 @@ class Tabber {
 	 * @throws MWException
 	 */
 	private static function getTabData( string $tab, int $count, Parser $parser, PPFrame $frame ): array {
-		$data = [];
 		if ( empty( trim( $tab ) ) ) {
-			return $data;
+			return [];
 		}
+
 		// Use array_pad to make sure at least 2 array values are always returned
 		[ $label, $content ] = array_pad( explode( '=', $tab, 2 ), 2, '' );
 
-		$data['label'] = self::getTabLabel( $label, $parser );
+		$label = self::getTabLabel( $label, $parser );
 		// Label is empty, we cannot generate tabber
-		if ( $data['label'] === '' ) {
-			return $data;
+		if ( $label === '' ) {
+			return [];
 		}
 
-		$data['content'] = self::getTabContent( $content, $parser, $frame );
 		$isContentHTML = strpos( $content, '<' ) === 0;
-		if ( $data['content'] && !$isContentHTML ) {
+		$content = self::getTabContent( $content, $parser, $frame );
+
+		if ( $content && !$isContentHTML ) {
 			// If $content does not have any HTML element (i.e. just a text node), wrap it in <p/>
-			$data['content'] = Html::rawElement( 'p', [], $data['content'] );
+			$content = Html::rawElement( 'p', [], $content );
 		}
 
-		$id = Sanitizer::escapeIdForAttribute( htmlspecialchars( $data['label'] ) );
+		$id = Sanitizer::escapeIdForAttribute( htmlspecialchars( $label ) );
+
 		if ( self::$useLegacyId === true ) {
 			$parserOutput = $parser->getOutput();
 			$existingIds = $parserOutput->getExtensionData( 'tabber-ids' ) ?? [];
@@ -206,7 +208,11 @@ class Tabber {
 		} else {
 			$id = "$id-$count";
 		}
-		$data['id'] = $id;
-		return $data;
+
+		return [
+			'label' => $label,
+			'content' => $content,
+			'id' => $id
+		];
 	}
 }
