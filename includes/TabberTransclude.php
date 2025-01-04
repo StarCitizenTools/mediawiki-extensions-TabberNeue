@@ -51,6 +51,8 @@ class TabberTransclude {
 
 		$html = self::render( $input, $count, $args, $parser, $frame );
 
+		$parserOutput->appendExtensionData( 'tabber-count', ++$count );
+
 		$parser->getOutput()->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
 		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
 
