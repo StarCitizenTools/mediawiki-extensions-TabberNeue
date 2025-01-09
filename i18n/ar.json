@@ -6,6 +6,8 @@
 		]
 	},
 	"tabberneue-desc": "يسمح بإنشاء علامات تبويب داخل الصفحة. متفرع من [https://www.mediawiki.org/wiki/Extension:Tabber Extension: Tabber].",
+	"tabberneue-button-next": "التالي",
+	"tabberneue-button-prev": "السابق",
 	"tabberneue-tabber-category": "الصفحات التي تستخدم علامة Tabber parser",
 	"tabberneue-tabbertransclude-category": "الصفحات التي تستخدم علامة المحلل اللغوي TabberTransclude",
 	"tabberneue-visualeditor-mwtabberdialog-title": "تابر",
