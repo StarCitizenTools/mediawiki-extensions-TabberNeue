@@ -193,7 +193,12 @@ class Tabber {
 			$content = Html::rawElement( 'p', [], $content );
 		}
 
-		$id = Sanitizer::escapeIdForAttribute( htmlspecialchars( $label ) );
+		if ( !self::$parseTabName ) {
+			// plain text label has already been passed through 'htmlspecialchars' in 'convertHtml' of 'getTabLabel'
+			$id = Sanitizer::escapeIdForAttribute( $label );
+		} else {
+			$id = Sanitizer::escapeIdForAttribute( htmlspecialchars( $label ) );
+		}
 
 		if ( self::$useLegacyId === true ) {
 			$parserOutput = $parser->getOutput();
