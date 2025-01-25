@@ -281,7 +281,9 @@ class TabberEvent {
 			// Prevent default anchor actions
 			e.preventDefault();
 			this.activeTab = tab;
+			resizeObserver.unobserve( this.activeTabpanel );
 			this.activeTabpanel = TabberAction.getTabpanel( this.activeTab );
+			resizeObserver.observe( this.activeTabpanel );
 
 			// Update the URL hash without adding to browser history
 			if ( config.updateLocationOnTabChange ) {
