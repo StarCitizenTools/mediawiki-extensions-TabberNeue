@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.7.3](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.2...v2.7.3) (2025-01-25)
+
+
+### Bug Fixes
+
+* double encoding of htmlspecialchars for plain text tab labels ([#212](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/212)) ([3dabdbc](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/3dabdbcbb842bf46021b66f0656b5d07969992a7))
+* percent-encoded fragments not changing tab on load and the hashchange event not working ([#210](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/210)) ([b8c1e75](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/b8c1e75d736aa00e89e415e5ce2cf853dbed59ae))
+
 ## [2.7.2](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.1...v2.7.2) (2025-01-04)
 
 
