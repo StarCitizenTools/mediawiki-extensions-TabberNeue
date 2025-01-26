@@ -72,17 +72,32 @@ class Util {
 	}
 
 	/**
-	 * Transforms the fragment indentifier to the expected element id of the tab header.
+	 * Selects the element of the tab header matching the fragment identifier.
 	 *
 	 * @param {String} urlHash - URL fragment identifier (URL hash with '#' already removed).
-	 * @return {String} Element id of the tab header.
+	 * @return {Element} The element of the matching tab header.
 	 */
-	static getElementIdFromUrlHash( urlHash ) {
+	static selectElementFromUrlHash( urlHash ) {
 		const decodedHash = mw.util.percentDecodeFragment( urlHash );
 		const escapedHash = mw.util.escapeIdForAttribute( decodedHash );
-		const specialCharEscapedHash = mw.html.escape( escapedHash );
-		const idFromUrlHash = specialCharEscapedHash.replace( 'tabber-tabpanel-', 'tabber-tab-' );
-		return idFromUrlHash;
+		const idFromUrlHash = escapedHash.replace( 'tabber-tabpanel-', 'tabber-tab-' );
+		let activeTabFromUrlHash = document.getElementById( idFromUrlHash );
+
+		if ( !activeTabFromUrlHash ) {
+			// Retry getting the tab after escaping html special chars to correctly select
+			// the tab for cases where the fragment does not use the escaped version
+			const specialCharEscapedHash = mw.html.escape( idFromUrlHash );
+			activeTabFromUrlHash = document.getElementById( specialCharEscapedHash );
+
+			if( !activeTabFromUrlHash ) {
+				return;
+			}
+		}
+
+		// Ensures that only tabber elements are selected
+		if( activeTabFromUrlHash.classList.contains( 'tabber__tab' ) ) {
+			return activeTabFromUrlHash;
+		}
 	}
 }
 
