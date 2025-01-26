@@ -75,7 +75,7 @@ class Util {
 	 * Transforms the fragment indentifier to the expected element id of the tab header.
 	 *
 	 * @param {String} urlHash - URL fragment identifier (URL hash with '#' already removed).
-	 * @return {String} - Element id of the tab header.
+	 * @return {String} Element id of the tab header.
 	 */
 	static getElementIdFromUrlHash( urlHash ) {
 		const decodedHash = mw.util.percentDecodeFragment( urlHash );
