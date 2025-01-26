@@ -70,6 +70,20 @@ class Util {
 			element.setAttribute( key, attributes[ key ] );
 		}
 	}
+
+	/**
+	 * Transforms the fragment indentifier to the expected element id of the tab header.
+	 *
+	 * @param {String} urlHash - URL fragment identifier (URL hash with '#' already removed).
+	 * @return {String} - Element id of the tab header.
+	 */
+	static getElementIdFromUrlHash( urlHash ) {
+		const decodedHash = mw.util.percentDecodeFragment( urlHash );
+		const escapedHash = mw.util.escapeIdForAttribute( decodedHash );
+		const specialCharEscapedHash = mw.html.escape( escapedHash );
+		const idFromUrlHash = specialCharEscapedHash.replace( 'tabber-tabpanel-', 'tabber-tab-' );
+		return idFromUrlHash;
+	}
 }
 
 module.exports = Util;

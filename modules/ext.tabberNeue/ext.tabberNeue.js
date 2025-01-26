@@ -426,9 +426,7 @@ class TabberBuilder {
 		if ( !urlHash ) {
 			return activeTab;
 		}
-		const decodedHash = mw.util.percentDecodeFragment( urlHash );
-		const escapedHash = mw.util.escapeIdForAttribute( decodedHash );
-		const idFromUrlHash = escapedHash.replace( 'tabber-tabpanel-', 'tabber-tab-' );
+		const idFromUrlHash = Util.getElementIdFromUrlHash( urlHash );
 		if ( idFromUrlHash === escapedHash ) {
 			return activeTab;
 		}
@@ -488,9 +486,7 @@ async function load( tabberEls ) {
 		TabberAction.toggleAnimation( true );
 		window.addEventListener( 'hashchange', ( event ) => {
 			const hash = window.location.hash.slice( 1 );
-			const decodedHash = mw.util.percentDecodeFragment( hash );
-			const escapedHash = mw.util.escapeIdForAttribute( decodedHash );
-			const idFromUrlHash = escapedHash.replace( 'tabber-tabpanel-', 'tabber-tab-' );
+			const idFromUrlHash = Util.getElementIdFromUrlHash( hash );
 			const tab = document.getElementById( idFromUrlHash );
 			if ( tab ) {
 				event.preventDefault();
