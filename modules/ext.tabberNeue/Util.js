@@ -78,6 +78,9 @@ class Util {
 	 * @return {Element} The element of the matching tab header.
 	 */
 	static selectElementFromUrlHash( urlHash ) {
+		if( !urlHash ) {
+			return;
+		}
 		const decodedHash = mw.util.percentDecodeFragment( urlHash );
 		const escapedHash = mw.util.escapeIdForAttribute( decodedHash );
 		const idFromUrlHash = escapedHash.replace( 'tabber-tabpanel-', 'tabber-tab-' );
