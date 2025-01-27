@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.7.4](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.3...v2.7.4) (2025-01-27)
+
+
+### Bug Fixes
+
+* incorrect tabber id counts with nested tabbers ([#215](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/215)) ([2430ad0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/2430ad02d26f3c5d8b11adbe5346b88565312cf9))
+* tabs not being selected with fragments that contain unescaped html special chars ([#214](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/214)) ([3cc5948](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/3cc59485a16259110a8b6941503397bf5eea8e36))
+
 ## [2.7.3](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.2...v2.7.3) (2025-01-25)
 
 
