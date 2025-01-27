@@ -52,10 +52,9 @@ class Tabber {
 		self::$useLegacyId = $config->get( 'TabberNeueUseLegacyTabIds' );
 
 		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
+		$parserOutput->appendExtensionData( 'tabber-count', $count + 1 );
 
 		$html = self::render( $input, $count, $args, $parser, $frame );
-
-		$parserOutput->appendExtensionData( 'tabber-count', ++$count );
 
 		$parserOutput->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
 		$parserOutput->addModules( [ 'ext.tabberNeue' ] );
