@@ -78,7 +78,7 @@ class Util {
 	 * @return {Element} The element of the matching tab header.
 	 */
 	static selectElementFromUrlHash( urlHash ) {
-		if( !urlHash ) {
+		if ( !urlHash ) {
 			return;
 		}
 		const decodedHash = mw.util.percentDecodeFragment( urlHash );
@@ -92,13 +92,13 @@ class Util {
 			const specialCharEscapedHash = mw.html.escape( idFromUrlHash );
 			activeTabFromUrlHash = document.getElementById( specialCharEscapedHash );
 
-			if( !activeTabFromUrlHash ) {
+			if ( !activeTabFromUrlHash ) {
 				return;
 			}
 		}
 
 		// Ensures that only tabber elements are selected
-		if( activeTabFromUrlHash.classList.contains( 'tabber__tab' ) ) {
+		if ( activeTabFromUrlHash.classList.contains( 'tabber__tab' ) ) {
 			return activeTabFromUrlHash;
 		}
 	}
