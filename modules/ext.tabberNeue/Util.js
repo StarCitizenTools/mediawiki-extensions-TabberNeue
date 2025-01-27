@@ -70,6 +70,38 @@ class Util {
 			element.setAttribute( key, attributes[ key ] );
 		}
 	}
+
+	/**
+	 * Selects the element of the tab header matching the fragment identifier.
+	 *
+	 * @param {String} urlHash - URL fragment identifier (URL hash with '#' already removed).
+	 * @return {Element} The element of the matching tab header.
+	 */
+	static selectElementFromUrlHash( urlHash ) {
+		if ( !urlHash ) {
+			return;
+		}
+		const decodedHash = mw.util.percentDecodeFragment( urlHash );
+		const escapedHash = mw.util.escapeIdForAttribute( decodedHash );
+		const idFromUrlHash = escapedHash.replace( 'tabber-tabpanel-', 'tabber-tab-' );
+		let activeTabFromUrlHash = document.getElementById( idFromUrlHash );
+
+		if ( !activeTabFromUrlHash ) {
+			// Retry getting the tab after escaping html special chars to correctly select
+			// the tab for cases where the fragment does not use the escaped version
+			const specialCharEscapedHash = mw.html.escape( idFromUrlHash );
+			activeTabFromUrlHash = document.getElementById( specialCharEscapedHash );
+
+			if ( !activeTabFromUrlHash ) {
+				return;
+			}
+		}
+
+		// Ensures that only tabber elements are selected
+		if ( activeTabFromUrlHash.classList.contains( 'tabber__tab' ) ) {
+			return activeTabFromUrlHash;
+		}
+	}
 }
 
 module.exports = Util;
