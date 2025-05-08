@@ -1,6 +1,6 @@
 {
 	"name": "TabberNeue",
-	"version": "2.7.4",
+	"version": "3.0.0-alpha",
 	"author": [
 		"alistair3149",
 		"Eric Fortin",
@@ -12,7 +12,7 @@
 	"type": "parserhook",
 	"license-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.39.0"
+		"MediaWiki": ">= 1.43.0"
 	},
 	"MessagesDirs": {
 		"TabberNeue": [

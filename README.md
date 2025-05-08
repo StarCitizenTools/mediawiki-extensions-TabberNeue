@@ -10,7 +10,7 @@ The TabberNeue extension allows wikis to create tabs within a page. It is a fork
 [Extension:TabberNeue on MediaWiki](https://www.mediawiki.org/wiki/Extension:TabberNeue).
 
 ## Requirements
-* [MediaWiki](https://www.mediawiki.org) 1.39 or later
+* [MediaWiki](https://www.mediawiki.org) 1.43 or later
 
 ## Installation
 You can get the extension via Git (specifying TabberNeue as the destination directory):
