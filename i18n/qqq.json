@@ -12,5 +12,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-title": "Title for the dialog to edit <nowiki><tabber></nowiki> Tabber blocks.",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "Description for the dialog to edit <nowiki><tabber></nowiki> Tabber blocks.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Title for the popup to edit <nowiki><tabbertransclude></nowiki> Tabber blocks.",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Description for the popup to edit <nowiki><tabbertransclude></nowiki> Tabber blocks."
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Description for the popup to edit <nowiki><tabbertransclude></nowiki> Tabber blocks.",
+	"tabberneue-error-tabs-title": "Intro for the error message box for the list of errors.",
+	"tabberneue-error-tabs-duplicate-label": "Error message when duplicate tab label is used."
 }
