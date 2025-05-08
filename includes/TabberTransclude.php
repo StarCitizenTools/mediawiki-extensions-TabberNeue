@@ -15,12 +15,12 @@ declare( strict_types=1 );
 namespace MediaWiki\Extension\TabberNeue;
 
 use Exception;
+use MediaWiki\Html\TemplateParser;
 use MediaWiki\MediaWikiServices;
-use Parser;
-use PPFrame;
-use Sanitizer;
-use TemplateParser;
-use Title;
+use MediaWiki\Parser\Parser;
+use MediaWiki\Parser\PPFrame;
+use MediaWiki\Parser\Sanitizer;
+use MediaWiki\Title\Title;
 
 class TabberTransclude {
 
@@ -29,15 +29,8 @@ class TabberTransclude {
 
 	/**
 	 * Parser callback for <tabbertransclude> tag
-	 *
-	 * @param string|null $input
-	 * @param array $args
-	 * @param Parser $parser Mediawiki Parser Object
-	 * @param PPFrame $frame Mediawiki PPFrame Object
-	 *
-	 * @return string HTML
 	 */
-	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ) {
+	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ): string {
 		if ( $input === null ) {
 			return '';
 		}
@@ -62,14 +55,6 @@ class TabberTransclude {
 
 	/**
 	 * Renders the necessary HTML for a <tabbertransclude> tag.
-	 *
-	 * @param string $input The input URL between the beginning and ending tags.
-	 * @param int $count Current Tabber count
-	 * @param array $args
-	 * @param Parser $parser Mediawiki Parser Object
-	 * @param PPFrame $frame Mediawiki PPFrame Object
-	 *
-	 * @return string HTML
 	 */
 	public static function render( string $input, int $count, array $args, Parser $parser, PPFrame $frame ): string {
 		$selected = true;
@@ -116,10 +101,6 @@ class TabberTransclude {
 
 	/**
 	 * Get individual tab data from wikitext.
-	 *
-	 * @param string $tab tab wikitext
-	 *
-	 * @return array
 	 */
 	private static function getTabData( string $tab ): array {
 		if ( empty( trim( $tab ) ) ) {
@@ -146,12 +127,6 @@ class TabberTransclude {
 	/**
 	 * Build individual tab.
 	 *
-	 * @param array $tabData Tab data
-	 * @param Parser $parser Mediawiki Parser Object
-	 * @param PPFrame $frame Mediawiki PPFrame Object
-	 * @param bool &$selected The tab is the selected one
-	 *
-	 * @return string HTML
 	 * @throws Exception
 	 */
 	private static function buildTabTransclude( array $tabData, Parser $parser, PPFrame $frame, bool &$selected ): string {

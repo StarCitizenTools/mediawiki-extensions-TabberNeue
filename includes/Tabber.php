@@ -14,13 +14,13 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue;
 
-use Html;
 use InvalidArgumentException;
+use MediaWiki\Html\TemplateParser;
+use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
-use Parser;
-use PPFrame;
-use Sanitizer;
-use TemplateParser;
+use MediaWiki\Parser\Parser;
+use MediaWiki\Parser\PPFrame;
+use MediaWiki\Parser\Sanitizer;
 
 class Tabber {
 
@@ -32,15 +32,8 @@ class Tabber {
 
 	/**
 	 * Parser callback for <tabber> tag
-	 *
-	 * @param string|null $input
-	 * @param array $args
-	 * @param Parser $parser Mediawiki Parser Object
-	 * @param PPFrame $frame Mediawiki PPFrame Object
-	 *
-	 * @return string HTML
 	 */
-	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ) {
+	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ): string {
 		if ( $input === null ) {
 			return '';
 		}
@@ -65,14 +58,6 @@ class Tabber {
 
 	/**
 	 * Renders the necessary HTML for a <tabber> tag.
-	 *
-	 * @param string $input The input URL between the beginning and ending tags.
-	 * @param int $count Current Tabber count
-	 * @param array $args
-	 * @param Parser $parser Mediawiki Parser Object
-	 * @param PPFrame $frame Mediawiki PPFrame Object
-	 *
-	 * @return string HTML
 	 */
 	public static function render( string $input, int $count, array $args, Parser $parser, PPFrame $frame ): string {
 		$attr = [
@@ -110,11 +95,6 @@ class Tabber {
 
 	/**
 	 * Get parsed tab labels
-	 *
-	 * @param string $label tab label wikitext
-	 * @param Parser $parser Mediawiki Parser Object
-	 *
-	 * @return string
 	 */
 	private static function getTabLabel( string $label, Parser $parser ): string {
 		$label = trim( $label );
@@ -136,12 +116,6 @@ class Tabber {
 
 	/**
 	 * Get parsed tab content
-	 *
-	 * @param string $content tab content wikitext
-	 * @param Parser $parser Mediawiki Parser Object
-	 * @param PPFrame $frame Mediawiki PPFrame Object
-	 *
-	 * @return string
 	 */
 	private static function getTabContent( string $content, Parser $parser, PPFrame $frame ): string {
 		$content = trim( $content );
@@ -162,12 +136,6 @@ class Tabber {
 	/**
 	 * Get individual tab data from wikitext.
 	 *
-	 * @param string $tab tab wikitext
-	 * @param int $count Current Tabber count
-	 * @param Parser $parser Mediawiki Parser Object
-	 * @param PPFrame $frame Mediawiki PPFrame Object
-	 *
-	 * @return array
 	 * @throws MWException
 	 */
 	private static function getTabData( string $tab, int $count, Parser $parser, PPFrame $frame ): array {
