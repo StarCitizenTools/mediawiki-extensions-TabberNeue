@@ -15,8 +15,8 @@ declare( strict_types=1 );
 namespace MediaWiki\Extension\TabberNeue;
 
 use InvalidArgumentException;
-use MediaWiki\Html\TemplateParser;
 use MediaWiki\Html\Html;
+use MediaWiki\Html\TemplateParser;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
