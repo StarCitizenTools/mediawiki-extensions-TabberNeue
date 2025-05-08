@@ -14,5 +14,7 @@
     "tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
     "tabberneue-visualeditor-mwtabberdialog-desc": "See the [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documentation] for usage.",
     "tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (transclusion)",
-    "tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "See the [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation] for usage."
+    "tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "See the [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation] for usage.",
+    "tabberneue-error-tabs-title": "The following errors occurred while processing tabs:",
+    "tabberneue-error-tabs-duplicate-label": "The tab label '$1' is already in use."
 }

@@ -73,10 +73,17 @@ class Tabber {
 			'array-tabs' => [],
 			'html-attributes' => Sanitizer::safeEncodeTagAttributes( Sanitizer::validateTagAttributes( $attr, 'div' ) )
 		];
+		$errorMessages = [];
 
 		$arr = explode( '|-|', $input );
 		foreach ( $arr as $tab ) {
-			$tabData = self::getTabData( $tab, $count, $parser, $frame );
+			try {
+				$tabData = self::getTabData( $tab, $count, $parser, $frame );
+			} catch ( InvalidArgumentException $e ) {
+				$errorMessages[] = $e->getMessage();
+				continue;
+			}
+
 			if ( $tabData === [] ) {
 				continue;
 			}
@@ -89,8 +96,25 @@ class Tabber {
 			];
 		}
 
+		if ( $errorMessages !== [] ) {
+			return self::renderErrorMessages( $parser, $errorMessages );
+		}
+
 		$templateParser = new TemplateParser( __DIR__ . '/templates' );
 		return $templateParser->processTemplate( 'Tabber', $data );
+	}
+
+	/**
+	 * Formats and renders error messages.
+	 */
+	private static function renderErrorMessages( Parser $parser, array $messages ): string {
+		$errorIntro = $parser->msg( 'tabberneue-error-tabs-title' )->text();
+		$errorListHtml = '<ul>';
+		foreach ( $messages as $msg ) {
+			$errorListHtml .= '<li>' . htmlspecialchars( $msg ) . '</li>';
+		}
+		$errorListHtml .= '</ul>';
+		return Html::errorBox( $errorIntro . $errorListHtml );
 	}
 
 	/**
@@ -171,12 +195,10 @@ class Tabber {
 			$parserOutput = $parser->getOutput();
 			$existingIds = $parserOutput->getExtensionData( 'tabber-ids' ) ?? [];
 			if ( in_array( $id, $existingIds ) ) {
-				throw new InvalidArgumentException(
-					'Duplicated Tabber labels is not allowed with $wgTabberNeueUseLegacyTabIds = true.' .
-					'Label was: ' . $label
-				);
+				throw new InvalidArgumentException( $parser->msg( 'tabberneue-error-tabs-duplicate-label', $label )->text() );
 			}
-			$parserOutput->appendExtensionData( 'tabber-ids', $id );
+			$existingIds[] = $id;
+			$parserOutput->setExtensionData( 'tabber-ids', $existingIds );
 		} else {
 			$id = "$id-$count";
 		}
