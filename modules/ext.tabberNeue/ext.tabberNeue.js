@@ -100,7 +100,7 @@ class TabberAction {
 	static setActiveTabpanel( activeTabpanel ) {
 		const section = activeTabpanel.closest( '.tabber__section' );
 
-		if ( activeTabpanel.dataset.mwTabberLoadUrl ) {
+		if ( activeTabpanel.querySelector( '.tabber__transclusion' ) ) {
 			const transclude = new Transclude( activeTabpanel );
 			transclude.loadPage();
 		}

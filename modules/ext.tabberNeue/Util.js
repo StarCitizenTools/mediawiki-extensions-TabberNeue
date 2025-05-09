@@ -74,7 +74,7 @@ class Util {
 	/**
 	 * Selects the element of the tab header matching the fragment identifier.
 	 *
-	 * @param {String} urlHash - URL fragment identifier (URL hash with '#' already removed).
+	 * @param {string} urlHash - URL fragment identifier (URL hash with '#' already removed).
 	 * @return {Element} The element of the matching tab header.
 	 */
 	static selectElementFromUrlHash( urlHash ) {
