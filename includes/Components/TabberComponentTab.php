@@ -9,7 +9,8 @@ class TabberComponentTab implements TabberComponent {
 		private string $label,
 		private string $content,
 		private bool $addTabPrefix
-	) {}
+	) {
+	}
 
 	public function getTemplateData(): array {
 		$id = $this->addTabPrefix ? "tabber-$this->name" : $this->name;

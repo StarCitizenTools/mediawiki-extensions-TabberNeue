@@ -16,15 +16,15 @@ namespace MediaWiki\Extension\TabberNeue;
 
 use Exception;
 use MediaWiki\Config\Config;
+use MediaWiki\Extension\TabberNeue\Components\TabberComponentTab;
+use MediaWiki\Extension\TabberNeue\Components\TabberComponentTabs;
+use MediaWiki\Extension\TabberNeue\Parsing\TabberTranscludeWikitextProcessor;
 use MediaWiki\Html\Html;
 use MediaWiki\Html\TemplateParser;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
 use MediaWiki\Title\Title;
-use MediaWiki\Extension\TabberNeue\Parsing\TabberTranscludeWikitextProcessor;
-use MediaWiki\Extension\TabberNeue\Components\TabberComponentTab;
-use MediaWiki\Extension\TabberNeue\Components\TabberComponentTabs;
 
 class TabberTransclude {
 
@@ -166,6 +166,6 @@ class TabberTransclude {
 			$queryParams['title'] = $currentParserTitle->getPrefixedText();
 		}
 		$apiQueryPath = '?' . http_build_query( $queryParams );
-		return  MediaWikiServices::getInstance()->getUrlUtils()->expand( wfScript( 'api' ) . $apiQueryPath, PROTO_CANONICAL );
+		return MediaWikiServices::getInstance()->getUrlUtils()->expand( wfScript( 'api' ) . $apiQueryPath, PROTO_CANONICAL );
 	}
 }

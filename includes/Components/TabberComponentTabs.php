@@ -9,7 +9,8 @@ class TabberComponentTabs implements TabberComponent {
 	public function __construct(
 		private array $tabsData,
 		private array $additionalAttributes
-	) {}
+	) {
+	}
 
 	private function getAttributes(): array {
 		$attributes = [
@@ -23,7 +24,7 @@ class TabberComponentTabs implements TabberComponent {
 		$attributes = Sanitizer::validateTagAttributes( $attributes, 'div' );
 
 		return array_map(
-			fn( $key, $value ) => [ 'key' => (string)$key, 'value' => $value ],
+			static fn ( $key, $value ) => [ 'key' => (string)$key, 'value' => $value ],
 			array_keys( $attributes ),
 			$attributes
 		);

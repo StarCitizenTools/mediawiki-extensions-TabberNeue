@@ -15,9 +15,9 @@ declare( strict_types=1 );
 namespace MediaWiki\Extension\TabberNeue;
 
 use MediaWiki\Config\Config;
-use MediaWiki\Extension\TabberNeue\Parsing\TabberWikitextProcessor;
 use MediaWiki\Extension\TabberNeue\Components\TabberComponentTab;
 use MediaWiki\Extension\TabberNeue\Components\TabberComponentTabs;
+use MediaWiki\Extension\TabberNeue\Parsing\TabberWikitextProcessor;
 use MediaWiki\Html\TemplateParser;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
@@ -27,7 +27,8 @@ class Tabber {
 	public function __construct(
 		private Config $config,
 		private TemplateParser $templateParser
-	) {}
+	) {
+	}
 
 	/**
 	 * Parser callback for <tabber> tag
