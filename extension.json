@@ -30,10 +30,6 @@
 		"ext.tabberNeue.init.styles": {
 			"styles": [
 				"ext.tabberNeue.init/ext.tabberNeue.init.less"
-			],
-			"targets": [
-				"desktop",
-				"mobile"
 			]
 		},
 		"ext.tabberNeue": {
