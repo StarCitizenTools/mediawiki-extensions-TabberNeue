@@ -3,6 +3,8 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue\Components;
 
+use MediaWiki\Parser\Sanitizer;
+
 class TabberComponentTab implements TabberComponent {
 	public function __construct(
 		private string $name,
@@ -13,7 +15,8 @@ class TabberComponentTab implements TabberComponent {
 	}
 
 	public function getTemplateData(): array {
-		$id = $this->addTabPrefix ? "tabber-$this->name" : $this->name;
+		$name = Sanitizer::escapeIdForAttribute( $this->name );
+		$id = $this->addTabPrefix ? "tabber-$name" : $name;
 
 		return [
 			'label' => $this->label,

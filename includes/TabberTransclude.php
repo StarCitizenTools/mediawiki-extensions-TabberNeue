@@ -49,9 +49,7 @@ class TabberTransclude {
 		$parserOutput->addModules( [ 'ext.tabberNeue' ] );
 		$parser->addTrackingCategory( 'tabberneue-tabbertransclude-category' );
 
-		// No longer generating a tabber-N baseId here. ID for main container comes from $args.
-		$html = $this->render( $input, $args, $parser, $frame );
-		return $html;
+		return $this->render( $input, $args, $parser, $frame );
 	}
 
 	/**
@@ -123,7 +121,10 @@ class TabberTransclude {
 			$service = MediaWikiServices::getInstance();
 			$innerContentHtml = $parser->getLinkRenderer()->makeLink( $title, null );
 
+			// TODO: Should probably refactor this hook, not sure if it's used anywhere else.
 			$originalinnerContentHtml = $innerContentHtml;
+
+			// TODO: Maybe we should inject the hook container into the class.
 			$service->getHookContainer()->run(
 				'TabberNeueRenderLazyLoadedTab',
 				[ &$innerContentHtml, $parser, $frame ]
@@ -139,6 +140,7 @@ class TabberTransclude {
 			);
 		}
 
+		// TODO: There might be a cleaner way to do this.
 		$revRecord = $parser->fetchCurrentRevisionRecordOfTitle( $title );
 		$parser->getOutput()->addTemplate(
 			$title,
@@ -150,6 +152,7 @@ class TabberTransclude {
 	}
 
 	private function buildLazyLoadApiUrl( ?Title $currentParserTitle, string $textParamForQuery ): string {
+		// TODO: There should be a better way to build this URL, or there might be a better API endpoint to use.
 		$queryParams = [
 			'action' => 'parse',
 			'format' => 'json',
@@ -165,7 +168,9 @@ class TabberTransclude {
 		if ( $currentParserTitle instanceof Title && $currentParserTitle->getPrefixedText() !== '' ) {
 			$queryParams['title'] = $currentParserTitle->getPrefixedText();
 		}
+
 		$apiQueryPath = '?' . http_build_query( $queryParams );
+		// TODO: Maybe we should inject the UrlUtils into the class.
 		return MediaWikiServices::getInstance()->getUrlUtils()->expand( wfScript( 'api' ) . $apiQueryPath, PROTO_CANONICAL );
 	}
 }

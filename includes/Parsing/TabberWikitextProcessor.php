@@ -46,7 +46,11 @@ class TabberWikitextProcessor implements WikitextProcessor {
 	 * Parses a single tab segment (label=content).
 	 */
 	private function parseTabSegment( string $tabSegment ): ?TabModel {
-		[ $rawLabel, $rawContent ] = array_pad( explode( '=', $tabSegment, 2 ), 2, '' );
+		$parts = explode( '=', $tabSegment, 2 );
+		if ( count( $parts ) < 2 ) {
+			return null;
+		}
+		[ $rawLabel, $rawContent ] = $parts;
 
 		$label = $this->parseTabLabel( $rawLabel );
 		if ( $label === '' ) {

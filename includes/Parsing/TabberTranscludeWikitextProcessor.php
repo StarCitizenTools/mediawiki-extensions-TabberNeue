@@ -46,7 +46,12 @@ class TabberTranscludeWikitextProcessor implements WikitextProcessor {
 	}
 
 	private function getName( string $label ): string {
-		return $this->getUniqueName( Sanitizer::escapeIdForAttribute( htmlspecialchars( $label ) ) );
+		// Tab name can contain HTML
+		if ( $this->config->get( 'TabberNeueParseTabName' ) ) {
+			$label = htmlspecialchars( $label );
+		}
+
+		return $this->getUniqueName( Sanitizer::escapeIdForAttribute( $label ) );
 	}
 
 	private function getUniqueName( string $name ): string {
