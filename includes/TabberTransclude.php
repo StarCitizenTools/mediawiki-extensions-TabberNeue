@@ -15,187 +15,162 @@ declare( strict_types=1 );
 namespace MediaWiki\Extension\TabberNeue;
 
 use Exception;
+use MediaWiki\Config\Config;
+use MediaWiki\Extension\TabberNeue\Components\TabberComponentTab;
+use MediaWiki\Extension\TabberNeue\Components\TabberComponentTabs;
+use MediaWiki\Extension\TabberNeue\Parsing\TabberTranscludeWikitextProcessor;
+use MediaWiki\Html\Html;
 use MediaWiki\Html\TemplateParser;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
-use MediaWiki\Parser\Sanitizer;
 use MediaWiki\Title\Title;
 
 class TabberTransclude {
 
-	/** @var bool */
-	private static $useLegacyId = false;
+	private Config $config;
+	private TemplateParser $templateParser;
+
+	public function __construct( Config $config, TemplateParser $templateParser ) {
+		$this->config = $config;
+		$this->templateParser = $templateParser;
+	}
 
 	/**
 	 * Parser callback for <tabbertransclude> tag
 	 */
-	public static function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ): string {
+	public function parserHook( ?string $input, array $args, Parser $parser, PPFrame $frame ): string {
 		if ( $input === null ) {
 			return '';
 		}
 
-		$config = MediaWikiServices::getInstance()->getMainConfig();
 		$parserOutput = $parser->getOutput();
-
-		self::$useLegacyId = $config->get( 'TabberNeueUseLegacyTabIds' );
-
-		$count = count( $parserOutput->getExtensionData( 'tabber-count' ) ?? [] );
-
-		$html = self::render( $input, $count, $args, $parser, $frame );
-
-		$parserOutput->appendExtensionData( 'tabber-count', ++$count );
-
-		$parser->getOutput()->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
-		$parser->getOutput()->addModules( [ 'ext.tabberNeue' ] );
-
+		$parserOutput->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
+		$parserOutput->addModules( [ 'ext.tabberNeue' ] );
 		$parser->addTrackingCategory( 'tabberneue-tabbertransclude-category' );
-		return $html;
+
+		return $this->render( $input, $args, $parser, $frame );
 	}
 
 	/**
 	 * Renders the necessary HTML for a <tabbertransclude> tag.
 	 */
-	public static function render( string $input, int $count, array $args, Parser $parser, PPFrame $frame ): string {
-		$selected = true;
-		$arr = explode( "\n", $input );
-		$attr = [
-			'id' => "tabber-$count",
-			'class' => 'tabber tabber--init'
-		];
+	public function render( string $input, array $args, Parser $parser, PPFrame $frame ): string {
+		$isCurrentlySelectedTab = true;
 
-		foreach ( $args as $attribute => $value ) {
-			$attr = Sanitizer::mergeAttributes( $attr, [ $attribute => $value ] );
-		}
+		$processor = new TabberTranscludeWikitextProcessor( $parser, $this->config );
+		$tabModels = $processor->process( $input );
 
-		$data = [
-			'array-tabs' => [],
-			'html-attributes' => Sanitizer::safeEncodeTagAttributes( Sanitizer::validateTagAttributes( $attr, 'div' ) )
-		];
-
-		foreach ( $arr as $tab ) {
-			$tabData = self::getTabData( $tab );
-			if ( $tabData === [] ) {
-				continue;
-			}
-
-			$tabpanelHtml = '';
+		$tabsData = [];
+		$addTabPrefixConfig = $this->config->get( 'TabberNeueAddTabPrefix' );
+		foreach ( $tabModels as $tabModel ) {
+			$tabContent = '';
 			try {
-				$tabpanelHtml = self::buildTabTransclude( $tabData, $parser, $frame, $selected );
+				$tabContent = $this->prepareTransclusionPanel(
+					(string)$tabModel->content, // pageNameToTransclude
+					$parser,
+					$frame,
+					$isCurrentlySelectedTab
+				);
 			} catch ( Exception $e ) {
-				// This can happen if a $currentTitle is null
-				continue;
+				$tabContent = Html::errorBox( 'Error processing tab: ' . $tabModel->label );
 			}
 
-			$data['array-tabs'][] = [
-				'html-tabpanel' => $tabpanelHtml,
-				'label' => $tabData['label'],
-				'tabId' => "tabber-tab-{$tabData['id']}",
-				'tabpanelId' => self::$useLegacyId ? $tabData['id'] : "tabber-tabpanel-{$tabData['id']}"
-			];
+			$tab = new TabberComponentTab(
+				$tabModel->name,
+				$tabModel->label,
+				$tabContent,
+				$addTabPrefixConfig
+			);
+
+			if ( $isCurrentlySelectedTab ) {
+				$isCurrentlySelectedTab = false;
+			}
+
+			$tabsData[] = $tab->getTemplateData();
 		}
 
-		$templateParser = new TemplateParser( __DIR__ . '/templates' );
-		return $templateParser->processTemplate( 'Tabber', $data );
+		$tabs = new TabberComponentTabs( $tabsData, $args );
+
+		return $this->templateParser->processTemplate( 'Tabs', $tabs->getTemplateData() );
 	}
 
 	/**
-	 * Get individual tab data from wikitext.
-	 */
-	private static function getTabData( string $tab ): array {
-		if ( empty( trim( $tab ) ) ) {
-			return [];
-		}
-
-		// Transclude uses a different syntax: Page name|Tab label
-		// Use array_pad to make sure at least 2 array values are always returned
-		[ $content, $label ] = array_pad( explode( '|', $tab, 2 ), 2, '' );
-
-		$label = trim( $label );
-		// Label is empty, we cannot generate tabber
-		if ( $label === '' ) {
-			return [];
-		}
-
-		return [
-			'label' => $label,
-			'content' => trim( $content ),
-			'id' => Sanitizer::escapeIdForAttribute( htmlspecialchars( $label ) )
-		];
-	}
-
-	/**
-	 * Build individual tab.
+	 * Build individual tab content HTML string.
 	 *
 	 * @throws Exception
 	 */
-	private static function buildTabTransclude( array $tabData, Parser $parser, PPFrame $frame, bool &$selected ): string {
-		$tabName = $tabData['label'];
-		$pageName = $tabData['content'];
+	private function prepareTransclusionPanel( string $pageName, Parser $parser, PPFrame $frame, bool $isCurrentlySelectedTab ): string {
+		$htmlBody = '';
 
-		$dataProps = [];
 		$title = Title::newFromText( trim( $pageName ) );
 		if ( !$title ) {
-			if ( empty( $tabName ) ) {
-				$tabName = $pageName;
-			}
-			$tabBody = sprintf( '<div class="error">Invalid title: %s</div>', Sanitizer::escapeHtmlAllowEntities( $pageName ) );
+			// The error state is already handled in TabberTranscludeWikitextProcessor::parseTabContent()
+			// TODO: This is not the best way to handle this.
+			return $pageName;
+		}
+
+		$wikitext = sprintf( '{{:%s}}', $pageName );
+
+		if ( $isCurrentlySelectedTab ) {
+			$htmlBody = $parser->recursiveTagParseFully(
+				$wikitext,
+				$frame
+			);
 		} else {
-			$pageName = $title->getPrefixedText();
-			if ( empty( $tabName ) ) {
-				$tabName = $pageName;
-			}
-			$dataProps['page-title'] = $pageName;
-			if ( $selected ) {
-				$tabBody = $parser->recursiveTagParseFully(
-					sprintf( '{{:%s}}', $pageName ),
-					$frame
-				);
-			} else {
-				$service = MediaWikiServices::getInstance();
-				// Add a link placeholder, as a fallback if JavaScript doesn't execute
-				$linkRenderer = $service->getLinkRenderer();
-				$tabBody = sprintf(
-					'<div class="tabber__transclusion">%s</div>',
-					$linkRenderer->makeLink( $title, null, [ 'rel' => 'nofollow' ] )
-				);
-				$currentTitle = $parser->getPage();
-				$query = sprintf(
-					'?action=parse&format=json&formatversion=2&title=%s&text={{:%s}}&redirects=1&prop=text&disablelimitreport=1&disabletoc=1&wrapoutputclass=',
-					urlencode( $currentTitle->getPrefixedText() ),
-					urlencode( $pageName )
-				);
+			$service = MediaWikiServices::getInstance();
+			$innerContentHtml = $parser->getLinkRenderer()->makeLink( $title, null );
 
-				$utils = $service->getUrlUtils();
-				$utils->expand( wfScript( 'api' ) . $query, PROTO_CANONICAL );
+			// TODO: Should probably refactor this hook, not sure if it's used anywhere else.
+			$originalinnerContentHtml = $innerContentHtml;
 
-				$dataProps['load-url'] = $utils->expand( wfScript( 'api' ) . $query, PROTO_CANONICAL );
-				$oldTabBody = $tabBody;
-				// Allow extensions to update the lazy loaded tab
-				$service->getHookContainer()->run(
-					'TabberNeueRenderLazyLoadedTab',
-					[ &$tabBody, &$dataProps, $parser, $frame ]
-				);
-				if ( $oldTabBody !== $tabBody ) {
-					$parser->getOutput()->recordOption( 'tabberneuelazyupdated' );
-				}
+			// TODO: Maybe we should inject the hook container into the class.
+			$service->getHookContainer()->run(
+				'TabberNeueRenderLazyLoadedTab',
+				[ &$innerContentHtml, $parser, $frame ]
+			);
+			if ( $originalinnerContentHtml !== $innerContentHtml ) {
+				$parser->getOutput()->recordOption( 'tabberneuelazyupdated' );
 			}
-			// Register as a template
-			$revRecord = $parser->fetchCurrentRevisionRecordOfTitle( $title );
-			$parser->getOutput()->addTemplate(
-				$title,
-				$title->getArticleId(),
-				$revRecord ? $revRecord->getId() : null
+
+			$htmlBody = sprintf(
+				'<div class="tabber__transclusion" data-mw-tabber-load-url="%s">%s</div>',
+				$this->buildLazyLoadApiUrl( $parser->getPage(), $wikitext ),
+				$innerContentHtml
 			);
 		}
 
-		$tab = '<article id="tabber-tabpanel-' . $tabData['id'] . '" class="tabber__panel" data-mw-tabber-title="' . htmlspecialchars( $tabName ) . '"';
-		$tab .= implode( array_map( static function ( $prop, $value ) {
-			return sprintf( ' data-mw-tabber-%s="%s"', $prop, htmlspecialchars( $value ) );
-		}, array_keys( $dataProps ), $dataProps ) );
-		$tab .= '>' . $tabBody . '</article>';
-		$selected = false;
+		// TODO: There might be a cleaner way to do this.
+		$revRecord = $parser->fetchCurrentRevisionRecordOfTitle( $title );
+		$parser->getOutput()->addTemplate(
+			$title,
+			$title->getArticleId(),
+			$revRecord ? $revRecord->getId() : null
+		);
 
-		return $tab;
+		return $htmlBody;
+	}
+
+	private function buildLazyLoadApiUrl( ?Title $currentParserTitle, string $textParamForQuery ): string {
+		// TODO: There should be a better way to build this URL, or there might be a better API endpoint to use.
+		$queryParams = [
+			'action' => 'parse',
+			'format' => 'json',
+			'formatversion' => 2,
+			'text' => $textParamForQuery,
+			'redirects' => 1,
+			'prop' => 'text',
+			'disablelimitreport' => 1,
+			'disabletoc' => 1,
+			'wrapoutputclass' => '',
+		];
+
+		if ( $currentParserTitle instanceof Title && $currentParserTitle->getPrefixedText() !== '' ) {
+			$queryParams['title'] = $currentParserTitle->getPrefixedText();
+		}
+
+		$apiQueryPath = '?' . http_build_query( $queryParams );
+		// TODO: Maybe we should inject the UrlUtils into the class.
+		return MediaWikiServices::getInstance()->getUrlUtils()->expand( wfScript( 'api' ) . $apiQueryPath, PROTO_CANONICAL );
 	}
 }

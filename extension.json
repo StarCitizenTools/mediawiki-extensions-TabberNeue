@@ -125,9 +125,9 @@
 			"description": "If enabled, when a tab is selected, the URL displayed on the browser changes. Opening this URL makes that tab initially selected.",
 			"public": true
 		},
-		"TabberNeueUseLegacyTabIds": {
-			"value": false,
-			"description": "If enabled, tabpanel IDs will not be prepended with \"tabber-tabpanel-\". This provides better compatibility with the old Tabber extension, but will cause issues if there are headings with the same name as an existing tab.",
+		"TabberNeueAddTabPrefix": {
+			"value": true,
+			"description": "If enabled, tabpanel IDs will be prepended with \"tabber-\". This avoids potential conflicts with page headings that use the same IDs.",
 			"public": true
 		}
 	},
@@ -137,7 +137,10 @@
 	},
 	"HookHandlers": {
 		"TabberHooks": {
-			"class": "MediaWiki\\Extension\\TabberNeue\\Hooks"
+			"class": "MediaWiki\\Extension\\TabberNeue\\Hooks",
+			"services": [
+				"MainConfig"
+			]
 		}
 	},
 	"attributes": {

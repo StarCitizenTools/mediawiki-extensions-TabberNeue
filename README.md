@@ -112,7 +112,7 @@ Name | Description | Values | Default
 `$wgTabberNeueEnableAnimation` | Enable or disable smooth scroll animation |`true` - enable; `false` - disable | `true`
 `$wgTabberNeueParseTabName` | Parse tab name as wikitext. This can have a performance impact and cause unexpected behaviors. |`true` - enable; `false` - disable | `false`
 `$wgTabberNeueUpdateLocationOnTabChange` | If enabled, when a tab is selected, the URL displayed on the browser changes. Opening this URL makes that tab initially selected |`true` - enable; `false` - disable | `true`
-`$wgTabberNeueUseLegacyTabIds` | If enabled, tabpanel IDs will not be prepended with "tabber-tabpanel-". This provides better compatibility with the old Tabber extension, but will cause issues if there are headings with the same name as an existing tab |`true` - enable; `false` - disable | `false`
+`$wgTabberNeueAddTabPrefix` | If enabled, tabpanel IDs will be prepended with "tabber-" to avoid conflicts with page headings. |`true` - enable; `false` - disable | `true`
 
 #### Tracking category
 TabberNeue adds a tracking category to all pages using Tabber for maintenance purposes. There are two ways to suppress the category from viewers:

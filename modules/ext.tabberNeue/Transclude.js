@@ -6,10 +6,10 @@
 class Transclude {
 	constructor( activeTabpanel, cacheExpiration = 3600 ) {
 		this.activeTabpanel = activeTabpanel;
-		this.pageTitle = this.activeTabpanel.dataset.mwTabberPageTitle;
-		this.url = this.activeTabpanel.dataset.mwTabberLoadUrl;
-		this.cacheKey = `tabber-transclude-${ encodeURIComponent( this.pageTitle ) }_v1`;
+		this.transclusionElement = this.activeTabpanel.querySelector( '.tabber__transclusion' );
+		this.url = this.transclusionElement.dataset.mwTabberLoadUrl;
 		this.cacheExpiration = cacheExpiration;
+		this.cacheKey = `tabber-transclude-${ encodeURIComponent( this.activeTabpanel.id ) }_v3`;
 	}
 
 	/**
@@ -64,9 +64,9 @@ class Transclude {
 			return response.text();
 		} catch ( error ) {
 			if ( error.name === 'AbortError' ) {
-				return Promise.reject( new Error( '[TabberNeue] Request timed out after 5000ms' ) );
+				throw new Error( '[TabberNeue] Request timed out after 5000ms' );
 			} else {
-				return Promise.reject( new Error( `[TabberNeue] Error fetching data from URL: ${ this.url } - ${ error }` ) );
+				throw new Error( `[TabberNeue] Error fetching data from URL: ${ this.url } - ${ error }` );
 			}
 		} finally {
 			clearTimeout( timeoutId );
@@ -87,7 +87,7 @@ class Transclude {
 			parsedData = parsedData.parse.text;
 		} catch ( error ) {
 			mw.log.error( `[TabberNeue] Error occurred while parsing JSON data: ${ error }` );
-			return Promise.reject( new Error( `Error parsing JSON data: ${ error }` ) );
+			throw new Error( `Error parsing JSON data: ${ error }` );
 		}
 		return parsedData;
 	}
@@ -122,7 +122,7 @@ class Transclude {
 			const parsedData = this.parseData( data );
 			return this.cacheData( parsedData );
 		} catch ( error ) {
-			return Promise.reject( `[TabberNeue] Error fetching data: ${ error }` );
+			throw new Error( `[TabberNeue] Error fetching data: ${ error }` );
 		}
 	}
 
@@ -133,18 +133,30 @@ class Transclude {
 	 * @return {void}
 	 */
 	async loadPage() {
+		if ( !this.url ) {
+			mw.log.error(
+				`[TabberNeue] Attempted to load page for ${ this.activeTabpanel.id || 'unknown tab' } without a valid URL.`
+			);
+			return;
+		}
+
 		try {
 			this.activeTabpanel.classList.add( 'tabber__panel--loading' );
 			const data = await this.fetchData();
+
+			this.activeTabpanel.classList.remove( 'tabber__panel--loading' );
+
 			if ( data ) {
-				delete this.activeTabpanel.dataset.mwTabberLoadUrl;
-				this.activeTabpanel.classList.remove( 'tabber__panel--loading' );
 				this.activeTabpanel.innerHTML = data;
 			} else {
-				mw.log.error( `[TabberNeue] No valid API response or missing 'parse' field for ${ this.pageTitle } from: ${ this.url }` );
+				mw.log.error( `[TabberNeue] No valid content data returned for ${ this.activeTabpanel.id } from: ${ this.url }` );
+				this.transclusionElement.appendChild( mw.util.messageBox( 'Error: No content received from server.' ) );
 			}
 		} catch ( error ) {
-			mw.log.error( `[TabberNeue] Failed to load data for ${ this.pageTitle }: ${ error }` );
+			this.activeTabpanel.classList.remove( 'tabber__panel--loading' );
+			mw.log.error( `[TabberNeue] Failed to load data for ${ this.activeTabpanel.id }: ${ error }` );
+			const errorMessage = typeof error === 'string' ? error : ( error.message || 'Unknown error' );
+			this.transclusionElement.appendChild( mw.util.messageBox( `Error loading content: ${ mw.html.escape( errorMessage ) }` ) );
 		}
 	}
 }
