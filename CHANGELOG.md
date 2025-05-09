@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.0.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.4...v3.0.0) (2025-05-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* The HTML structure has been changed. Make sure the purge the cache of the pages using Tabber. You can either purge all pages, or use the tracking category to do empty edits.
+* bump MediaWiki requirements to 1.43
+
+### Features
+
+* handle duplicated tab label error gracefully ([baea2a6](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/baea2a6c7c5b026e6abccb5ff92b2cebc18e2bfe)), closes [#223](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/223)
+* rewrite Tabber parser tag implementations ([#230](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/230)) ([62ce0fc](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/62ce0fcdf32bd3cfa77f92ff6b940459a14315fa))
+
+
+### Bug Fixes
+
+* add missing i18n message key ([edead33](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/edead33ca9efe4e85340be770347712ef58a1fde))
+
+
+### Build System
+
+* bump MediaWiki requirements to 1.43 ([cdeddd3](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/cdeddd368d12ece42856d1fcee8a4b714c5a9396))
+
 ## [2.7.4](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.3...v2.7.4) (2025-01-27)
 
 
