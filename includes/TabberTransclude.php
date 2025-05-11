@@ -32,7 +32,7 @@ class TabberTransclude {
 	public function __construct(
 		private Config $config,
 		private TemplateParser $templateParser,
-		private TabNameHelper $tabNameHelper
+		private readonly TabNameHelper $tabNameHelper
 	) {
 	}
 

@@ -18,7 +18,7 @@ class Hooks implements ParserFirstCallInitHook {
 
 	public function __construct(
 		private Config $config,
-		private TabNameHelper $tabNameHelper
+		private readonly TabNameHelper $tabNameHelper
 	) {
 		$this->templateParser = new TemplateParser( __DIR__ . '/templates' );
 	}

@@ -15,7 +15,7 @@ class TabberWikitextProcessor implements WikitextProcessor {
 		private Parser $parser,
 		private PPFrame $frame,
 		private Config $config,
-		private TabNameHelper $tabNameHelper
+		private readonly TabNameHelper $tabNameHelper
 	) {
 	}
 

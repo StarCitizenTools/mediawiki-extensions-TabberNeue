@@ -14,7 +14,7 @@ class TabberTranscludeWikitextProcessor implements WikitextProcessor {
 	public function __construct(
 		private Parser $parser,
 		private Config $config,
-		private TabNameHelper $tabNameHelper
+		private readonly TabNameHelper $tabNameHelper
 	) {
 	}
 
