@@ -5,15 +5,16 @@ namespace MediaWiki\Extension\TabberNeue\Parsing;
 
 use MediaWiki\Config\Config;
 use MediaWiki\Extension\TabberNeue\DataModel\TabModel;
+use MediaWiki\Extension\TabberNeue\Service\TabNameHelper;
 use MediaWiki\Html\Html;
 use MediaWiki\Parser\Parser;
-use MediaWiki\Parser\Sanitizer;
 use MediaWiki\Title\Title;
 
 class TabberTranscludeWikitextProcessor implements WikitextProcessor {
 	public function __construct(
 		private Parser $parser,
-		private Config $config
+		private Config $config,
+		private readonly TabNameHelper $tabNameHelper
 	) {
 	}
 
@@ -39,42 +40,12 @@ class TabberTranscludeWikitextProcessor implements WikitextProcessor {
 				continue;
 			}
 
-			$tabModels[] = new TabModel( $this->getName( $label ), $label, $this->parseTabContent( $pageName ) );
+			$baseId = $this->tabNameHelper->generateSanitizedId( $label );
+			$uniqueName = $this->tabNameHelper->ensureUniqueId( $baseId, $this->parser->getOutput() );
+			$tabModels[] = new TabModel( $uniqueName, $label, $this->parseTabContent( $pageName ) );
 		}
 
 		return $tabModels;
-	}
-
-	private function getName( string $label ): string {
-		// Tab name can contain HTML
-		if ( $this->config->get( 'TabberNeueParseTabName' ) ) {
-			$label = htmlspecialchars( $label );
-		}
-
-		return $this->getUniqueName( Sanitizer::escapeIdForAttribute( $label ) );
-	}
-
-	private function getUniqueName( string $name ): string {
-		$parserOutput = $this->parser->getOutput();
-		$existingIds = $parserOutput->getExtensionData( 'tabber-ids' ) ?? [];
-
-		if ( isset( $existingIds[ $name ] ) ) {
-			$count = $existingIds[ $name ] + 1;
-			$name = $name . '_' . $count; // Same pattern as duplicated headings in MediaWiki
-			/*
-			// TODO: Useful when we implement custom tab IDs
-			throw new InvalidArgumentException(
-				$this->parser->msg( 'tabberneue-error-tabs-duplicate-label', $name )->text()
-			);
-			*/
-		} else {
-			$count = 1;
-		}
-
-		$existingIds[ $name ] = $count;
-		$parserOutput->setExtensionData( 'tabber-ids', $existingIds );
-
-		return $name;
 	}
 
 	/**

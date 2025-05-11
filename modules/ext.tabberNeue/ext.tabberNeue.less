@@ -67,6 +67,10 @@
 	}
 
 	&__tab {
+		// Skins such as Vector set a border-radius to <a> elements,
+		// so we need to override it here.
+		border-radius: 0;
+
 		&[ aria-selected='true' ] {
 			box-shadow: 0 -2px 0 var( --color-progressive, #36c ) inset;
 		}

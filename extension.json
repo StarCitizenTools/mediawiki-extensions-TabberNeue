@@ -139,10 +139,14 @@
 		"TabberHooks": {
 			"class": "MediaWiki\\Extension\\TabberNeue\\Hooks",
 			"services": [
-				"MainConfig"
+				"MainConfig",
+				"TabberNeue.TabNameHelper"
 			]
 		}
 	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
 	"attributes": {
 		"CodeMirror": {
 			"TagModes": {
