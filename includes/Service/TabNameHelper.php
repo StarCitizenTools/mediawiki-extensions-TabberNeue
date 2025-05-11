@@ -1,0 +1,39 @@
+<?php
+declare( strict_types=1 );
+
+namespace MediaWiki\Extension\TabberNeue\Service;
+
+use MediaWiki\Config\Config;
+use MediaWiki\Parser\ParserOutput;
+use MediaWiki\Parser\Sanitizer;
+
+class TabNameHelper {
+    public function __construct(
+        private Config $config
+    ) {
+    }
+
+    /**
+     * Generates a sanitized ID from a label, suitable as a base for a unique ID.
+     */
+    public function generateSanitizedId( string $label ): string {
+        if ( $this->config->get( 'TabberNeueParseTabName' ) ) {
+            $label = htmlspecialchars( $label );
+        }
+        return Sanitizer::escapeIdForAttribute( $label );
+    }
+
+    /**
+     * Ensures the given ID is unique by appending a counter if necessary,
+     * using the provided ParserOutput to track existing IDs.
+     */
+    public function ensureUniqueId( string $sanitizedId, ParserOutput $parserOutput ): string {
+        $existingIds = $parserOutput->getExtensionData( 'tabber-ids' ) ?? [];
+        $hasExistingId = isset( $existingIds[ $sanitizedId ] );
+
+        $existingIds[ $sanitizedId ] = $hasExistingId ? $existingIds[ $sanitizedId ] + 1 : 1;
+        $parserOutput->setExtensionData( 'tabber-ids', $existingIds );
+
+        return $hasExistingId ? $sanitizedId . '_' . $existingIds[ $sanitizedId ] : $sanitizedId;
+    }
+}

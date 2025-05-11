@@ -19,6 +19,7 @@ use MediaWiki\Config\Config;
 use MediaWiki\Extension\TabberNeue\Components\TabberComponentTab;
 use MediaWiki\Extension\TabberNeue\Components\TabberComponentTabs;
 use MediaWiki\Extension\TabberNeue\Parsing\TabberTranscludeWikitextProcessor;
+use MediaWiki\Extension\TabberNeue\Service\TabNameHelper;
 use MediaWiki\Html\Html;
 use MediaWiki\Html\TemplateParser;
 use MediaWiki\MediaWikiServices;
@@ -28,12 +29,11 @@ use MediaWiki\Title\Title;
 
 class TabberTransclude {
 
-	private Config $config;
-	private TemplateParser $templateParser;
-
-	public function __construct( Config $config, TemplateParser $templateParser ) {
-		$this->config = $config;
-		$this->templateParser = $templateParser;
+	public function __construct(
+		private Config $config,
+		private TemplateParser $templateParser,
+		private TabNameHelper $tabNameHelper
+	) {
 	}
 
 	/**
@@ -58,7 +58,7 @@ class TabberTransclude {
 	public function render( string $input, array $args, Parser $parser, PPFrame $frame ): string {
 		$isCurrentlySelectedTab = true;
 
-		$processor = new TabberTranscludeWikitextProcessor( $parser, $this->config );
+		$processor = new TabberTranscludeWikitextProcessor( $parser, $this->config, $this->tabNameHelper );
 		$tabModels = $processor->process( $input );
 
 		$tabsData = [];
