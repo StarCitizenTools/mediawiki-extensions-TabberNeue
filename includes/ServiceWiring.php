@@ -7,7 +7,7 @@ use MediaWiki\MediaWikiServices;
 return [
 	'TabberNeue.TabNameHelper' => static function ( MediaWikiServices $services ): TabNameHelper {
 		return new TabNameHelper(
-			$services->getMainConfig()
+			$services->getMainConfig()->get( 'TabberNeueParseTabName' )
 		);
 	}
 ];

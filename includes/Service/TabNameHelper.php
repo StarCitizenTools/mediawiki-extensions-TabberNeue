@@ -3,13 +3,12 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue\Service;
 
-use MediaWiki\Config\Config;
 use MediaWiki\Parser\ParserOutput;
 use MediaWiki\Parser\Sanitizer;
 
 class TabNameHelper {
 	public function __construct(
-		private Config $config
+		private bool $parseTabName
 	) {
 	}
 
@@ -17,7 +16,7 @@ class TabNameHelper {
 	 * Generates a sanitized ID from a label, suitable as a base for a unique ID.
 	 */
 	public function generateSanitizedId( string $label ): string {
-		if ( $this->config->get( 'TabberNeueParseTabName' ) ) {
+		if ( $this->parseTabName ) {
 			$label = htmlspecialchars( $label );
 		}
 		return Sanitizer::escapeIdForAttribute( $label );
