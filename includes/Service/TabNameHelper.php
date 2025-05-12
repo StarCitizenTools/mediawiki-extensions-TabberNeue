@@ -17,7 +17,7 @@ class TabNameHelper {
 	 */
 	public function generateSanitizedId( string $label ): string {
 		if ( $this->parseTabName ) {
-			$label = htmlspecialchars( $label );
+			$label = htmlspecialchars( strip_tags( $label ) );
 		}
 		return Sanitizer::escapeIdForAttribute( $label );
 	}
