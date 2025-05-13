@@ -102,7 +102,8 @@ class TabberAction {
 		const section = activeTabpanel.closest( '.tabber__section' );
 
 		if ( activeTabpanel.querySelector( '.tabber__transclusion' ) ) {
-			const transclude = new Transclude( activeTabpanel );
+			// TODO: wgCdnMaxAge might not be the best way to handle caching
+			const transclude = new Transclude( activeTabpanel, config.cdnMaxAge );
 			transclude.loadPage();
 		}
 
@@ -512,7 +513,7 @@ mw.hook( 'wikipage.content' ).add( () => {
 	main();
 } );
 
-mw.loader.using( 'ext.visualEditor.desktopArticleTarget.init' ).done( () => {
+mw.loader.using( 'ext.visualEditor.desktopArticleTarget.init' ).then( () => {
 	// After saving edits
 	mw.hook( 'postEdit.afterRemoval' ).add( () => {
 		main();

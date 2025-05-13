@@ -67,7 +67,7 @@ class TabberTransclude {
 			$tabContent = '';
 			try {
 				$tabContent = $this->prepareTransclusionPanel(
-					(string)$tabModel->content, // pageNameToTransclude
+					(string)$tabModel->content,
 					$parser,
 					$frame,
 					$isCurrentlySelectedTab
@@ -134,8 +134,8 @@ class TabberTransclude {
 			}
 
 			$htmlBody = sprintf(
-				'<div class="tabber__transclusion" data-mw-tabber-load-url="%s">%s</div>',
-				$this->buildLazyLoadApiUrl( $parser->getPage(), $wikitext ),
+				'<div class="tabber__transclusion" data-mw-tabber-page-name="%s">%s</div>',
+				htmlspecialchars( $pageName, ENT_QUOTES ),
 				$innerContentHtml
 			);
 		}
@@ -149,28 +149,5 @@ class TabberTransclude {
 		);
 
 		return $htmlBody;
-	}
-
-	private function buildLazyLoadApiUrl( ?Title $currentParserTitle, string $textParamForQuery ): string {
-		// TODO: There should be a better way to build this URL, or there might be a better API endpoint to use.
-		$queryParams = [
-			'action' => 'parse',
-			'format' => 'json',
-			'formatversion' => 2,
-			'text' => $textParamForQuery,
-			'redirects' => 1,
-			'prop' => 'text',
-			'disablelimitreport' => 1,
-			'disabletoc' => 1,
-			'wrapoutputclass' => '',
-		];
-
-		if ( $currentParserTitle instanceof Title && $currentParserTitle->getPrefixedText() !== '' ) {
-			$queryParams['title'] = $currentParserTitle->getPrefixedText();
-		}
-
-		$apiQueryPath = '?' . http_build_query( $queryParams );
-		// TODO: Maybe we should inject the UrlUtils into the class.
-		return MediaWikiServices::getInstance()->getUrlUtils()->expand( wfScript( 'api' ) . $apiQueryPath, PROTO_CANONICAL );
 	}
 }

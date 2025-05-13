@@ -38,6 +38,7 @@
 				{
 					"name": "ext.tabberNeue/config.json",
 					"config": {
+						"cdnMaxAge": "CdnMaxAge",
 						"enableAnimation": "TabberNeueEnableAnimation",
 						"updateLocationOnTabChange": "TabberNeueUpdateLocationOnTabChange"
 					}
