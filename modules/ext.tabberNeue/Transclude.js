@@ -94,6 +94,10 @@ class Transclude {
 			clearTimeout( loadingTimerId );
 
 			this.activeTabpanel.innerHTML = data;
+
+			// Fire the wikipage.content hook for potential consumers of the hook
+			// eslint-disable-next-line no-jquery/no-jquery-constructor
+			mw.hook( 'wikipage.content' ).fire( $( this.activeTabpanel ) );
 		} catch ( error ) {
 			this.activeTabpanel.classList.remove( 'tabber__panel--loading' );
 			clearTimeout( loadingTimerId );
