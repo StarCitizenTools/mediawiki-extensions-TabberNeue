@@ -27,6 +27,10 @@ class TabberComponentTab implements TabberComponent {
 					'value' => "$id-label"
 				],
 				[
+					'key' => 'href',
+					'value' => "#$id"
+				],
+				[
 					'key' => 'aria-controls',
 					'value' => $id
 				]
