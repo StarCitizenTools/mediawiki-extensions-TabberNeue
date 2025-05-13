@@ -7,12 +7,13 @@ class Transclude {
 	constructor( activeTabpanel, cacheExpiration ) {
 		this.activeTabpanel = activeTabpanel;
 		this.transclusionElement = this.activeTabpanel.querySelector( '.tabber__transclusion' );
-		this.pageName = this.transclusionElement.dataset.mwTabberPageName;
+		this.pageName = this.transclusionElement.dataset.mwTabberPage; // This is mainly used for error logging
+		this.revision = this.transclusionElement.dataset.mwTabberRevision;
 		this.apiParameters = {
 			action: 'parse',
 			format: 'json',
 			formatversion: 2,
-			page: this.pageName,
+			oldid: this.revision,
 			redirects: true,
 			prop: 'text',
 			disablelimitreport: true,
@@ -96,7 +97,7 @@ class Transclude {
 		} catch ( error ) {
 			this.activeTabpanel.classList.remove( 'tabber__panel--loading' );
 			clearTimeout( loadingTimerId );
-			mw.log.error( `[TabberNeue] Failed to load content for ${ this.activeTabpanel.id } (page: ${ this.pageName }):`, error );
+			mw.log.error( `[TabberNeue] Failed to load content for ${ this.activeTabpanel.id } (page: ${ this.pageName }, revision: ${ this.revision }):`, error );
 
 			this.transclusionElement.innerHTML = '';
 			this.transclusionElement.appendChild(
@@ -104,7 +105,7 @@ class Transclude {
 					mw.html.escape( ( error instanceof Error && error.message ) ?
 						error.message : 'An unexpected error occurred while loading content.'
 					),
-					{ type: 'error' }
+					'error'
 				)
 			);
 		}

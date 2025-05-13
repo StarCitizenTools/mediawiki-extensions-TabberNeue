@@ -101,7 +101,7 @@ class TabberTransclude {
 	 * @throws Exception
 	 */
 	private function prepareTransclusionPanel( string $pageName, Parser $parser, PPFrame $frame, bool $isCurrentlySelectedTab ): string {
-		$htmlBody = '';
+		$html = '';
 
 		$title = Title::newFromText( trim( $pageName ) );
 		if ( !$title ) {
@@ -110,10 +110,11 @@ class TabberTransclude {
 			return $pageName;
 		}
 
-		$wikitext = sprintf( '{{:%s}}', $pageName );
+		$titleText = $title->getPrefixedText();
+		$wikitext = sprintf( '{{:%s}}', $titleText );
 
 		if ( $isCurrentlySelectedTab ) {
-			$htmlBody = $parser->recursiveTagParseFully(
+			$html = $parser->recursiveTagParseFully(
 				$wikitext,
 				$frame
 			);
@@ -133,9 +134,13 @@ class TabberTransclude {
 				$parser->getOutput()->recordOption( 'tabberneuelazyupdated' );
 			}
 
-			$htmlBody = sprintf(
-				'<div class="tabber__transclusion" data-mw-tabber-page-name="%s">%s</div>',
-				htmlspecialchars( $pageName, ENT_QUOTES ),
+			$html = Html::rawElement(
+				'div',
+				[
+					'class' => 'tabber__transclusion',
+					'data-mw-tabber-page' => $titleText,
+					'data-mw-tabber-revision' => $title->getLatestRevID()
+				],
 				$innerContentHtml
 			);
 		}
@@ -148,6 +153,6 @@ class TabberTransclude {
 			$revRecord ? $revRecord->getId() : null
 		);
 
-		return $htmlBody;
+		return $html;
 	}
 }
