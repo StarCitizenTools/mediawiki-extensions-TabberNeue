@@ -8,7 +8,7 @@ class Util {
 	 * Returns the size (width or height) of the provided element.
 	 * Required to calculate the size of hidden elements (e.g. nested tabs)
 	 *
-	 * @param {Element} element - The element for which to get the size.
+	 * @param {HTMLElement} element - The element for which to get the size.
 	 * @param {string} type - The type of size to retrieve ('width' or 'height').
 	 * @return {number} The actual size of the element based on the specified type.
 	 */
@@ -30,7 +30,7 @@ class Util {
 	/**
 	 * Retrieves the size of a hidden element by cloning it and calculating the size.
 	 *
-	 * @param {Element} element - The hidden element to retrieve the size from.
+	 * @param {HTMLElement} element - The hidden element to retrieve the size from.
 	 * @param {string} type - The type of size to retrieve ('width' or 'height').
 	 * @return {number} The size of the hidden element based on the specified type.
 	 */
@@ -62,7 +62,7 @@ class Util {
 	/**
 	 * Sets the attributes of the given element based on the provided attributes object.
 	 *
-	 * @param {Element} element - The element to set attributes for.
+	 * @param {HTMLElement} element - The element to set attributes for.
 	 * @param {Object} attributes - An object containing key-value pairs of attributes to set.
 	 */
 	static setAttributes( element, attributes ) {
@@ -75,7 +75,7 @@ class Util {
 	 * Selects the element of the tab header matching the fragment identifier.
 	 *
 	 * @param {string} urlHash - URL fragment identifier (URL hash with '#' already removed).
-	 * @return {Element} The element of the matching tab header.
+	 * @return {HTMLElement|void} The element of the matching tab header.
 	 */
 	static selectElementFromUrlHash( urlHash ) {
 		if ( !urlHash ) {
