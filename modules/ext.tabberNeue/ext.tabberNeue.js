@@ -91,8 +91,7 @@ class TabberAction {
 
 	/**
 	 * Sets the active tab panel in the tabber element.
-	 * Loads the content of the active tab panel if it contains a
-	 * `.tabber__transclusion` element with a `data-mw-tabber-load-url` attribute.
+	 * Loads the content of the active tab panel if it is a valid transclusion.
 	 * Adjusts the height of the section containing the active tab panel based on its content height.
 	 * Scrolls the section to make the active tab panel visible.
 	 *
