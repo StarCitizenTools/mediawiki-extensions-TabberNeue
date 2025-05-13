@@ -82,22 +82,31 @@ class Util {
 			return;
 		}
 		const decodedHash = mw.util.percentDecodeFragment( urlHash );
-		const escapedHash = mw.util.escapeIdForAttribute( decodedHash );
-		const idFromUrlHash = escapedHash.replace( 'tabber-tabpanel-', 'tabber-tab-' );
-		let activeTabFromUrlHash = document.getElementById( idFromUrlHash );
+		const panelId = mw.util.escapeIdForAttribute( decodedHash );
+		let panelFromUrlHash = document.getElementById( panelId );
 
-		if ( !activeTabFromUrlHash ) {
-			// Retry getting the tab after escaping html special chars to correctly select
-			// the tab for cases where the fragment does not use the escaped version
-			const specialCharEscapedHash = mw.html.escape( idFromUrlHash );
-			activeTabFromUrlHash = document.getElementById( specialCharEscapedHash );
-
-			if ( !activeTabFromUrlHash ) {
-				return;
-			}
+		if ( !panelFromUrlHash ) {
+			// Retry getting the panel after escaping html special chars to correctly select
+			// the panel for cases where the fragment does not use the escaped version
+			const specialCharEscapedPanelId = mw.html.escape( panelId );
+			panelFromUrlHash = document.getElementById( specialCharEscapedPanelId );
 		}
 
-		// Ensures that only tabber elements are selected
+		if ( !panelFromUrlHash.classList.contains( 'tabber__panel' ) ) {
+			return;
+		}
+
+		const tabId = panelFromUrlHash.getAttribute( 'aria-labelledby' );
+		if ( !tabId ) {
+			return;
+		}
+
+		const activeTabFromUrlHash = document.getElementById( tabId );
+
+		if ( !activeTabFromUrlHash ) {
+			return;
+		}
+
 		if ( activeTabFromUrlHash.classList.contains( 'tabber__tab' ) ) {
 			return activeTabFromUrlHash;
 		}
