@@ -33,15 +33,12 @@ class Transclude {
 	 */
 	async fetchDataFromApi() {
 		const api = new mw.Api();
-		// eslint-disable-next-line compat/compat
-		const controller = new AbortController();
-		const timeoutId = setTimeout( () => controller.abort(), 5000 );
-
 		try {
-			const data = await api.get( this.apiParameters, { signal: controller.signal } );
+			const data = await api.get( this.apiParameters, { timeout: 5000 } );
 			return data;
-		} finally {
-			clearTimeout( timeoutId );
+		} catch ( error ) {
+			mw.log.error( `[TabberNeue] Error fetching data for page ${ this.pageName }: ${ error }` );
+			throw error;
 		}
 	}
 
@@ -53,19 +50,14 @@ class Transclude {
 	 *                    or rejects with an error message if any step fails.
 	 */
 	async fetchData() {
-		try {
-			const data = await this.fetchDataFromApi();
+		const data = await this.fetchDataFromApi();
 
-			if ( !( data && data.parse && data.parse.text !== undefined ) ) {
-				mw.log.error( '[TabberNeue] Error occurred while processing API data: Unexpected structure' );
-				throw new Error( 'Invalid data structure received from server.' );
-			}
-
-			return data.parse.text;
-		} catch ( error ) {
-			mw.log.error( `[TabberNeue] Error fetching/processing data for page ${ this.pageName }: ${ error }` );
-			throw error;
+		if ( !( data && data.parse && data.parse.text !== undefined ) ) {
+			mw.log.error( '[TabberNeue] Error occurred while processing API data: Unexpected structure' );
+			throw new Error( 'Invalid data structure received from server.' );
 		}
+
+		return data.parse.text;
 	}
 
 	/**
@@ -96,7 +88,7 @@ class Transclude {
 			this.activeTabpanel.innerHTML = data;
 
 			// Fire the wikipage.content hook for potential consumers of the hook
-			// eslint-disable-next-line no-jquery/no-jquery-constructor
+			// eslint-disable-next-line no-jquery/no-jquery-constructor, no-undef
 			mw.hook( 'wikipage.content' ).fire( $( this.activeTabpanel ) );
 		} catch ( error ) {
 			this.activeTabpanel.classList.remove( 'tabber__panel--loading' );
