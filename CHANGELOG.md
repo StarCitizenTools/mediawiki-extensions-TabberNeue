@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.0.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.4...v3.0.0) (2025-05-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* The HTML structure has been changed. Make sure the purge the cache of the pages using Tabber. You can either purge all pages, or use the tracking category to do empty edits.
+* bump MediaWiki requirements to 1.43
+
+### Features
+
+* add href attribute to tab for noscript support ([bc08504](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/bc08504ab9fdb6b95560cf83abc34fd75d78da59))
+* handle duplicated tab label error gracefully ([baea2a6](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/baea2a6c7c5b026e6abccb5ff92b2cebc18e2bfe)), closes [#223](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/223)
+* improve id extraction for parse tab names ([b144870](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/b14487055c78608b77a250c1509b27470795ed8f))
+* improve transclusion handling and add server-side caching ([32e9b74](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/32e9b745362e2c99e261cdc8347ef5467711deae))
+* rewrite Tabber parser tag implementations ([#230](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/230)) ([62ce0fc](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/62ce0fcdf32bd3cfa77f92ff6b940459a14315fa))
+* trigger wikipage.content hook after loading transcluded content ([8403222](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/8403222da1983881b47df05d29c58e240d5b168a))
+* use revision ID for fetching transclusion content ([37495f7](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/37495f7b62be11a034c96fcb3395c24281d6c396))
+
+
+### Bug Fixes
+
+* add missing i18n message key ([edead33](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/edead33ca9efe4e85340be770347712ef58a1fde))
+* incorrect API abort implementation ([3cc4f4e](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/3cc4f4ea5b0f86e95264ed4ae86fc243efbc6c48))
+* switch to the correct tab on page load ([cfbaa05](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/cfbaa05c8d54b52612dfcc823307847d63472e41))
+
+
+### Build System
+
+* bump MediaWiki requirements to 1.43 ([cdeddd3](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/cdeddd368d12ece42856d1fcee8a4b714c5a9396))
+
 ## [2.7.4](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.3...v2.7.4) (2025-01-27)
 
 
