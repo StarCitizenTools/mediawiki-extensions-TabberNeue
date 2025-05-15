@@ -12,5 +12,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "Vide le [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documentation] pro le information sur le uso.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (transclusion)",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Vide le [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation] pro le information de uso."
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Vide le [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation] pro le information de uso.",
+	"tabberneue-error-tabs-title": "Le sequente errores ha occurrite durante le processamento de schedas:",
+	"tabberneue-error-tabs-duplicate-label": "Le etiquetta de scheda ‘$1’ es ja in uso."
 }

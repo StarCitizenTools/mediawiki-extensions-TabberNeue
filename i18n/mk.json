@@ -12,5 +12,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "Погледајте ја [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers документацијата] за да дознаете за употребата.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (превметнување)",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Погледајте ја [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion документацијата] за да дознаете за употребата."
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Погледајте ја [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion документацијата] за да дознаете за употребата.",
+	"tabberneue-error-tabs-title": "Се јавија следниве грешки при обработката на јазичињата:",
+	"tabberneue-error-tabs-duplicate-label": "Натписот „$1“ е зафатен во друго јазиче."
 }

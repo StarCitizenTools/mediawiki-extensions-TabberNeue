@@ -7,5 +7,7 @@
 	},
 	"tabberneue-desc": "Consente di creare schede all'interno di una pagina. Proviene da [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
 	"tabberneue-button-next": "Successivo",
-	"tabberneue-button-prev": "Precedente"
+	"tabberneue-button-prev": "Precedente",
+	"tabberneue-error-tabs-title": "Durante l'elaborazione delle schede sono verificati i seguenti errori:",
+	"tabberneue-error-tabs-duplicate-label": "L'etichetta della scheda '$1' è già in uso."
 }
