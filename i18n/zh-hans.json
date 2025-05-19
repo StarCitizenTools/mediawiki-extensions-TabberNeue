@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Lakejason0",
+			"NekoCharm",
 			"Xiaomingyan",
 			"Yfdyh000",
 			"沈澄心"
@@ -15,5 +16,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "有关具体用法，参见[https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers 文档]。",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber（嵌入）",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "有关具体用法，参见[https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion 文档]。"
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "有关具体用法，参见[https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion 文档]。",
+	"tabberneue-error-tabs-title": "处理标签时发生以下错误：",
+	"tabberneue-error-tabs-duplicate-label": "标签名“$1”已被使用。"
 }

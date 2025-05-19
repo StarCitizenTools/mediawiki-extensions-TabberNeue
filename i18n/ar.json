@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"123Rkhader",
 			"Asma",
 			"Meno25"
 		]
@@ -13,5 +14,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-title": "تابر",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "راجع [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documents] للاستخدام.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "تابر (التضمين)",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "انظر [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation]  للاستخدام."
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "انظر [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation]  للاستخدام.",
+	"tabberneue-error-tabs-title": "حدثت الأخطاء التالية أثناء معالجة علامات التبويب:",
+	"tabberneue-error-tabs-duplicate-label": "علامة التبويب \" $1 \" قيد الاستخدام بالفعل."
 }
