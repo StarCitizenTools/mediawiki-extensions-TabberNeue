@@ -8,9 +8,7 @@ use MediaWiki\Config\Config;
 use MediaWiki\Extension\TabberNeue\Service\TabNameHelper;
 use MediaWiki\Hook\ParserFirstCallInitHook;
 use MediaWiki\Html\TemplateParser;
-use MediaWiki\Output\OutputPage;
 use MediaWiki\Parser\Parser;
-use Skin;
 
 class Hooks implements ParserFirstCallInitHook {
 
