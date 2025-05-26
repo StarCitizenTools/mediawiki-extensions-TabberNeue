@@ -106,6 +106,30 @@ Awesome third tab content goes here.
 </tabber>
 ```
 
+### Lua
+
+Tabber can be invoked in Lua with the `mw.ext.tabber` library. For example:
+```lua
+mw.ext.tabber.render( {
+    {
+        label = 'Tab 1',
+        content = 'Content 1'
+    },
+    {
+        label = 'Tab 2',
+        content = 'Content 2'
+    },
+    {
+        label = 'Tab 3',
+        content = 'Content 3'
+    },
+    {
+        label = 'Tab 4',
+        content = 'Content 4'
+    }
+} )
+```
+
 ## Configurations
 Name | Description | Values | Default
 :--- | :--- | :--- | :---

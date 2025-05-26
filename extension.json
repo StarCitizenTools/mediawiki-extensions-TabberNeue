@@ -133,7 +133,8 @@
 		}
 	},
 	"Hooks": {
-		"ParserFirstCallInit": "TabberHooks"
+		"ParserFirstCallInit": "TabberHooks",
+		"ScribuntoExternalLibraries": "MediaWiki\\Extension\\TabberNeue\\Hooks::onScribuntoExternalLibraries"
 	},
 	"HookHandlers": {
 		"TabberHooks": {
