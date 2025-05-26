@@ -133,7 +133,6 @@
 		}
 	},
 	"Hooks": {
-		"BeforePageDisplayMobile": "TabberHooks",
 		"ParserFirstCallInit": "TabberHooks"
 	},
 	"HookHandlers": {

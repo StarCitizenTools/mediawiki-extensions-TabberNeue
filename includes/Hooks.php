@@ -24,13 +24,6 @@ class Hooks implements ParserFirstCallInitHook {
 	}
 
 	/**
-	 * @see https://www.mediawiki.org/wiki/Extension:MobileFrontend/BeforePageDisplayMobile
-	 */
-	public static function onBeforePageDisplayMobile( OutputPage $out, Skin $sk ) {
-		$out->addModuleStyles( [ 'ext.tabberNeue.mobile.styles' ] );
-	}
-
-	/**
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ParserFirstCallInit
 	 *
 	 * @param Parser $parser
