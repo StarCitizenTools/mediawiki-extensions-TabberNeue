@@ -5,9 +5,9 @@ declare( strict_types=1 );
 namespace MediaWiki\Extension\TabberNeue;
 
 use MediaWiki\Config\Config;
-use MediaWiki\Hook\ParserFirstCallInitHook;
 use MediaWiki\Extension\TabberNeue\Scribunto\LuaLibrary;
 use MediaWiki\Extension\TabberNeue\Service\TabNameHelper;
+use MediaWiki\Hook\ParserFirstCallInitHook;
 use MediaWiki\Html\TemplateParser;
 use MediaWiki\Parser\Parser;
 
