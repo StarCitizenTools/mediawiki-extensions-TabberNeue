@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Derugon",
 			"GenerationFallout",
 			"SleaY",
 			"Verdy p"
@@ -14,5 +15,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "Voir la [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documentation] pour l’utilisation.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (transclusion)",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Voir la [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation] pour l’utilisation."
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Voir la [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation] pour l’utilisation.",
+	"tabberneue-error-tabs-title": "Les erreurs suivantes se sont produites lors du traitement des onglets :",
+	"tabberneue-error-tabs-duplicate-label": "L'étiquette d'onglet « $1 » est déjà utilisée."
 }
