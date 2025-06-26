@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.1.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.0.0...v3.1.0) (2025-06-26)
+
+
+### Features
+
+* add basic Scribunto library support ([d3fb52d](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/d3fb52dbf41b68b4a5e186962f759758fd79f6f4))
+
+
+### Bug Fixes
+
+* prevent Tabber buttons from submitting forms ([160fd11](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/160fd11a074d648ce3d8ae3adde30bf72b3c65fd))
+* remove newline from HTML ([8ff8154](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/8ff81544e80bd8887929b16e24cd0e12f0f145df)), closes [#236](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/236)
+
 ## [3.0.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v2.7.4...v3.0.0) (2025-05-13)
 
 
