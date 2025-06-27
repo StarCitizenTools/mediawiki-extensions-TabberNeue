@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.1.0...v3.1.1) (2025-06-27)
+
+
+### Bug Fixes
+
+* **security:** escape attributes in mustache templates ([4cdf217](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/4cdf217ef96da74a1503d1dd0bb0ed898fc2a612))
+
 ## [3.1.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.0.0...v3.1.0) (2025-06-26)
 
 
