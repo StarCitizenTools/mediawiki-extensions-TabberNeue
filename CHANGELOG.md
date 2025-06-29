@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.2](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.1.1...v3.1.2) (2025-06-29)
+
+
+### Bug Fixes
+
+* mimic MW heading ID for tab ID ([8122bb4](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/8122bb483fb5e250496cd232601e6f5372af54d8))
+
 ## [3.1.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.1.0...v3.1.1) (2025-06-27)
 
 
