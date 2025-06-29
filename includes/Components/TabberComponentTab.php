@@ -15,7 +15,7 @@ class TabberComponentTab implements TabberComponent {
 	}
 
 	public function getTemplateData(): array {
-		$name = Sanitizer::escapeIdForAttribute( $this->name );
+		$name = $this->name;
 		$id = $this->addTabPrefix ? "tabber-$name" : $name;
 
 		return [
