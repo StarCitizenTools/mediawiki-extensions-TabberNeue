@@ -3,8 +3,6 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue\Components;
 
-use MediaWiki\Parser\Sanitizer;
-
 class TabberComponentTab implements TabberComponent {
 	public function __construct(
 		private string $name,
