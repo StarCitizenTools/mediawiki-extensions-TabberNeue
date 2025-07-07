@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Amire80"
+			"Amire80",
+			"YaronSh"
 		]
 	},
 	"tabberneue-desc": "אפשרות ליצור לשוניות בתוך דף. פוצל מ[https://www.mediawiki.org/wiki/Extension:Tabber ההרחבה Tabber].",
@@ -12,5 +13,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-title": "יוצר לשוניות",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "ר' את [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers התיעוד] להוראות שימוש.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "יוצר לשוניות (הכללה)",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "ר' את [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion התיעוד] להוראות שימוש."
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "ר' את [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion התיעוד] להוראות שימוש.",
+	"tabberneue-error-tabs-title": "השגיאות הבאות קרו בעת עיבוד לשוניות:",
+	"tabberneue-error-tabs-duplicate-label": "תווית הלשונית ‚$1’ כבר בשימוש."
 }
