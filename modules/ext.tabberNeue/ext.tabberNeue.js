@@ -96,8 +96,10 @@ class TabberAction {
 	 * Scrolls the section to make the active tab panel visible.
 	 *
 	 * @param {Element} activeTabpanel - The active tab panel element to be set.
+	 * @param {Object} [options] - Additional options.
+	 * @param {boolean} [options.preventScroll=false] - Prevent scrolling to the active panel.
 	 */
-	static setActiveTabpanel( activeTabpanel ) {
+	static setActiveTabpanel( activeTabpanel, options = {} ) {
 		const section = activeTabpanel.closest( '.tabber__section' );
 
 		if ( activeTabpanel.querySelector( '.tabber__transclusion' ) !== null ) {
@@ -112,10 +114,12 @@ class TabberAction {
 		);
 		section.style.height = activeTabpanelHeight + 'px';
 
-		window.requestAnimationFrame( () => {
-			// Scroll to tab
-			section.scrollLeft = activeTabpanel.offsetLeft;
-		} );
+		if ( !options.preventScroll ) {
+			window.requestAnimationFrame( () => {
+				// Scroll to tab
+				section.scrollLeft = activeTabpanel.offsetLeft;
+			} );
+		}
 	}
 
 	/**
@@ -123,9 +127,10 @@ class TabberAction {
 	 * Updates the attributes of tabs and tab panels to reflect the active state.
 	 *
 	 * @param {Element} activeTab - The tab element to set as active.
+	 * @param {Object} [options] - Additional options.
 	 * @return {Promise} - A promise that resolves once the active tab is set.
 	 */
-	static setActiveTab( activeTab ) {
+	static setActiveTab( activeTab, options = {} ) {
 		return new Promise( ( resolve ) => {
 			const activeTabpanel = TabberAction.getTabpanel( activeTab );
 			const tabberEl = activeTabpanel.closest( '.tabber' );
@@ -146,7 +151,7 @@ class TabberAction {
 			};
 
 			Util.setAttributes( activeTab, activeTabAttributes );
-			TabberAction.setActiveTabpanel( activeTabpanel );
+			TabberAction.setActiveTabpanel( activeTabpanel, options );
 
 			resolve();
 		} );
@@ -212,6 +217,87 @@ class TabberAction {
 }
 
 /**
+ * Class for observing tab panels visibility and updating active tab accordingly.
+ *
+ * @class TabberObserver
+ */
+class TabberObserver {
+	/**
+	 * @param {Element} tabber - The tabber element.
+	 * @param {Element} tablist - The tablist element.
+	 */
+	constructor( tabber, tablist ) {
+		this.tabber = tabber;
+		this.tablist = tablist;
+		this.section = this.tabber.querySelector( ':scope > .tabber__section' );
+		this.panels = this.section.querySelectorAll( ':scope > .tabber__panel' );
+		this.panelToTabMap = new Map();
+		this.observer = null;
+
+		for ( const panel of this.panels ) {
+			const tab = this.tablist.querySelector(
+				`:scope > .tabber__tab[aria-controls="${ panel.id }"]`
+			);
+			if ( tab ) {
+				this.panelToTabMap.set( panel, tab );
+			}
+		}
+	}
+
+	/**
+	 * Handles intersection changes for tab panels.
+	 *
+	 * @param {IntersectionObserverEntry[]} entries - The entries reported by the observer.
+	 */
+	handleIntersection( entries ) {
+		for ( const entry of entries ) {
+			if ( entry.isIntersecting ) {
+				const panel = entry.target;
+				const tab = this.panelToTabMap.get( panel );
+
+				if ( tab && tab.getAttribute( 'aria-selected' ) !== 'true' ) {
+					TabberAction.setActiveTab( tab, { preventScroll: true } );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Initializes the IntersectionObserver to watch for panel visibility changes.
+	 */
+	init() {
+		const observerOptions = {
+			root: this.section,
+			threshold: 0.5
+		};
+
+		// eslint-disable-next-line compat/compat
+		this.observer = new IntersectionObserver(
+			this.handleIntersection.bind( this ),
+			observerOptions
+		);
+	}
+
+	/**
+	 * Starts observing the tab panels.
+	 */
+	observe() {
+		for ( const panel of this.panels ) {
+			this.observer.observe( panel );
+		}
+	}
+
+	/**
+	 * Stops observing the tab panels.
+	 */
+	disconnect() {
+		if ( this.observer ) {
+			this.observer.disconnect();
+		}
+	}
+}
+
+/**
  * Represents a TabberEvent class that handles events related to tab navigation.
  *
  * @class TabberEvent
@@ -232,6 +318,7 @@ class TabberEvent {
 			() => TabberAction.updateHeaderOverflow( this.tablist ),
 			100
 		);
+		this.tabberObserver = new TabberObserver( this.tabber, this.tablist );
 		this.handleTabFocusChange = this.handleTabFocusChange.bind( this );
 		this.onHeaderClick = this.onHeaderClick.bind( this );
 		this.onSectionClick = this.onSectionClick.bind( this );
@@ -390,6 +477,7 @@ class TabberEvent {
 		this.tablist.addEventListener( 'keydown', this.onTablistKeydown );
 		resizeObserver.observe( this.tablist );
 		resizeObserver.observe( this.activeTabpanel );
+		this.tabberObserver.observe();
 	}
 
 	/**
@@ -402,6 +490,7 @@ class TabberEvent {
 		this.tablist.removeEventListener( 'keydown', this.onTablistKeydown );
 		resizeObserver.unobserve( this.tablist );
 		resizeObserver.unobserve( this.activeTabpanel );
+		this.tabberObserver.disconnect();
 	}
 
 	/**
@@ -410,6 +499,7 @@ class TabberEvent {
 	 * Otherwise, it pauses the event listeners and observers.
 	 */
 	init() {
+		this.tabberObserver.init();
 		// eslint-disable-next-line compat/compat
 		this.observer = new IntersectionObserver( ( entries ) => {
 			entries.forEach( ( entry ) => {
