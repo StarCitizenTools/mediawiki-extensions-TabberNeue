@@ -427,7 +427,7 @@ class TabberBuilder {
 		if ( !urlHash ) {
 			return activeTab;
 		}
-		const activeTabFromUrlHash = Util.selectElementFromUrlHash( urlHash );
+		const activeTabFromUrlHash = document.querySelector( `.tabber__tab[aria-controls="${ CSS.escape( urlHash ) }"]` );
 		if ( !activeTabFromUrlHash ) {
 			return activeTab;
 		}
@@ -483,7 +483,7 @@ async function load( tabberEls ) {
 		TabberAction.toggleAnimation( true );
 		window.addEventListener( 'hashchange', ( event ) => {
 			const hash = window.location.hash.slice( 1 );
-			const tab = Util.selectElementFromUrlHash( hash );
+			const tab = document.querySelector( `.tabber__tab[aria-controls="${ CSS.escape( hash ) }"]` );
 			if ( tab ) {
 				event.preventDefault();
 				tab.click();
