@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.2.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.1.2...v3.2.0) (2025-07-09)
+
+
+### Features
+
+* implement centralized data store for tabber instances ([0ef9dc6](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/0ef9dc63355320b97ccd3de3c5651bc6d6627433))
+* sync active tab handling to tabpanel visibility ([039c8a1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/039c8a15e422d552bb89b9c87318ead55f11c5a4))
+
+
+### Bug Fixes
+
+* avoid aria-hidden focus error message ([ee2ca88](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/ee2ca88f95a9234b651c068c94fd42bc27673302))
+* reset tabpanel height when anchor inside is clicked ([cf93223](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/cf932237a1cfc868d27f24a00c126379e12303df)), closes [#240](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/240)
+
 ## [3.1.2](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.1.1...v3.1.2) (2025-06-29)
 
 
