@@ -70,47 +70,6 @@ class Util {
 			element.setAttribute( key, attributes[ key ] );
 		}
 	}
-
-	/**
-	 * Selects the element of the tab header matching the fragment identifier.
-	 *
-	 * @param {string} urlHash - URL fragment identifier (URL hash with '#' already removed).
-	 * @return {HTMLElement|void} The element of the matching tab header.
-	 */
-	static selectElementFromUrlHash( urlHash ) {
-		if ( !urlHash ) {
-			return;
-		}
-		const decodedHash = mw.util.percentDecodeFragment( urlHash );
-		const panelId = mw.util.escapeIdForAttribute( decodedHash );
-		let panelFromUrlHash = document.getElementById( panelId );
-
-		if ( !panelFromUrlHash ) {
-			// Retry getting the panel after escaping html special chars to correctly select
-			// the panel for cases where the fragment does not use the escaped version
-			const specialCharEscapedPanelId = mw.html.escape( panelId );
-			panelFromUrlHash = document.getElementById( specialCharEscapedPanelId );
-		}
-
-		if ( !panelFromUrlHash.classList.contains( 'tabber__panel' ) ) {
-			return;
-		}
-
-		const tabId = panelFromUrlHash.getAttribute( 'aria-labelledby' );
-		if ( !tabId ) {
-			return;
-		}
-
-		const activeTabFromUrlHash = document.getElementById( tabId );
-
-		if ( !activeTabFromUrlHash ) {
-			return;
-		}
-
-		if ( activeTabFromUrlHash.classList.contains( 'tabber__tab' ) ) {
-			return activeTabFromUrlHash;
-		}
-	}
 }
 
 module.exports = Util;
