@@ -102,6 +102,29 @@ class Tabber {
 	}
 
 	/**
+	 * Finds a panel element from a URL hash.
+	 *
+	 * @param {string} hash - The URL hash (without the #).
+	 * @return {Element|null} The panel element or null if not found.
+	 * @private
+	 */
+	static getPanelFromHash( hash ) {
+		if ( !hash ) {
+			return null;
+		}
+
+		// percentDecodeFragment is needded for #209
+		const targetElement = document.getElementById(
+			mw.util.percentDecodeFragment( hash )
+		);
+		if ( targetElement === null ) {
+			return null;
+		}
+
+		return targetElement.closest( '.tabber__panel' );
+	}
+
+	/**
 	 * Initializes the tabber instance.
 	 *
 	 * @param {string} urlHash - The current URL hash.
@@ -145,21 +168,10 @@ class Tabber {
 	 */
 	getActiveTab( urlHash ) {
 		const defaultTab = this.tablist.firstElementChild;
-		if ( !urlHash ) {
-			return defaultTab;
-		}
+		const panel = Tabber.getPanelFromHash( urlHash );
 
-		// percentDecodeFragment is needded for #209
-		const targetElement = document.getElementById(
-			mw.util.percentDecodeFragment( urlHash )
-		);
-		if ( targetElement === null ) {
-			return defaultTab;
-		}
-
-		const panel = targetElement.closest( '.tabber__panel' );
 		// Verify this panel belongs to *this* tabber instance.
-		if ( panel && this.panelToTabMap.has( panel ) ) {
+		if ( panel !== null && this.panelToTabMap.has( panel ) ) {
 			return this.panelToTabMap.get( panel );
 		}
 
@@ -568,22 +580,15 @@ class TabberController {
 	 * Handles URL hash changes to activate the correct tab.
 	 */
 	handleHashChange() {
-		const hash = window.location.hash.slice( 1 );
-		if ( !hash ) {
-			return;
-		}
+		const urlHash = window.location.hash.slice( 1 );
+		const panel = Tabber.getPanelFromHash( urlHash );
 
-		// percentDecodeFragment is needded for #209
-		const targetElement = document.getElementById(
-			mw.util.percentDecodeFragment( hash )
-		);
-		if ( targetElement === null ) {
+		if ( panel === null ) {
 			return;
 		}
 
 		// Find the panel and tabber instance this element belongs to.
-		const panel = targetElement.closest( '.tabber__panel' );
-		const tabberEl = panel ? panel.closest( '.tabber--live' ) : null;
+		const tabberEl = panel.closest( '.tabber--live' );
 
 		if ( !tabberEl || !this.instances.has( tabberEl ) ) {
 			return;
