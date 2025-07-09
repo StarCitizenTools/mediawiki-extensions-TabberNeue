@@ -4,32 +4,14 @@ const Util = require( './Util.js' );
 
 const IS_POINTER_DEVICE = window.matchMedia( '(hover: hover)' ).matches;
 
-const tabberInstances = new WeakMap();
-
-/**
- * Handles resize events for all tabber instances.
- *
- * @param {ResizeObserverEntry[]} entries
- */
-function onResize( entries ) {
-	for ( const { target } of entries ) {
-		const tabberEl = target.closest( '.tabber' );
-		if ( tabberEl && tabberInstances.has( tabberEl ) ) {
-			tabberInstances.get( tabberEl ).handleResize( target );
-		}
-	}
-}
-
-// A single ResizeObserver for all tabbers for performance.
-// eslint-disable-next-line compat/compat
-const resizeObserver = new ResizeObserver( onResize );
-
 class Tabber {
 	/**
 	 * @param {Element} tabberEl The tabber DOM element.
+	 * @param {ResizeObserver} resizeObserver - A shared ResizeObserver instance.
 	 */
-	constructor( tabberEl ) {
+	constructor( tabberEl, resizeObserver ) {
 		this.element = tabberEl;
+		this.resizeObserver = resizeObserver;
 
 		this.queryElements();
 		this.createPanelMaps();
@@ -206,7 +188,7 @@ class Tabber {
 
 		// Unobserve previous panel and observe new one
 		if ( this.activeTabpanel ) {
-			resizeObserver.unobserve( this.activeTabpanel );
+			this.resizeObserver.unobserve( this.activeTabpanel );
 		}
 		const panelId = this.activeTab.getAttribute( 'aria-controls' );
 		this.activeTabpanel = this.panelIdToPanelMap.get( panelId );
@@ -214,7 +196,7 @@ class Tabber {
 		if ( !this.activeTabpanel ) {
 			return;
 		}
-		resizeObserver.observe( this.activeTabpanel );
+		this.resizeObserver.observe( this.activeTabpanel );
 
 		this.setActiveTabpanel( this.activeTabpanel, options );
 	}
@@ -425,9 +407,9 @@ class Tabber {
 		this.tablist.addEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.addEventListener( 'keydown', this.onTablistKeydown );
 
-		resizeObserver.observe( this.tablist );
+		this.resizeObserver.observe( this.tablist );
 		if ( this.activeTabpanel ) {
-			resizeObserver.observe( this.activeTabpanel );
+			this.resizeObserver.observe( this.activeTabpanel );
 		}
 		if ( this.panelObserver ) {
 			for ( const panel of this.panels ) {
@@ -447,9 +429,9 @@ class Tabber {
 		this.tablist.removeEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.removeEventListener( 'keydown', this.onTablistKeydown );
 
-		resizeObserver.unobserve( this.tablist );
+		this.resizeObserver.unobserve( this.tablist );
 		if ( this.activeTabpanel ) {
-			resizeObserver.unobserve( this.activeTabpanel );
+			this.resizeObserver.unobserve( this.activeTabpanel );
 		}
 		if ( this.panelObserver ) {
 			this.panelObserver.disconnect();
@@ -512,76 +494,101 @@ class Tabber {
 	}
 }
 
-/**
- * Initializes all tabbers on the page.
- *
- * @return {Promise<void>}
- */
-async function load() {
-	const tabberEls = document.querySelectorAll( '.tabber--init' );
-	if ( tabberEls.length === 0 ) {
-		return;
+class TabberController {
+	constructor() {
+		this.instances = new WeakMap();
+		// A single ResizeObserver for all tabbers for performance.
+		// eslint-disable-next-line compat/compat
+		this.resizeObserver = new ResizeObserver( this.onResize.bind( this ) );
 	}
 
-	const urlHash = window.location.hash.slice( 1 );
-	mw.loader.load( 'ext.tabberNeue.icons' );
+	/**
+	 * Handles resize events for all tabber instances.
+	 *
+	 * @param {ResizeObserverEntry[]} entries
+	 */
+	onResize( entries ) {
+		for ( const { target } of entries ) {
+			const tabberEl = target.closest( '.tabber' );
+			if ( tabberEl && this.instances.has( tabberEl ) ) {
+				this.instances.get( tabberEl ).handleResize( target );
+			}
+		}
+	}
 
-	await Promise.all( [ ...tabberEls ].map( ( tabberEl ) => {
-		const tabber = new Tabber( tabberEl );
-		tabberInstances.set( tabberEl, tabber );
-		return tabber.init( urlHash );
-	} ) );
+	/**
+	 * Initializes all tabbers on the page.
+	 *
+	 * @return {Promise<void>}
+	 */
+	async load() {
+		const tabberEls = document.querySelectorAll( '.tabber--init' );
+		if ( tabberEls.length === 0 ) {
+			return;
+		}
 
-	setTimeout( () => {
-		// Delay animations to prevent flashes on page load.
-		Tabber.toggleAnimation( true );
-	}, 250 );
+		const urlHash = window.location.hash.slice( 1 );
+		mw.loader.load( 'ext.tabberNeue.icons' );
+
+		await Promise.all( [ ...tabberEls ].map( ( tabberEl ) => {
+			const tabber = new Tabber( tabberEl, this.resizeObserver );
+			this.instances.set( tabberEl, tabber );
+			return tabber.init( urlHash );
+		} ) );
+
+		setTimeout( () => {
+			// Delay animations to prevent flashes on page load.
+			Tabber.toggleAnimation( true );
+		}, 250 );
+	}
+
+	/**
+	 * Handles URL hash changes to activate the correct tab.
+	 */
+	handleHashChange() {
+		const hash = window.location.hash.slice( 1 );
+		if ( !hash ) {
+			return;
+		}
+
+		const targetElement = document.getElementById( hash );
+		if ( targetElement === null ) {
+			return;
+		}
+
+		// Find the panel and tabber instance this element belongs to.
+		const panel = targetElement.closest( '.tabber__panel' );
+		const tabberEl = panel ? panel.closest( '.tabber--live' ) : null;
+
+		if ( !tabberEl || !this.instances.has( tabberEl ) ) {
+			return;
+		}
+
+		const instance = this.instances.get( tabberEl );
+		const tabToActivate = instance.panelToTabMap.get( panel );
+
+		if ( tabToActivate ) {
+			instance.setActiveTab( tabToActivate );
+		}
+	}
+
+	/**
+	 * Main entry point.
+	 */
+	main() {
+		this.load();
+		window.addEventListener( 'hashchange', this.handleHashChange.bind( this ) );
+	}
 }
 
-/**
- * Handles URL hash changes to activate the correct tab.
- */
-function handleHashChange() {
-	const hash = window.location.hash.slice( 1 );
-	if ( !hash ) {
-		return;
-	}
-
-	const targetElement = document.getElementById( hash );
-	if ( targetElement === null ) {
-		return;
-	}
-
-	// Find the panel and tabber instance this element belongs to.
-	const panel = targetElement.closest( '.tabber__panel' );
-	const tabberEl = panel ? panel.closest( '.tabber--live' ) : null;
-
-	if ( !tabberEl || !tabberInstances.has( tabberEl ) ) {
-		return;
-	}
-
-	const instance = tabberInstances.get( tabberEl );
-	const tabToActivate = instance.panelToTabMap.get( panel );
-
-	if ( tabToActivate ) {
-		instance.setActiveTab( tabToActivate );
-	}
-}
-
-/**
- * Main entry point.
- */
-function main() {
-	load();
-	window.addEventListener( 'hashchange', handleHashChange );
-}
+const controller = new TabberController();
 
 mw.hook( 'wikipage.content' ).add( () => {
-	main();
+	controller.main();
 } );
 
 mw.loader.using( 'ext.visualEditor.desktopArticleTarget.init' ).then( () => {
 	mw.hook( 'postEdit.afterRemoval' ).add( () => {
-		main();
+		controller.main();
 	} );
 } );
