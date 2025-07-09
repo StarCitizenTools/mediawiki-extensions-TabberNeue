@@ -10,6 +10,63 @@ const Transclude = require( './Transclude.js' );
 const Util = require( './Util.js' );
 
 let resizeObserver;
+
+/**
+ * Centralized data store for all tabber instances on the page.
+ * This class manages mappings between tabs, panels, and internal links.
+ *
+ * @class
+ */
+class TabberDataStore {
+	constructor() {
+		this.instanceData = new WeakMap();
+	}
+
+	/**
+	 * Registers a new tabber instance and builds its data maps.
+	 *
+	 * @param {Element} tabber - The tabber element to register.
+	 */
+	register( tabber ) {
+		const header = tabber.querySelector( ':scope > .tabber__header' );
+		const tablist = header.querySelector( ':scope > .tabber__tabs' );
+		const tabs = tablist.querySelectorAll( ':scope > .tabber__tab' );
+		const section = tabber.querySelector( ':scope > .tabber__section' );
+		const panels = section.querySelectorAll( ':scope > .tabber__panel' );
+		const panelToTabMap = new Map();
+
+		for ( const panel of panels ) {
+			const tab = tablist.querySelector(
+				`:scope > .tabber__tab[aria-controls="${ CSS.escape( panel.id ) }"]`
+			);
+			if ( tab ) {
+				panelToTabMap.set( panel, tab );
+			}
+		}
+
+		this.instanceData.set( tabber, {
+			header,
+			tablist,
+			tabs,
+			section,
+			panels,
+			panelToTabMap
+		} );
+	}
+
+	/**
+	 * Retrieves the data associated with a tabber instance.
+	 *
+	 * @param {Element} tabber - The tabber element.
+	 * @return {Object|undefined} The data for the tabber instance.
+	 */
+	get( tabber ) {
+		return this.instanceData.get( tabber );
+	}
+}
+
+const tabberDataStore = new TabberDataStore();
+
 /**
  * Class representing TabberAction functionality for handling tab events and animations.
  *
@@ -134,10 +191,13 @@ class TabberAction {
 		return new Promise( ( resolve ) => {
 			const activeTabpanel = TabberAction.getTabpanel( activeTab );
 			const tabberEl = activeTabpanel.closest( '.tabber' );
+			const data = tabberDataStore.get( tabberEl );
 
-			const currentActiveTab = tabberEl.querySelector( ':scope > .tabber__header > .tabber__tabs > .tabber__tab[aria-selected="true"]' );
+			const currentActiveTab = Array.from( data.tabs ).find(
+				( tab ) => tab.getAttribute( 'aria-selected' ) === 'true'
+			);
 
-			if ( currentActiveTab !== null ) {
+			if ( currentActiveTab ) {
 				const currentActiveTabAttributes = {
 					tabindex: -1,
 					'aria-selected': 'false'
@@ -224,24 +284,15 @@ class TabberAction {
 class TabberObserver {
 	/**
 	 * @param {Element} tabber - The tabber element.
-	 * @param {Element} tablist - The tablist element.
 	 */
-	constructor( tabber, tablist ) {
+	constructor( tabber ) {
 		this.tabber = tabber;
-		this.tablist = tablist;
-		this.section = this.tabber.querySelector( ':scope > .tabber__section' );
-		this.panels = this.section.querySelectorAll( ':scope > .tabber__panel' );
-		this.panelToTabMap = new Map();
-		this.observer = null;
 
-		for ( const panel of this.panels ) {
-			const tab = this.tablist.querySelector(
-				`:scope > .tabber__tab[aria-controls="${ panel.id }"]`
-			);
-			if ( tab ) {
-				this.panelToTabMap.set( panel, tab );
-			}
-		}
+		const data = tabberDataStore.get( tabber );
+		this.section = data.section;
+		this.panels = data.panels;
+		this.panelToTabMap = data.panelToTabMap;
+		this.observer = null;
 	}
 
 	/**
@@ -302,23 +353,23 @@ class TabberObserver {
  *
  * @class TabberEvent
  * @param {Element} tabber - The tabber element containing the tabs and header.
- * @param {Element} tablist - The tab list element containing the tab elements.
  */
 class TabberEvent {
-	constructor( tabber, tablist ) {
+	constructor( tabber ) {
 		this.tabber = tabber;
-		this.tablist = tablist;
-		this.header = this.tablist.parentElement;
-		this.tabs = this.tablist.querySelectorAll( ':scope > .tabber__tab' );
+		const data = tabberDataStore.get( this.tabber );
+		this.tablist = data.tablist;
+		this.header = data.header;
+		this.tabs = data.tabs;
+		this.section = data.section;
 		this.activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
 		this.activeTabpanel = TabberAction.getTabpanel( this.activeTab );
-		this.section = this.activeTabpanel.closest( '.tabber__section' );
 		this.tabFocus = 0;
 		this.debouncedUpdateHeaderOverflow = mw.util.debounce(
 			() => TabberAction.updateHeaderOverflow( this.tablist ),
 			100
 		);
-		this.tabberObserver = new TabberObserver( this.tabber, this.tablist );
+		this.tabberObserver = new TabberObserver( this.tabber );
 		this.handleTabFocusChange = this.handleTabFocusChange.bind( this );
 		this.onHeaderClick = this.onHeaderClick.bind( this );
 		this.onSectionClick = this.onSectionClick.bind( this );
@@ -548,18 +599,35 @@ class TabberBuilder {
 	 * @return {HTMLElement}
 	 */
 	getActiveTab( urlHash ) {
-		const activeTab = this.tablist.firstElementChild;
+		const defaultTab = this.tablist.firstElementChild;
 		if ( !urlHash ) {
-			return activeTab;
+			return defaultTab;
 		}
-		const activeTabFromUrlHash = document.querySelector( `.tabber__tab[aria-controls="${ CSS.escape( urlHash ) }"]` );
-		if ( activeTabFromUrlHash === null ) {
-			return activeTab;
+
+		// First, check if the hash directly controls a tab panel.
+		const tabForPanel = this.tablist.querySelector(
+			`.tabber__tab[aria-controls="${ ( CSS.escape( urlHash ) ) }"]`
+		);
+
+		if ( tabForPanel !== null ) {
+			return tabForPanel;
 		}
-		if ( activeTabFromUrlHash.closest( '.tabber__tabs' ) !== this.tablist ) {
-			return activeTab;
+
+		// If not, check if the hash points to an element inside a tab panel.
+		const targetEl = document.getElementById( urlHash );
+		if ( targetEl !== null ) {
+			const panel = targetEl.closest( '.tabber__panel' );
+			if ( panel && panel.closest( '.tabber' ) === this.tabber ) {
+				const tabForEl = this.tablist.querySelector(
+					`.tabber__tab[aria-controls="${ panel.id }"]`
+				);
+				if ( tabForEl !== null ) {
+					return tabForEl;
+				}
+			}
 		}
-		return activeTabFromUrlHash;
+
+		return defaultTab;
 	}
 
 	/**
@@ -577,7 +645,7 @@ class TabberBuilder {
 		TabberAction.updateHeaderOverflow( this.tablist );
 
 		// Start attaching event
-		const tabberEvent = new TabberEvent( this.tabber, this.tablist );
+		const tabberEvent = new TabberEvent( this.tabber );
 		tabberEvent.init();
 		this.tabber.classList.remove( 'tabber--init' );
 		this.tabber.classList.add( 'tabber--live' );
@@ -599,6 +667,7 @@ async function load( tabberEls ) {
 	resizeObserver = new ResizeObserver( TabberAction.onResize );
 
 	await Promise.all( [ ...tabberEls ].map( async ( tabberEl ) => {
+		tabberDataStore.register( tabberEl );
 		const tabberBuilder = new TabberBuilder( tabberEl );
 		await tabberBuilder.init( urlHash );
 	} ) );
@@ -607,6 +676,47 @@ async function load( tabberEls ) {
 		// Delay animation execution so it doesn't not animate the tab gets into position on load
 		TabberAction.toggleAnimation( true );
 	}, 250 );
+}
+
+/**
+ * Handles URL hash changes to activate the correct tab.
+ */
+function handleHashChange() {
+	const hash = window.location.hash.slice( 1 );
+	if ( !hash ) {
+		return;
+	}
+
+	// Case 1: The hash is the ID of a tab panel.
+	// We need to find the tab that controls this panel.
+	// The tabber must be live.
+	let tab = document.querySelector(
+		`.tabber--live .tabber__tab[aria-controls="${ CSS.escape( hash ) }"]`
+	);
+
+	if ( !tab ) {
+		// Case 2: The hash points to an element inside a tab panel.
+		const targetEl = document.getElementById( hash );
+		if ( targetEl ) {
+			const panel = targetEl.closest( '.tabber__panel' );
+			const tabber = panel ? panel.closest( '.tabber--live' ) : null;
+			if ( panel && tabber ) {
+				// Now find the tab for this panel within this specific tabber
+				const data = tabberDataStore.get( tabber );
+				if ( data && data.tablist ) {
+					tab = data.tablist.querySelector(
+						`:scope > .tabber__tab[aria-controls="${ CSS.escape(
+							panel.id
+						) }"]`
+					);
+				}
+			}
+		}
+	}
+
+	if ( tab && tab.getAttribute( 'aria-selected' ) !== 'true' ) {
+		TabberAction.setActiveTab( tab );
+	}
 }
 
 /**
@@ -623,6 +733,7 @@ function main() {
 	}
 
 	load( tabberEls );
+	window.addEventListener( 'hashchange', handleHashChange );
 }
 
 mw.hook( 'wikipage.content' ).add( () => {
