@@ -184,6 +184,7 @@ class Tabber {
 	 * @param {Element} activeTab - The tab to activate.
 	 * @param {Object} [options] - Options for setting the tab.
 	 * @param {boolean} [options.preventScroll=false] - Prevent horizontal scrolling of the panel.
+	 * @param {string} [options.source='programmatic'] - The source of the tab change.
 	 * @private
 	 */
 	async setActiveTab( activeTab, options = {} ) {
@@ -204,7 +205,10 @@ class Tabber {
 		this.element.dispatchEvent( new CustomEvent( 'tabber:tabchange', {
 			bubbles: true,
 			composed: true,
-			detail: { panelId: activeTab.getAttribute( 'aria-controls' ) }
+			detail: {
+				panelId: activeTab.getAttribute( 'aria-controls' ),
+				source: options.source || 'programmatic'
+			}
 		} ) );
 
 		// Unobserve previous panel and observe new one
@@ -286,8 +290,9 @@ class Tabber {
 	onHeaderClick( e ) {
 		const tab = e.target.closest( '.tabber__tab' );
 		if ( tab ) {
+			// So that the browser does not scroll vertically when clicking on a tab.
 			e.preventDefault();
-			this.setActiveTab( tab );
+			this.setActiveTab( tab, { source: 'user-click' } );
 			return;
 		}
 
@@ -536,9 +541,10 @@ class TabberController {
 	 * @param {CustomEvent} e
 	 */
 	onTabChange( e ) {
-		if ( !config.updateLocationOnTabChange ) {
+		if ( !config.updateLocationOnTabChange || e.detail.source !== 'user-click' ) {
 			return;
 		}
+
 		const newHash = `#${ e.detail.panelId }`;
 		// Avoid redundant history updates.
 		if ( window.location.hash !== newHash ) {
