@@ -100,7 +100,7 @@ class TabberAction {
 	static setActiveTabpanel( activeTabpanel ) {
 		const section = activeTabpanel.closest( '.tabber__section' );
 
-		if ( activeTabpanel.querySelector( '.tabber__transclusion' ) ) {
+		if ( activeTabpanel.querySelector( '.tabber__transclusion' ) !== null ) {
 			// TODO: wgCdnMaxAge might not be the best way to handle caching
 			const transclude = new Transclude( activeTabpanel, config.cdnMaxAge );
 			transclude.loadPage();
@@ -132,7 +132,7 @@ class TabberAction {
 
 			const currentActiveTab = tabberEl.querySelector( ':scope > .tabber__header > .tabber__tabs > .tabber__tab[aria-selected="true"]' );
 
-			if ( currentActiveTab ) {
+			if ( currentActiveTab !== null ) {
 				const currentActiveTabAttributes = {
 					tabindex: -1,
 					'aria-selected': 'false'
@@ -280,7 +280,7 @@ class TabberEvent {
 	 */
 	onHeaderClick( e ) {
 		const tab = e.target.closest( '.tabber__tab' );
-		if ( tab ) {
+		if ( tab !== null ) {
 			// Prevent default anchor actions
 			e.preventDefault();
 			this.activeTab = tab;
@@ -306,13 +306,13 @@ class TabberEvent {
 		const isPointerDevice = window.matchMedia( '(hover: hover)' ).matches;
 		if ( isPointerDevice ) {
 			const prevButton = e.target.closest( '.tabber__header__prev' );
-			if ( prevButton ) {
+			if ( prevButton !== null ) {
 				TabberAction.handleHeaderButton( prevButton, 'prev' );
 				return;
 			}
 
 			const nextButton = e.target.closest( '.tabber__header__next' );
-			if ( nextButton ) {
+			if ( nextButton !== null ) {
 				TabberAction.handleHeaderButton( nextButton, 'next' );
 				return;
 			}
@@ -328,17 +328,17 @@ class TabberEvent {
 	 */
 	onSectionClick( e ) {
 		const anchor = e.target.closest( 'a[href^="#"]' );
-		if ( !anchor ) {
+		if ( anchor === null ) {
 			return;
 		}
 
 		const tabpanel = anchor.closest( '.tabber__panel' );
-		if ( !tabpanel ) {
+		if ( tabpanel === null ) {
 			return;
 		}
 
 		const target = document.getElementById( anchor.hash.slice( 1 ) );
-		if ( target ) {
+		if ( target !== null ) {
 			/**
 			 * Fix for #240 where the native browser scroll somehow scroll all of the tabpanel vertically
 			 * This resets the scroll position to the top of the tabpanel by recalculating the tabpanel height
@@ -463,7 +463,7 @@ class TabberBuilder {
 			return activeTab;
 		}
 		const activeTabFromUrlHash = document.querySelector( `.tabber__tab[aria-controls="${ CSS.escape( urlHash ) }"]` );
-		if ( !activeTabFromUrlHash ) {
+		if ( activeTabFromUrlHash === null ) {
 			return activeTab;
 		}
 		if ( activeTabFromUrlHash.closest( '.tabber__tabs' ) !== this.tablist ) {
