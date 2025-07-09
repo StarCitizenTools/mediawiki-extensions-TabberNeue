@@ -3,6 +3,7 @@ const Transclude = require( './Transclude.js' );
 const Util = require( './Util.js' );
 
 const IS_POINTER_DEVICE = window.matchMedia( '(hover: hover)' ).matches;
+const OVERFLOW_BUTTON_WIDTH = 0.2;
 
 class Tabber {
 	/**
@@ -19,6 +20,7 @@ class Tabber {
 		this.activeTab = null;
 		this.activeTabpanel = null;
 		this.tabFocus = 0;
+		this.isOverflowing = false;
 
 		this.panelObserver = null;
 		this.visibilityObserver = null;
@@ -133,9 +135,11 @@ class Tabber {
 		this.setTabsAttributes();
 
 		const activeTab = this.getActiveTab( urlHash );
-		await this.setActiveTab( activeTab );
 
+		// Determine initial overflow state before setting the active tab,
+		// so it can be scrolled into view if needed.
 		this.updateHeaderOverflow();
+		await this.setActiveTab( activeTab );
 
 		this.initVisibilityObserver();
 		this.initPanelIntersectionObserver();
@@ -201,6 +205,23 @@ class Tabber {
 		activeTab.setAttribute( 'aria-selected', 'true' );
 		this.activeTab = activeTab;
 
+		if ( this.isOverflowing ) {
+			const metrics = this.getLayoutMetrics( activeTab );
+			const newScrollLeft = this.calculateNewScrollLeft( metrics );
+
+			// Only scroll if a new position has been calculated and it's different.
+			if ( newScrollLeft !== null && newScrollLeft !== metrics.scrollLeft ) {
+				if ( Tabber.shouldShowAnimation() ) {
+					// For smooth scroll, the onTablistScroll handler will update the header.
+					this.tablist.scrollTo( { left: newScrollLeft, behavior: 'smooth' } );
+				} else {
+					// For instant scroll, batch the DOM writes.
+					this.tablist.scrollLeft = newScrollLeft;
+					this.updateHeaderOverflow();
+				}
+			}
+		}
+
 		/* eslint-disable-next-line n/no-unsupported-features/node-builtins */
 		this.element.dispatchEvent( new CustomEvent( 'tabber:tabchange', {
 			bubbles: true,
@@ -257,16 +278,73 @@ class Tabber {
 	}
 
 	/**
-	 * Updates the visibility of previous/next arrow buttons on the tab list.
+	 * Reads all necessary layout properties from the DOM in a single batch.
 	 *
+	 * @param {Element} [tab] - An optional tab to get layout info for.
+	 * @return {Object} An object containing layout metrics.
 	 * @private
 	 */
-	updateHeaderOverflow() {
-		const tablistWidth = this.tablist.offsetWidth;
-		const tablistScrollWidth = this.tablist.scrollWidth;
-		const isScrollable = tablistScrollWidth > tablistWidth;
+	getLayoutMetrics( tab ) {
+		const tablist = this.tablist;
+		const metrics = {
+			scrollLeft: Util.roundScrollLeft( tablist.scrollLeft ),
+			scrollWidth: tablist.scrollWidth,
+			offsetWidth: tablist.offsetWidth,
+			clientWidth: tablist.clientWidth,
+			headerWidth: this.header.offsetWidth
+		};
+		if ( tab ) {
+			metrics.tabLeft = tab.offsetLeft;
+			metrics.tabWidth = tab.offsetWidth;
+		}
+		return metrics;
+	}
 
-		if ( !isScrollable ) {
+	/**
+	 * Calculates the new scroll position to bring a tab into view.
+	 *
+	 * @param {Object} metrics The layout metrics from getLayoutMetrics.
+	 * @return {number|null} The new scrollLeft value, or null if no scroll is needed.
+	 * @private
+	 */
+	calculateNewScrollLeft( metrics ) {
+		const buttonWidth = metrics.headerWidth * OVERFLOW_BUTTON_WIDTH;
+
+		const hasPrevButton = metrics.scrollLeft > 0;
+		const hasNextButton = metrics.scrollLeft + metrics.clientWidth < metrics.scrollWidth;
+
+		const visibleLeft = metrics.scrollLeft + ( hasPrevButton ? buttonWidth : 0 );
+		const visibleRight = metrics.scrollLeft + metrics.clientWidth - ( hasNextButton ? buttonWidth : 0 );
+
+		const tabLeft = metrics.tabLeft;
+		const tabRight = tabLeft + metrics.tabWidth;
+
+		// If the tab is to the left of the visible area, calculate the new scroll position.
+		if ( tabLeft < visibleLeft ) {
+			// Position the tab right after the space for the prev button.
+			return tabLeft - buttonWidth;
+		}
+
+		// If the tab is to the right of the visible area, calculate the new scroll position.
+		if ( tabRight > visibleRight ) {
+			// Position the tab right before the space for the next button.
+			return tabRight - metrics.clientWidth + buttonWidth;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Updates the visibility of previous/next arrow buttons on the tab list.
+	 *
+	 * @param {Object} [metrics] Optional pre-fetched layout metrics.
+	 * @private
+	 */
+	updateHeaderOverflow( metrics ) {
+		const m = metrics || this.getLayoutMetrics();
+		this.isOverflowing = m.scrollWidth > m.offsetWidth;
+
+		if ( !this.isOverflowing ) {
 			this.header.classList.remove(
 				'tabber__header--next-visible',
 				'tabber__header--prev-visible'
@@ -274,9 +352,8 @@ class Tabber {
 			return;
 		}
 
-		const scrollLeft = Util.roundScrollLeft( this.tablist.scrollLeft );
-		const isAtStart = scrollLeft <= 0;
-		const isAtEnd = scrollLeft + tablistWidth >= tablistScrollWidth;
+		const isAtStart = m.scrollLeft <= 0;
+		const isAtEnd = m.scrollLeft + m.offsetWidth >= m.scrollWidth;
 
 		this.header.classList.toggle( 'tabber__header--prev-visible', !isAtStart );
 		this.header.classList.toggle( 'tabber__header--next-visible', !isAtEnd );
