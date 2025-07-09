@@ -186,6 +186,13 @@ class Tabber {
 		activeTab.setAttribute( 'aria-selected', 'true' );
 		this.activeTab = activeTab;
 
+		/* eslint-disable-next-line n/no-unsupported-features/node-builtins */
+		this.element.dispatchEvent( new CustomEvent( 'tabber:tabchange', {
+			bubbles: true,
+			composed: true,
+			detail: { panelId: activeTab.getAttribute( 'aria-controls' ) }
+		} ) );
+
 		// Unobserve previous panel and observe new one
 		if ( this.activeTabpanel ) {
 			this.resizeObserver.unobserve( this.activeTabpanel );
@@ -267,14 +274,6 @@ class Tabber {
 		if ( tab ) {
 			e.preventDefault();
 			this.setActiveTab( tab );
-
-			if ( config.updateLocationOnTabChange ) {
-				history.replaceState(
-					null,
-					'',
-					`${ window.location.pathname }${ window.location.search }#${ tab.getAttribute( 'aria-controls' ) }`
-				);
-			}
 			return;
 		}
 
@@ -500,6 +499,7 @@ class TabberController {
 		// A single ResizeObserver for all tabbers for performance.
 		// eslint-disable-next-line compat/compat
 		this.resizeObserver = new ResizeObserver( this.onResize.bind( this ) );
+		this.isInitialized = false;
 	}
 
 	/**
@@ -513,6 +513,26 @@ class TabberController {
 			if ( tabberEl && this.instances.has( tabberEl ) ) {
 				this.instances.get( tabberEl ).handleResize( target );
 			}
+		}
+	}
+
+	/**
+	 * Handles tab change events delegated from Tabber instances.
+	 *
+	 * @param {CustomEvent} e
+	 */
+	onTabChange( e ) {
+		if ( !config.updateLocationOnTabChange ) {
+			return;
+		}
+		const newHash = `#${ e.detail.panelId }`;
+		// Avoid redundant history updates.
+		if ( window.location.hash !== newHash ) {
+			history.replaceState(
+				null,
+				'',
+				`${ window.location.pathname }${ window.location.search }${ newHash }`
+			);
 		}
 	}
 
@@ -576,8 +596,12 @@ class TabberController {
 	 * Main entry point.
 	 */
 	main() {
+		if ( !this.isInitialized ) {
+			window.addEventListener( 'hashchange', this.handleHashChange.bind( this ) );
+			document.documentElement.addEventListener( 'tabber:tabchange', this.onTabChange.bind( this ) );
+			this.isInitialized = true;
+		}
 		this.load();
-		window.addEventListener( 'hashchange', this.handleHashChange.bind( this ) );
 	}
 }
 
