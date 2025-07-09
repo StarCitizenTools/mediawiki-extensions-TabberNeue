@@ -31,31 +31,8 @@ class Tabber {
 	constructor( tabberEl ) {
 		this.element = tabberEl;
 
-		const header = this.element.querySelector( ':scope > .tabber__header' );
-		const tablist = header.querySelector( ':scope > .tabber__tabs' );
-		const tabs = tablist.querySelectorAll( ':scope > .tabber__tab' );
-		const section = this.element.querySelector( ':scope > .tabber__section' );
-		const panels = section.querySelectorAll( ':scope > .tabber__panel' );
-		const panelToTabMap = new WeakMap();
-		const panelIdToPanelMap = new Map();
-
-		for ( const panel of panels ) {
-			const tab = tablist.querySelector(
-				`:scope > .tabber__tab[aria-controls="${ CSS.escape( panel.id ) }"]`
-			);
-			if ( tab ) {
-				panelToTabMap.set( panel, tab );
-			}
-			panelIdToPanelMap.set( panel.id, panel );
-		}
-
-		this.header = header;
-		this.tablist = tablist;
-		this.tabs = tabs;
-		this.section = section;
-		this.panels = panels;
-		this.panelToTabMap = panelToTabMap;
-		this.panelIdToPanelMap = panelIdToPanelMap;
+		this.queryElements();
+		this.createPanelMaps();
 
 		this.activeTab = null;
 		this.activeTabpanel = null;
@@ -75,6 +52,44 @@ class Tabber {
 		this.onTablistScroll = this.onTablistScroll.bind( this );
 		this.onTablistKeydown = this.onTablistKeydown.bind( this );
 		this.handlePanelIntersection = this.handlePanelIntersection.bind( this );
+	}
+
+	/**
+	 * Queries and stores references to DOM elements.
+	 */
+	queryElements() {
+		const header = this.element.querySelector( ':scope > .tabber__header' );
+		const tablist = header.querySelector( ':scope > .tabber__tabs' );
+		const tabs = tablist.querySelectorAll( ':scope > .tabber__tab' );
+		const section = this.element.querySelector( ':scope > .tabber__section' );
+		const panels = section.querySelectorAll( ':scope > .tabber__panel' );
+
+		this.header = header;
+		this.tablist = tablist;
+		this.tabs = tabs;
+		this.section = section;
+		this.panels = panels;
+	}
+
+	/**
+	 * Creates maps for quick lookups between panels and tabs.
+	 */
+	createPanelMaps() {
+		const panelToTabMap = new WeakMap();
+		const panelIdToPanelMap = new Map();
+
+		for ( const panel of this.panels ) {
+			const tab = this.tablist.querySelector(
+				`:scope > .tabber__tab[aria-controls="${ CSS.escape( panel.id ) }"]`
+			);
+			if ( tab ) {
+				panelToTabMap.set( panel, tab );
+			}
+			panelIdToPanelMap.set( panel.id, panel );
+		}
+
+		this.panelToTabMap = panelToTabMap;
+		this.panelIdToPanelMap = panelIdToPanelMap;
 	}
 
 	/**
@@ -255,16 +270,9 @@ class Tabber {
 		const scrollLeft = Util.roundScrollLeft( this.tablist.scrollLeft );
 		const isAtStart = scrollLeft <= 0;
 		const isAtEnd = scrollLeft + tablistWidth >= tablistScrollWidth;
-		const isAtMiddle = !isAtStart && !isAtEnd;
 
-		this.header.classList.toggle(
-			'tabber__header--next-visible',
-			isAtStart || isAtMiddle
-		);
-		this.header.classList.toggle(
-			'tabber__header--prev-visible',
-			isAtEnd || isAtMiddle
-		);
+		this.header.classList.toggle( 'tabber__header--prev-visible', !isAtStart );
+		this.header.classList.toggle( 'tabber__header--next-visible', !isAtEnd );
 	}
 
 	/**
