@@ -2,6 +2,8 @@ const config = require( './config.json' );
 const Transclude = require( './Transclude.js' );
 const Util = require( './Util.js' );
 
+const IS_POINTER_DEVICE = window.matchMedia( '(hover: hover)' ).matches;
+
 const tabberInstances = new WeakMap();
 
 /**
@@ -150,21 +152,16 @@ class Tabber {
 			return defaultTab;
 		}
 
-		// Case 1: Hash directly targets a panel ID.
-		const tabForPanel = this.tablist.querySelector(
-			`.tabber__tab[aria-controls="${ CSS.escape( urlHash ) }"]`
-		);
-		if ( tabForPanel ) {
-			return tabForPanel;
+		// The hash can be an ID of a panel or an element within a panel.
+		const targetElement = document.getElementById( urlHash );
+		if ( targetElement === null ) {
+			return defaultTab;
 		}
 
-		// Case 2: Hash targets an element inside a panel.
-		const targetEl = document.getElementById( urlHash );
-		if ( targetEl ) {
-			const panel = targetEl.closest( '.tabber__panel' );
-			if ( panel && panel.closest( '.tabber' ) === this.element ) {
-				return this.panelToTabMap.get( panel ) || defaultTab;
-			}
+		const panel = targetElement.closest( '.tabber__panel' );
+		// Verify this panel belongs to *this* tabber instance.
+		if ( panel && this.panelToTabMap.has( panel ) ) {
+			return this.panelToTabMap.get( panel );
 		}
 
 		return defaultTab;
@@ -291,8 +288,7 @@ class Tabber {
 			return;
 		}
 
-		const isPointerDevice = window.matchMedia( '(hover: hover)' ).matches;
-		if ( isPointerDevice ) {
+		if ( IS_POINTER_DEVICE ) {
 			if ( e.target.closest( '.tabber__header__prev' ) ) {
 				this.scrollTablist( -this.tablist.offsetWidth / 2 );
 			} else if ( e.target.closest( '.tabber__header__next' ) ) {
@@ -522,10 +518,10 @@ async function load() {
 	const urlHash = window.location.hash.slice( 1 );
 	mw.loader.load( 'ext.tabberNeue.icons' );
 
-	await Promise.all( [ ...tabberEls ].map( async ( tabberEl ) => {
+	await Promise.all( [ ...tabberEls ].map( ( tabberEl ) => {
 		const tabber = new Tabber( tabberEl );
 		tabberInstances.set( tabberEl, tabber );
-		await tabber.init( urlHash );
+		return tabber.init( urlHash );
 	} ) );
 
 	setTimeout( () => {
@@ -543,35 +539,24 @@ function handleHashChange() {
 		return;
 	}
 
-	const targetEl = document.getElementById( hash );
-	const panel = targetEl ? targetEl.closest( '.tabber__panel' ) : null;
-
-	let tabToActivate;
-
-	if ( panel ) {
-		// Case 1: The hash points to an element inside a panel.
-		const tabberEl = panel.closest( '.tabber--live' );
-		if ( tabberEl && tabberInstances.has( tabberEl ) ) {
-			const instance = tabberInstances.get( tabberEl );
-			tabToActivate = instance.panelToTabMap.get( panel );
-		}
-	} else {
-		// Case 2: The hash is the ID of a tab panel itself.
-		const tabberEl = document.querySelector( '.tabber--live' );
-		if ( tabberEl && tabberInstances.has( tabberEl ) ) {
-			const instance = tabberInstances.get( tabberEl );
-			tabToActivate = instance.tablist.querySelector(
-				`:scope > .tabber__tab[aria-controls="${ CSS.escape( hash ) }"]`
-			);
-		}
+	const targetElement = document.getElementById( hash );
+	if ( targetElement === null ) {
+		return;
 	}
 
-	if ( tabToActivate && tabToActivate.getAttribute( 'aria-selected' ) !== 'true' ) {
-		const tabberEl = tabToActivate.closest( '.tabber--live' );
-		if ( tabberEl && tabberInstances.has( tabberEl ) ) {
-			const instance = tabberInstances.get( tabberEl );
-			instance.setActiveTab( tabToActivate );
-		}
+	// Find the panel and tabber instance this element belongs to.
+	const panel = targetElement.closest( '.tabber__panel' );
+	const tabberEl = panel ? panel.closest( '.tabber--live' ) : null;
+
+	if ( !tabberEl || !tabberInstances.has( tabberEl ) ) {
+		return;
+	}
+
+	const instance = tabberInstances.get( tabberEl );
+	const tabToActivate = instance.panelToTabMap.get( panel );
+
+	if ( tabToActivate ) {
+		instance.setActiveTab( tabToActivate );
 	}
 }
 
