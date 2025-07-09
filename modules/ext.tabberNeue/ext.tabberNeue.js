@@ -2,62 +2,7 @@ const config = require( './config.json' );
 const Transclude = require( './Transclude.js' );
 const Util = require( './Util.js' );
 
-/**
- * Centralized data store for all tabber instances on the page.
- * This class manages mappings between tabs, panels, and internal links.
- *
- * @class
- */
-class TabberDataStore {
-	constructor() {
-		this.instanceData = new WeakMap();
-	}
-
-	/**
-	 * Registers a new tabber instance and builds its data maps.
-	 *
-	 * @param {Element} tabber - The tabber element to register.
-	 */
-	register( tabber ) {
-		const header = tabber.querySelector( ':scope > .tabber__header' );
-		const tablist = header.querySelector( ':scope > .tabber__tabs' );
-		const tabs = tablist.querySelectorAll( ':scope > .tabber__tab' );
-		const section = tabber.querySelector( ':scope > .tabber__section' );
-		const panels = section.querySelectorAll( ':scope > .tabber__panel' );
-		const panelToTabMap = new Map();
-
-		for ( const panel of panels ) {
-			const tab = tablist.querySelector(
-				`:scope > .tabber__tab[aria-controls="${ CSS.escape( panel.id ) }"]`
-			);
-			if ( tab ) {
-				panelToTabMap.set( panel, tab );
-			}
-		}
-
-		this.instanceData.set( tabber, {
-			header,
-			tablist,
-			tabs,
-			section,
-			panels,
-			panelToTabMap
-		} );
-	}
-
-	/**
-	 * Retrieves the data associated with a tabber instance.
-	 *
-	 * @param {Element} tabber - The tabber element.
-	 * @return {Object|undefined} The data for the tabber instance.
-	 */
-	get( tabber ) {
-		return this.instanceData.get( tabber );
-	}
-}
-
-const tabberDataStore = new TabberDataStore();
-const tabberInstances = new Map();
+const tabberInstances = new WeakMap();
 
 /**
  * Handles resize events for all tabber instances.
@@ -83,15 +28,32 @@ class Tabber {
 	 */
 	constructor( tabberEl ) {
 		this.element = tabberEl;
-		tabberDataStore.register( this.element );
-		const data = tabberDataStore.get( this.element );
 
-		this.header = data.header;
-		this.tablist = data.tablist;
-		this.tabs = data.tabs;
-		this.section = data.section;
-		this.panels = data.panels;
-		this.panelToTabMap = data.panelToTabMap;
+		const header = this.element.querySelector( ':scope > .tabber__header' );
+		const tablist = header.querySelector( ':scope > .tabber__tabs' );
+		const tabs = tablist.querySelectorAll( ':scope > .tabber__tab' );
+		const section = this.element.querySelector( ':scope > .tabber__section' );
+		const panels = section.querySelectorAll( ':scope > .tabber__panel' );
+		const panelToTabMap = new WeakMap();
+		const panelIdToPanelMap = new Map();
+
+		for ( const panel of panels ) {
+			const tab = tablist.querySelector(
+				`:scope > .tabber__tab[aria-controls="${ CSS.escape( panel.id ) }"]`
+			);
+			if ( tab ) {
+				panelToTabMap.set( panel, tab );
+			}
+			panelIdToPanelMap.set( panel.id, panel );
+		}
+
+		this.header = header;
+		this.tablist = tablist;
+		this.tabs = tabs;
+		this.section = section;
+		this.panels = panels;
+		this.panelToTabMap = panelToTabMap;
+		this.panelIdToPanelMap = panelIdToPanelMap;
 
 		this.activeTab = null;
 		this.activeTabpanel = null;
@@ -234,9 +196,12 @@ class Tabber {
 		if ( this.activeTabpanel ) {
 			resizeObserver.unobserve( this.activeTabpanel );
 		}
-		this.activeTabpanel = document.getElementById(
-			this.activeTab.getAttribute( 'aria-controls' )
-		);
+		const panelId = this.activeTab.getAttribute( 'aria-controls' );
+		this.activeTabpanel = this.panelIdToPanelMap.get( panelId );
+
+		if ( !this.activeTabpanel ) {
+			return;
+		}
 		resizeObserver.observe( this.activeTabpanel );
 
 		this.setActiveTabpanel( this.activeTabpanel, options );
@@ -251,6 +216,9 @@ class Tabber {
 	 * @private
 	 */
 	setActiveTabpanel( activeTabpanel, options = {} ) {
+		if ( !activeTabpanel ) {
+			return;
+		}
 		if ( activeTabpanel.querySelector( '.tabber__transclusion' ) ) {
 			const transclude = new Transclude( activeTabpanel, config.cdnMaxAge );
 			transclude.loadPage();
