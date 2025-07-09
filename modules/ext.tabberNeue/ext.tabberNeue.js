@@ -1,15 +1,6 @@
-/**
- * ext.tabberNeue
- *
- * NAMING THINGS ARE HARD :(
- * TODO: Make class and function names more accurate?
- * TODO: Split classes into different modules
- */
 const config = require( './config.json' );
 const Transclude = require( './Transclude.js' );
 const Util = require( './Util.js' );
-
-let resizeObserver;
 
 /**
  * Centralized data store for all tabber instances on the page.
@@ -66,101 +57,201 @@ class TabberDataStore {
 }
 
 const tabberDataStore = new TabberDataStore();
+const tabberInstances = new Map();
 
 /**
- * Class representing TabberAction functionality for handling tab events and animations.
+ * Handles resize events for all tabber instances.
  *
- * @class
+ * @param {ResizeObserverEntry[]} entries
  */
-class TabberAction {
+function onResize( entries ) {
+	for ( const { target } of entries ) {
+		const tabberEl = target.closest( '.tabber' );
+		if ( tabberEl && tabberInstances.has( tabberEl ) ) {
+			tabberInstances.get( tabberEl ).handleResize( target );
+		}
+	}
+}
+
+// A single ResizeObserver for all tabbers for performance.
+// eslint-disable-next-line compat/compat
+const resizeObserver = new ResizeObserver( onResize );
+
+class Tabber {
 	/**
-	 * Determines if animations should be shown based on the user's preference.
+	 * @param {Element} tabberEl The tabber DOM element.
+	 */
+	constructor( tabberEl ) {
+		this.element = tabberEl;
+		tabberDataStore.register( this.element );
+		const data = tabberDataStore.get( this.element );
+
+		this.header = data.header;
+		this.tablist = data.tablist;
+		this.tabs = data.tabs;
+		this.section = data.section;
+		this.panels = data.panels;
+		this.panelToTabMap = data.panelToTabMap;
+
+		this.activeTab = null;
+		this.activeTabpanel = null;
+		this.tabFocus = 0;
+
+		this.panelObserver = null;
+		this.visibilityObserver = null;
+
+		this.debouncedUpdateHeaderOverflow = mw.util.debounce(
+			() => this.updateHeaderOverflow(),
+			100
+		);
+
+		// Bind event handlers to this instance
+		this.onHeaderClick = this.onHeaderClick.bind( this );
+		this.onSectionClick = this.onSectionClick.bind( this );
+		this.onTablistScroll = this.onTablistScroll.bind( this );
+		this.onTablistKeydown = this.onTablistKeydown.bind( this );
+		this.handlePanelIntersection = this.handlePanelIntersection.bind( this );
+	}
+
+	/**
+	 * Determines if animations should be shown based on user preference and config.
 	 *
-	 * @return {boolean} - Returns true if animations should be shown, false otherwise.
+	 * @return {boolean}
 	 */
 	static shouldShowAnimation() {
 		return (
 			!window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches &&
-            config.enableAnimation
+			config.enableAnimation
 		);
 	}
 
 	/**
-	 * Toggles the animation state based on the user's preference.
-	 * If animations should be shown,
-	 * adds the 'tabber-animations-ready' class to the document element.
+	 * Toggles the global animation-ready class on the document element.
 	 *
-	 * @param {boolean} enableAnimations - Flag indicating whether animations should be enabled.
+	 * @param {boolean} enable
 	 */
-	static toggleAnimation( enableAnimations ) {
-		if ( !TabberAction.shouldShowAnimation() ) {
+	static toggleAnimation( enable ) {
+		if ( !Tabber.shouldShowAnimation() ) {
 			return;
 		}
 		document.documentElement.classList.toggle(
 			'tabber-animations-ready',
-			enableAnimations
+			enable
 		);
 	}
 
 	/**
-	 * Updates the header overflow based on the scroll position of the tab list.
-	 * If the tab list is scrollable, it adds/removes classes to show/hide navigation buttons.
+	 * Initializes the tabber instance.
 	 *
-	 * @param {Element} tablist - The tablist element in the tabber
+	 * @param {string} urlHash - The current URL hash.
 	 */
-	static updateHeaderOverflow( tablist ) {
-		const header = tablist.closest( '.tabber__header' );
-		const { roundScrollLeft } = Util;
-		const tablistWidth = tablist.offsetWidth;
-		const tablistScrollWidth = tablist.scrollWidth;
-		const isScrollable = tablistScrollWidth > tablistWidth;
+	async init( urlHash ) {
+		this.setTabsAttributes();
 
-		if ( !isScrollable ) {
-			header.classList.remove( 'tabber__header--next-visible' );
-			header.classList.remove( 'tabber__header--prev-visible' );
+		const activeTab = this.getActiveTab( urlHash );
+		await this.setActiveTab( activeTab );
+
+		this.updateHeaderOverflow();
+
+		this.initVisibilityObserver();
+		this.initPanelIntersectionObserver();
+
+		this.element.classList.remove( 'tabber--init' );
+		this.element.classList.add( 'tabber--live' );
+	}
+
+	/**
+	 * Sets initial attributes on all tabs.
+	 *
+	 * @private
+	 */
+	setTabsAttributes() {
+		const tabAttributes = {
+			tabindex: '-1',
+			'aria-selected': 'false'
+		};
+		for ( const tab of this.tabs ) {
+			Util.setAttributes( tab, tabAttributes );
+		}
+	}
+
+	/**
+	 * Gets the tab that should be active on initialization
+	 *
+	 * @param {string} urlHash - The URL hash.
+	 * @return {Element} The tab element to activate.
+	 * @private
+	 */
+	getActiveTab( urlHash ) {
+		const defaultTab = this.tablist.firstElementChild;
+		if ( !urlHash ) {
+			return defaultTab;
+		}
+
+		// Case 1: Hash directly targets a panel ID.
+		const tabForPanel = this.tablist.querySelector(
+			`.tabber__tab[aria-controls="${ CSS.escape( urlHash ) }"]`
+		);
+		if ( tabForPanel ) {
+			return tabForPanel;
+		}
+
+		// Case 2: Hash targets an element inside a panel.
+		const targetEl = document.getElementById( urlHash );
+		if ( targetEl ) {
+			const panel = targetEl.closest( '.tabber__panel' );
+			if ( panel && panel.closest( '.tabber' ) === this.element ) {
+				return this.panelToTabMap.get( panel ) || defaultTab;
+			}
+		}
+
+		return defaultTab;
+	}
+
+	/**
+	 * Sets the active tab and panel.
+	 *
+	 * @param {Element} activeTab - The tab to activate.
+	 * @param {Object} [options] - Options for setting the tab.
+	 * @param {boolean} [options.preventScroll=false] - Prevent horizontal scrolling of the panel.
+	 * @private
+	 */
+	async setActiveTab( activeTab, options = {} ) {
+		if ( !activeTab || this.activeTab === activeTab ) {
 			return;
 		}
 
-		const scrollLeft = roundScrollLeft( tablist.scrollLeft );
-		const isAtStart = scrollLeft <= 0;
-		const isAtEnd = scrollLeft + tablistWidth >= tablistScrollWidth;
-		const isAtMiddle = !isAtStart && !isAtEnd;
+		if ( this.activeTab ) {
+			this.activeTab.setAttribute( 'tabindex', '-1' );
+			this.activeTab.setAttribute( 'aria-selected', 'false' );
+		}
 
-		header.classList.toggle(
-			'tabber__header--next-visible',
-			isAtStart || isAtMiddle
+		activeTab.setAttribute( 'tabindex', '0' );
+		activeTab.setAttribute( 'aria-selected', 'true' );
+		this.activeTab = activeTab;
+
+		// Unobserve previous panel and observe new one
+		if ( this.activeTabpanel ) {
+			resizeObserver.unobserve( this.activeTabpanel );
+		}
+		this.activeTabpanel = document.getElementById(
+			this.activeTab.getAttribute( 'aria-controls' )
 		);
-		header.classList.toggle(
-			'tabber__header--prev-visible',
-			isAtEnd || isAtMiddle
-		);
+		resizeObserver.observe( this.activeTabpanel );
+
+		this.setActiveTabpanel( this.activeTabpanel, options );
 	}
 
 	/**
-	 * Returns the tabpanel element based on the tab element
+	 * Sets the active tab panel, adjusts section height, and handles transclusion.
 	 *
-	 * @param {Element} tab - The tab element
-	 * @return {Element} The tabpanel element.
+	 * @param {Element} activeTabpanel - The panel to activate.
+	 * @param {Object} [options] - Options.
+	 * @param {boolean} [options.preventScroll=false] - Prevent scrolling.
+	 * @private
 	 */
-	static getTabpanel( tab ) {
-		return document.getElementById( tab.getAttribute( 'aria-controls' ) );
-	}
-
-	/**
-	 * Sets the active tab panel in the tabber element.
-	 * Loads the content of the active tab panel if it is a valid transclusion.
-	 * Adjusts the height of the section containing the active tab panel based on its content height.
-	 * Scrolls the section to make the active tab panel visible.
-	 *
-	 * @param {Element} activeTabpanel - The active tab panel element to be set.
-	 * @param {Object} [options] - Additional options.
-	 * @param {boolean} [options.preventScroll=false] - Prevent scrolling to the active panel.
-	 */
-	static setActiveTabpanel( activeTabpanel, options = {} ) {
-		const section = activeTabpanel.closest( '.tabber__section' );
-
-		if ( activeTabpanel.querySelector( '.tabber__transclusion' ) !== null ) {
-			// TODO: wgCdnMaxAge might not be the best way to handle caching
+	setActiveTabpanel( activeTabpanel, options = {} ) {
+		if ( activeTabpanel.querySelector( '.tabber__transclusion' ) ) {
 			const transclude = new Transclude( activeTabpanel, config.cdnMaxAge );
 			transclude.loadPage();
 		}
@@ -169,239 +260,149 @@ class TabberAction {
 			activeTabpanel,
 			'height'
 		);
-		section.style.height = activeTabpanelHeight + 'px';
+		this.section.style.height = activeTabpanelHeight + 'px';
 
 		if ( !options.preventScroll ) {
 			window.requestAnimationFrame( () => {
-				// Scroll to tab
-				section.scrollLeft = activeTabpanel.offsetLeft;
+				this.section.scrollLeft = activeTabpanel.offsetLeft;
 			} );
 		}
 	}
 
 	/**
-	 * Sets the active tab in the tabber element.
-	 * Updates the attributes of tabs and tab panels to reflect the active state.
+	 * Updates the visibility of previous/next arrow buttons on the tab list.
 	 *
-	 * @param {Element} activeTab - The tab element to set as active.
-	 * @param {Object} [options] - Additional options.
-	 * @return {Promise} - A promise that resolves once the active tab is set.
+	 * @private
 	 */
-	static setActiveTab( activeTab, options = {} ) {
-		return new Promise( ( resolve ) => {
-			const activeTabpanel = TabberAction.getTabpanel( activeTab );
-			const tabberEl = activeTabpanel.closest( '.tabber' );
-			const data = tabberDataStore.get( tabberEl );
+	updateHeaderOverflow() {
+		const tablistWidth = this.tablist.offsetWidth;
+		const tablistScrollWidth = this.tablist.scrollWidth;
+		const isScrollable = tablistScrollWidth > tablistWidth;
 
-			const currentActiveTab = Array.from( data.tabs ).find(
-				( tab ) => tab.getAttribute( 'aria-selected' ) === 'true'
+		if ( !isScrollable ) {
+			this.header.classList.remove(
+				'tabber__header--next-visible',
+				'tabber__header--prev-visible'
 			);
-
-			if ( currentActiveTab ) {
-				const currentActiveTabAttributes = {
-					tabindex: -1,
-					'aria-selected': 'false'
-				};
-				Util.setAttributes( currentActiveTab, currentActiveTabAttributes );
-			}
-
-			const activeTabAttributes = {
-				tabindex: 0,
-				'aria-selected': 'true'
-			};
-
-			Util.setAttributes( activeTab, activeTabAttributes );
-			TabberAction.setActiveTabpanel( activeTabpanel, options );
-
-			resolve();
-		} );
-	}
-
-	/**
-	 * Scrolls the tab list by the specified offset.
-	 *
-	 * @param {number} offset - The amount to scroll the tab list by.
-	 * @param {Element} tablist - The tab list element to scroll.
-	 */
-	static scrollTablist( offset, tablist ) {
-		const getToScroll = () => {
-			const scrollLeft = Util.roundScrollLeft( tablist.scrollLeft ) + offset;
-			return Math.min(
-				Math.max( scrollLeft, 0 ),
-				tablist.scrollWidth - tablist.offsetWidth
-			);
-		};
-		const toScroll = getToScroll();
-		window.requestAnimationFrame( () => {
-			tablist.scrollLeft = toScroll;
-		} );
-	}
-
-	/**
-	 * Handles the click event on a header button element.
-	 * Calculates the scroll offset based on the button type ('prev' or 'next').
-	 * Scrolls the tab list by the calculated offset using the 'scrollTablist' method
-	 * of the TabberAction class.
-	 *
-	 * @param {Element} button - The header button element that was clicked.
-	 * @param {string} type - The type of button clicked ('prev' or 'next').
-	 */
-	static handleHeaderButton( button, type ) {
-		const tablist = button
-			.closest( '.tabber__header' )
-			.querySelector( '.tabber__tabs' );
-		const tablistWidth = tablist.offsetWidth;
-		const scrollOffset =
-            type === 'prev' ? -tablistWidth / 2 : tablistWidth / 2;
-		TabberAction.scrollTablist( scrollOffset, tablist );
-	}
-
-	/**
-	 * Handles the resize event for tabber elements.
-	 * Updates the header overflow if the resized element is a tablist
-	 *
-	 * @param {ResizeObserverEntry[]} entries - An array of ResizeObserverEntry objects.
-	 */
-	static onResize( entries ) {
-		for ( const { target } of entries ) {
-			switch ( true ) {
-				case target.classList.contains( 'tabber__tabs' ):
-					TabberAction.updateHeaderOverflow( target );
-					break;
-				case target.classList.contains( 'tabber__panel' ):
-					TabberAction.setActiveTabpanel( target );
-					break;
-			}
+			return;
 		}
-	}
-}
 
-/**
- * Class for observing tab panels visibility and updating active tab accordingly.
- *
- * @class TabberObserver
- */
-class TabberObserver {
-	/**
-	 * @param {Element} tabber - The tabber element.
-	 */
-	constructor( tabber ) {
-		this.tabber = tabber;
+		const scrollLeft = Util.roundScrollLeft( this.tablist.scrollLeft );
+		const isAtStart = scrollLeft <= 0;
+		const isAtEnd = scrollLeft + tablistWidth >= tablistScrollWidth;
+		const isAtMiddle = !isAtStart && !isAtEnd;
 
-		const data = tabberDataStore.get( tabber );
-		this.section = data.section;
-		this.panels = data.panels;
-		this.panelToTabMap = data.panelToTabMap;
-		this.observer = null;
-	}
-
-	/**
-	 * Handles intersection changes for tab panels.
-	 *
-	 * @param {IntersectionObserverEntry[]} entries - The entries reported by the observer.
-	 */
-	handleIntersection( entries ) {
-		for ( const entry of entries ) {
-			if ( entry.isIntersecting ) {
-				const panel = entry.target;
-				const tab = this.panelToTabMap.get( panel );
-
-				if ( tab && tab.getAttribute( 'aria-selected' ) !== 'true' ) {
-					TabberAction.setActiveTab( tab, { preventScroll: true } );
-				}
-			}
-		}
-	}
-
-	/**
-	 * Initializes the IntersectionObserver to watch for panel visibility changes.
-	 */
-	init() {
-		const observerOptions = {
-			root: this.section,
-			threshold: 0.5
-		};
-
-		// eslint-disable-next-line compat/compat
-		this.observer = new IntersectionObserver(
-			this.handleIntersection.bind( this ),
-			observerOptions
+		this.header.classList.toggle(
+			'tabber__header--next-visible',
+			isAtStart || isAtMiddle
+		);
+		this.header.classList.toggle(
+			'tabber__header--prev-visible',
+			isAtEnd || isAtMiddle
 		);
 	}
 
 	/**
-	 * Starts observing the tab panels.
+	 * Handles clicks on the header area (tabs, prev/next buttons).
+	 *
+	 * @param {MouseEvent} e
 	 */
-	observe() {
-		for ( const panel of this.panels ) {
-			this.observer.observe( panel );
+	onHeaderClick( e ) {
+		const tab = e.target.closest( '.tabber__tab' );
+		if ( tab ) {
+			e.preventDefault();
+			this.setActiveTab( tab );
+
+			if ( config.updateLocationOnTabChange ) {
+				history.replaceState(
+					null,
+					'',
+					`${ window.location.pathname }${ window.location.search }#${ tab.getAttribute( 'aria-controls' ) }`
+				);
+			}
+			return;
+		}
+
+		const isPointerDevice = window.matchMedia( '(hover: hover)' ).matches;
+		if ( isPointerDevice ) {
+			if ( e.target.closest( '.tabber__header__prev' ) ) {
+				this.scrollTablist( -this.tablist.offsetWidth / 2 );
+			} else if ( e.target.closest( '.tabber__header__next' ) ) {
+				this.scrollTablist( this.tablist.offsetWidth / 2 );
+			}
 		}
 	}
 
 	/**
-	 * Stops observing the tab panels.
+	 * Handles clicks inside the tabber section, especially for in-page anchors.
+	 *
+	 * @param {MouseEvent} e
 	 */
-	disconnect() {
-		if ( this.observer ) {
-			this.observer.disconnect();
+	onSectionClick( e ) {
+		const anchor = e.target.closest( 'a[href^="#"]' );
+		const tabpanel = anchor ? anchor.closest( '.tabber__panel' ) : null;
+		if ( !anchor || !tabpanel ) {
+			return;
+		}
+
+		// Fix for #240: browser scrolling the entire section vertically.
+		// Resetting the height after a delay seems to correct it.
+		if ( document.getElementById( anchor.hash.slice( 1 ) ) ) {
+			setTimeout( () => {
+				this.setActiveTabpanel( tabpanel );
+			}, 0 );
 		}
 	}
-}
 
-/**
- * Represents a TabberEvent class that handles events related to tab navigation.
- *
- * @class TabberEvent
- * @param {Element} tabber - The tabber element containing the tabs and header.
- */
-class TabberEvent {
-	constructor( tabber ) {
-		this.tabber = tabber;
-		const data = tabberDataStore.get( this.tabber );
-		this.tablist = data.tablist;
-		this.header = data.header;
-		this.tabs = data.tabs;
-		this.section = data.section;
-		this.activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
-		this.activeTabpanel = TabberAction.getTabpanel( this.activeTab );
-		this.tabFocus = 0;
-		this.debouncedUpdateHeaderOverflow = mw.util.debounce(
-			() => TabberAction.updateHeaderOverflow( this.tablist ),
-			100
-		);
-		this.tabberObserver = new TabberObserver( this.tabber );
-		this.handleTabFocusChange = this.handleTabFocusChange.bind( this );
-		this.onHeaderClick = this.onHeaderClick.bind( this );
-		this.onSectionClick = this.onSectionClick.bind( this );
-		this.onTablistScroll = this.onTablistScroll.bind( this );
-		this.onTablistKeydown = this.onTablistKeydown.bind( this );
+	/**
+	 * Handles horizontal scrolling of the tab list.
+	 */
+	onTablistScroll() {
+		this.debouncedUpdateHeaderOverflow();
 	}
 
 	/**
-	 * Returns a debounced function that updates the header overflow.
+	 * Handles keyboard navigation for tabs.
 	 *
-	 * @return {Function} A debounced function that updates the header overflow.
+	 * @param {KeyboardEvent} e
 	 */
-	debounceUpdateHeaderOverflow() {
-		return this.debouncedUpdateHeaderOverflow;
+	onTablistKeydown( e ) {
+		const keyMap = {
+			Home: 'home',
+			End: 'end',
+			ArrowRight: 'right',
+			ArrowLeft: 'left'
+		};
+
+		if ( keyMap[ e.key ] ) {
+			e.preventDefault();
+			this.handleTabFocusChange( keyMap[ e.key ] );
+		}
 	}
 
 	/**
-	 * Handles changing the focus to the tab based on the key pressed.
+	 * Manages focus between tabs during keyboard navigation.
 	 *
-	 * @param {string} key - The key pressed ('home' or 'end' or 'right' or 'left').
+	 * @param {string} direction - 'home', 'end', 'right', or 'left'.
+	 * @private
 	 */
-	handleTabFocusChange( key ) {
+	handleTabFocusChange( direction ) {
 		this.tabs[ this.tabFocus ].setAttribute( 'tabindex', '-1' );
-		if ( key === 'home' ) {
-			this.tabFocus = 0;
-		} else if ( key === 'end' ) {
-			this.tabFocus = this.tabs.length - 1;
-		} else if ( key === 'right' ) {
-			this.tabFocus = ( this.tabFocus + 1 ) % this.tabs.length;
-		} else if ( key === 'left' ) {
-			this.tabFocus =
-                ( this.tabFocus - 1 + this.tabs.length ) % this.tabs.length;
+		const tabCount = this.tabs.length;
+
+		switch ( direction ) {
+			case 'home':
+				this.tabFocus = 0;
+				break;
+			case 'end':
+				this.tabFocus = tabCount - 1;
+				break;
+			case 'right':
+				this.tabFocus = ( this.tabFocus + 1 ) % tabCount;
+				break;
+			case 'left':
+				this.tabFocus = ( this.tabFocus - 1 + tabCount ) % tabCount;
+				break;
 		}
 
 		this.tabs[ this.tabFocus ].setAttribute( 'tabindex', '0' );
@@ -409,272 +410,159 @@ class TabberEvent {
 	}
 
 	/**
-	 * Handles the click event on the tabber header.
-	 * If a tab is clicked, it sets the active tab, updates the URL hash without adding to browser history,
-	 * and sets the active tab using TabberAction.setActiveTab method.
-	 * If a previous or next button is clicked on a pointer device, it handles the header button accordingly.
+	 * Smoothly scrolls the tab list horizontally.
 	 *
-	 * @param {Event} e - The click event object.
+	 * @param {number} offset - The amount to scroll by.
+	 * @private
 	 */
-	onHeaderClick( e ) {
-		const tab = e.target.closest( '.tabber__tab' );
-		if ( tab !== null ) {
-			// Prevent default anchor actions
-			e.preventDefault();
-			this.activeTab = tab;
-			resizeObserver.unobserve( this.activeTabpanel );
-			this.activeTabpanel = TabberAction.getTabpanel( this.activeTab );
-			resizeObserver.observe( this.activeTabpanel );
+	scrollTablist( offset ) {
+		const currentScroll = Util.roundScrollLeft( this.tablist.scrollLeft );
+		const maxScroll = this.tablist.scrollWidth - this.tablist.offsetWidth;
+		const targetScroll = Math.min( Math.max( currentScroll + offset, 0 ), maxScroll );
 
-			// Update the URL hash without adding to browser history
-			if ( config.updateLocationOnTabChange ) {
-				history.replaceState(
-					null,
-					'',
-					window.location.pathname +
-                        window.location.search +
-                        '#' +
-                        this.activeTab.getAttribute( 'aria-controls' )
-				);
-			}
-			TabberAction.setActiveTab( this.activeTab );
-			return;
-		}
+		window.requestAnimationFrame( () => {
+			this.tablist.scrollLeft = targetScroll;
+		} );
+	}
 
-		const isPointerDevice = window.matchMedia( '(hover: hover)' ).matches;
-		if ( isPointerDevice ) {
-			const prevButton = e.target.closest( '.tabber__header__prev' );
-			if ( prevButton !== null ) {
-				TabberAction.handleHeaderButton( prevButton, 'prev' );
-				return;
-			}
-
-			const nextButton = e.target.closest( '.tabber__header__next' );
-			if ( nextButton !== null ) {
-				TabberAction.handleHeaderButton( nextButton, 'next' );
-				return;
+	/**
+	 * Handles resize events for elements within this tabber instance.
+	 *
+	 * @param {Element} target - The element that was resized.
+	 * @private
+	 */
+	handleResize( target ) {
+		if ( target.classList.contains( 'tabber__tabs' ) ) {
+			this.updateHeaderOverflow();
+		} else if ( target.classList.contains( 'tabber__panel' ) ) {
+			// If an active panel resizes (e.g., image loaded), adjust container height.
+			if ( target === this.activeTabpanel ) {
+				this.setActiveTabpanel( target, { preventScroll: true } );
 			}
 		}
 	}
 
 	/**
-	 * Handles the click event on the tabber section.
-	 * If an anchor link pointing to an element on the same page is clicked
-	 * inside a panel, it prevents the default scroll behavior.
+	 * Attaches event listeners for an active tabber.
 	 *
-	 * @param {Event} e - The click event object.
+	 * @private
 	 */
-	onSectionClick( e ) {
-		const anchor = e.target.closest( 'a[href^="#"]' );
-		if ( anchor === null ) {
-			return;
-		}
-
-		const tabpanel = anchor.closest( '.tabber__panel' );
-		if ( tabpanel === null ) {
-			return;
-		}
-
-		const target = document.getElementById( anchor.hash.slice( 1 ) );
-		if ( target !== null ) {
-			/**
-			 * Fix for #240 where the native browser scroll somehow scroll all of the tabpanel vertically
-			 * This resets the scroll position to the top of the tabpanel by recalculating the tabpanel height
-			 * The delay is needed to ensure the height is recalculated after the tabpanel is in the correct position
-			 */
-			setTimeout( () => {
-				TabberAction.setActiveTabpanel( tabpanel );
-			}, 0 );
-		}
-	}
-
-	/**
-	 * Update the header overflow based on the scroll position of the tablist.
-	 */
-	onTablistScroll() {
-		this.debouncedUpdateHeaderOverflow();
-	}
-
-	/**
-	 * Handles the keydown event on the tablist element.
-	 * If the key pressed is 'Home', it changes the focus to the first tab.
-	 * If the key pressed is 'End', it changes the focus to the last tab.
-	 * If the key pressed is 'ArrowRight', it changes the focus to the next tab.
-	 * If the key pressed is 'ArrowLeft', it changes the focus to the previous tab.
-	 *
-	 * @param {Event} e - The keydown event object.
-	 */
-	onTablistKeydown( e ) {
-		if ( e.key === 'Home' ) {
-			e.preventDefault();
-			this.handleTabFocusChange( 'home' );
-		} else if ( e.key === 'End' ) {
-			e.preventDefault();
-			this.handleTabFocusChange( 'end' );
-		} else if ( e.key === 'ArrowRight' ) {
-			this.handleTabFocusChange( 'right' );
-		} else if ( e.key === 'ArrowLeft' ) {
-			this.handleTabFocusChange( 'left' );
-		}
-	}
-
-	/**
-	 * Adds listeners for header click, tablist scroll, tablist keydown, and activeTabpanel resize.
-	 */
-	resume() {
+	addEventListeners() {
 		this.header.addEventListener( 'click', this.onHeaderClick );
 		this.section.addEventListener( 'click', this.onSectionClick );
 		this.tablist.addEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.addEventListener( 'keydown', this.onTablistKeydown );
+
 		resizeObserver.observe( this.tablist );
-		resizeObserver.observe( this.activeTabpanel );
-		this.tabberObserver.observe();
+		if ( this.activeTabpanel ) {
+			resizeObserver.observe( this.activeTabpanel );
+		}
+		if ( this.panelObserver ) {
+			for ( const panel of this.panels ) {
+				this.panelObserver.observe( panel );
+			}
+		}
 	}
 
 	/**
-	 * Removes listeners for header click, tablist scroll, tablist keydown, and activeTabpanel resize.
+	 * Removes event listeners for a paused tabber.
+	 *
+	 * @private
 	 */
-	pause() {
+	removeEventListeners() {
 		this.header.removeEventListener( 'click', this.onHeaderClick );
 		this.section.removeEventListener( 'click', this.onSectionClick );
 		this.tablist.removeEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.removeEventListener( 'keydown', this.onTablistKeydown );
+
 		resizeObserver.unobserve( this.tablist );
-		resizeObserver.unobserve( this.activeTabpanel );
-		this.tabberObserver.disconnect();
+		if ( this.activeTabpanel ) {
+			resizeObserver.unobserve( this.activeTabpanel );
+		}
+		if ( this.panelObserver ) {
+			this.panelObserver.disconnect();
+		}
 	}
 
 	/**
-	 * Initializes the TabberEvent instance by creating an IntersectionObserver to handle tabber visibility.
-	 * When the tabber intersects with the viewport, it resumes all event listeners and observers.
-	 * Otherwise, it pauses the event listeners and observers.
+	 * Creates the observer that pauses the tabber when it's not visible.
+	 *
+	 * @private
 	 */
-	init() {
-		this.tabberObserver.init();
+	initVisibilityObserver() {
 		// eslint-disable-next-line compat/compat
-		this.observer = new IntersectionObserver( ( entries ) => {
+		this.visibilityObserver = new IntersectionObserver( ( entries ) => {
 			entries.forEach( ( entry ) => {
 				if ( entry.isIntersecting ) {
-					this.resume();
+					this.addEventListeners();
 				} else {
-					this.pause();
+					this.removeEventListeners();
 				}
 			} );
 		} );
-		this.observer.observe( this.tabber );
-		// Need to unobserve active tabpanels first so that only the ones in viewport are observed
-		resizeObserver.unobserve( this.activeTabpanel );
-		this.resume();
-	}
-}
-
-/**
- * Class responsible for initalizing a tabber element.
- *
- * @class TabberBuilder
- */
-class TabberBuilder {
-	constructor( tabber ) {
-		this.tabber = tabber;
-		this.tablist = tabber.querySelector( ':scope > .tabber__header > .tabber__tabs' );
+		this.visibilityObserver.observe( this.element );
 	}
 
 	/**
-	 * Sets the attributes of a tab element.
-	 */
-	setTabsAttributes() {
-		const tabAttributes = {
-			tabindex: '-1',
-			'aria-selected': 'false'
-		};
-		for ( const tab of this.tablist.children ) {
-			Util.setAttributes( tab, tabAttributes );
-		}
-	}
-
-	/**
-	 * Get the active tab in init state
+	 * Creates the observer that updates the active tab when scrolling through panels.
 	 *
-	 * @param {string} urlHash - The URL hash used to set the active tab.
-	 * @return {HTMLElement}
+	 * @private
 	 */
-	getActiveTab( urlHash ) {
-		const defaultTab = this.tablist.firstElementChild;
-		if ( !urlHash ) {
-			return defaultTab;
-		}
+	initPanelIntersectionObserver() {
+		const observerOptions = {
+			root: this.section,
+			threshold: 0.5
+		};
 
-		// First, check if the hash directly controls a tab panel.
-		const tabForPanel = this.tablist.querySelector(
-			`.tabber__tab[aria-controls="${ ( CSS.escape( urlHash ) ) }"]`
+		// eslint-disable-next-line compat/compat
+		this.panelObserver = new IntersectionObserver(
+			this.handlePanelIntersection,
+			observerOptions
 		);
+	}
 
-		if ( tabForPanel !== null ) {
-			return tabForPanel;
-		}
-
-		// If not, check if the hash points to an element inside a tab panel.
-		const targetEl = document.getElementById( urlHash );
-		if ( targetEl !== null ) {
-			const panel = targetEl.closest( '.tabber__panel' );
-			if ( panel && panel.closest( '.tabber' ) === this.tabber ) {
-				const tabForEl = this.tablist.querySelector(
-					`.tabber__tab[aria-controls="${ panel.id }"]`
-				);
-				if ( tabForEl !== null ) {
-					return tabForEl;
+	/**
+	 * Callback for the panel intersection observer.
+	 *
+	 * @param {IntersectionObserverEntry[]} entries
+	 * @private
+	 */
+	handlePanelIntersection( entries ) {
+		for ( const entry of entries ) {
+			if ( entry.isIntersecting ) {
+				const panel = entry.target;
+				const tab = this.panelToTabMap.get( panel );
+				if ( tab && tab !== this.activeTab ) {
+					this.setActiveTab( tab, { preventScroll: true } );
 				}
 			}
 		}
-
-		return defaultTab;
-	}
-
-	/**
-	 * Sets the tabs attributes
-	 * Sets the active tab based on the URL hash, and updates the header overflow.
-	 * Attaches event listeners for tabber interaction.
-	 *
-	 * @param {string} urlHash - The URL hash used to set the active tab.
-	 * @return {void}
-	 */
-	async init( urlHash ) {
-		const activeTab = this.getActiveTab( urlHash );
-		this.setTabsAttributes();
-		await TabberAction.setActiveTab( activeTab );
-		TabberAction.updateHeaderOverflow( this.tablist );
-
-		// Start attaching event
-		const tabberEvent = new TabberEvent( this.tabber );
-		tabberEvent.init();
-		this.tabber.classList.remove( 'tabber--init' );
-		this.tabber.classList.add( 'tabber--live' );
 	}
 }
 
 /**
- * Loads tabbers with the given elements using the provided configuration.
+ * Initializes all tabbers on the page.
  *
- * @param {NodeList} tabberEls - The elements representing tabbers to be loaded.
- * @return {void}
+ * @return {Promise<void>}
  */
-async function load( tabberEls ) {
-	const urlHash = window.location.hash.slice( 1 );
+async function load() {
+	const tabberEls = document.querySelectorAll( '.tabber--init' );
+	if ( tabberEls.length === 0 ) {
+		return;
+	}
 
+	const urlHash = window.location.hash.slice( 1 );
 	mw.loader.load( 'ext.tabberNeue.icons' );
 
-	// eslint-disable-next-line compat/compat
-	resizeObserver = new ResizeObserver( TabberAction.onResize );
-
 	await Promise.all( [ ...tabberEls ].map( async ( tabberEl ) => {
-		tabberDataStore.register( tabberEl );
-		const tabberBuilder = new TabberBuilder( tabberEl );
-		await tabberBuilder.init( urlHash );
+		const tabber = new Tabber( tabberEl );
+		tabberInstances.set( tabberEl, tabber );
+		await tabber.init( urlHash );
 	} ) );
 
 	setTimeout( () => {
-		// Delay animation execution so it doesn't not animate the tab gets into position on load
-		TabberAction.toggleAnimation( true );
+		// Delay animations to prevent flashes on page load.
+		Tabber.toggleAnimation( true );
 	}, 250 );
 }
 
@@ -687,52 +575,43 @@ function handleHashChange() {
 		return;
 	}
 
-	// Case 1: The hash is the ID of a tab panel.
-	// We need to find the tab that controls this panel.
-	// The tabber must be live.
-	let tab = document.querySelector(
-		`.tabber--live .tabber__tab[aria-controls="${ CSS.escape( hash ) }"]`
-	);
+	const targetEl = document.getElementById( hash );
+	const panel = targetEl ? targetEl.closest( '.tabber__panel' ) : null;
 
-	if ( !tab ) {
-		// Case 2: The hash points to an element inside a tab panel.
-		const targetEl = document.getElementById( hash );
-		if ( targetEl ) {
-			const panel = targetEl.closest( '.tabber__panel' );
-			const tabber = panel ? panel.closest( '.tabber--live' ) : null;
-			if ( panel && tabber ) {
-				// Now find the tab for this panel within this specific tabber
-				const data = tabberDataStore.get( tabber );
-				if ( data && data.tablist ) {
-					tab = data.tablist.querySelector(
-						`:scope > .tabber__tab[aria-controls="${ CSS.escape(
-							panel.id
-						) }"]`
-					);
-				}
-			}
+	let tabToActivate;
+
+	if ( panel ) {
+		// Case 1: The hash points to an element inside a panel.
+		const tabberEl = panel.closest( '.tabber--live' );
+		if ( tabberEl && tabberInstances.has( tabberEl ) ) {
+			const instance = tabberInstances.get( tabberEl );
+			tabToActivate = instance.panelToTabMap.get( panel );
+		}
+	} else {
+		// Case 2: The hash is the ID of a tab panel itself.
+		const tabberEl = document.querySelector( '.tabber--live' );
+		if ( tabberEl && tabberInstances.has( tabberEl ) ) {
+			const instance = tabberInstances.get( tabberEl );
+			tabToActivate = instance.tablist.querySelector(
+				`:scope > .tabber__tab[aria-controls="${ CSS.escape( hash ) }"]`
+			);
 		}
 	}
 
-	if ( tab && tab.getAttribute( 'aria-selected' ) !== 'true' ) {
-		TabberAction.setActiveTab( tab );
+	if ( tabToActivate && tabToActivate.getAttribute( 'aria-selected' ) !== 'true' ) {
+		const tabberEl = tabToActivate.closest( '.tabber--live' );
+		if ( tabberEl && tabberInstances.has( tabberEl ) ) {
+			const instance = tabberInstances.get( tabberEl );
+			instance.setActiveTab( tabToActivate );
+		}
 	}
 }
 
 /**
- * Main function that initializes the tabber functionality on the page.
- * It selects all tabber elements that are not live, checks if there are any tabber elements
- * present, and then calls the load function to load the tabber functionality on
- * each tabber element.
+ * Main entry point.
  */
 function main() {
-	const tabberEls = document.querySelectorAll( '.tabber--init' );
-
-	if ( tabberEls.length === 0 ) {
-		return;
-	}
-
-	load( tabberEls );
+	load();
 	window.addEventListener( 'hashchange', handleHashChange );
 }
 
@@ -741,7 +620,6 @@ mw.hook( 'wikipage.content' ).add( () => {
 } );
 
 mw.loader.using( 'ext.visualEditor.desktopArticleTarget.init' ).then( () => {
-	// After saving edits
 	mw.hook( 'postEdit.afterRemoval' ).add( () => {
 		main();
 	} );
