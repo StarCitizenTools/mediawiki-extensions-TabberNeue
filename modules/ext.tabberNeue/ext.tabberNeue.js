@@ -149,9 +149,10 @@ class Tabber {
 			return defaultTab;
 		}
 
-		// The hash can be an ID of a panel or an element within a panel.
-		const decodedUrlHash = mw.util.percentDecodeFragment( urlHash );
-		const targetElement = document.getElementById( decodedUrlHash );
+		// percentDecodeFragment is needded for #209
+		const targetElement = document.getElementById(
+			mw.util.percentDecodeFragment( hash )
+		);
 		if ( targetElement === null ) {
 			return defaultTab;
 		}
@@ -572,8 +573,10 @@ class TabberController {
 			return;
 		}
 
-		const decodedUrlHash = mw.util.percentDecodeFragment( hash );
-		const targetElement = document.getElementById( decodedUrlHash );
+		// percentDecodeFragment is needded for #209
+		const targetElement = document.getElementById(
+			mw.util.percentDecodeFragment( hash )
+		);
 		if ( targetElement === null ) {
 			return;
 		}
