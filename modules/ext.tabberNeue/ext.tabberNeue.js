@@ -481,14 +481,6 @@ async function load( tabberEls ) {
 	setTimeout( () => {
 		// Delay animation execution so it doesn't not animate the tab gets into position on load
 		TabberAction.toggleAnimation( true );
-		window.addEventListener( 'hashchange', ( event ) => {
-			const hash = window.location.hash.slice( 1 );
-			const tab = document.querySelector( `.tabber__tab[aria-controls="${ CSS.escape( hash ) }"]` );
-			if ( tab ) {
-				event.preventDefault();
-				tab.click();
-			}
-		} );
 	}, 250 );
 }
 
