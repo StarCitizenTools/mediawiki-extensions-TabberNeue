@@ -151,7 +151,7 @@ class Tabber {
 
 		// percentDecodeFragment is needded for #209
 		const targetElement = document.getElementById(
-			mw.util.percentDecodeFragment( hash )
+			mw.util.percentDecodeFragment( urlHash )
 		);
 		if ( targetElement === null ) {
 			return defaultTab;
