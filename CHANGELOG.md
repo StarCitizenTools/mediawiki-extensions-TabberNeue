@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.3.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.2.0...v3.3.0) (2025-07-09)
+
+
+### Features
+
+* scroll to active tab if it is partly hidden by the overflow button ([62ffbc4](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/62ffbc4c03acbd7c10b3c1d2312eeedf786c4e1c))
+
+
+### Bug Fixes
+
+* do not update active tab during programmatic smooth scroll ([67e2904](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/67e290488b3479ae212e20ca7d064b1d617b12cc))
+* only update URL hash on tab click ([7525622](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/752562244c0986339934507d9a1515ea8f135bf8)), closes [#245](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/245)
+* tabs with url-encoded characters not being selected through url fragment ([b5dff8e](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/b5dff8ee7634427b8ad9a731973710f25bdda6cc))
+
 ## [3.2.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.1.2...v3.2.0) (2025-07-09)
 
 
