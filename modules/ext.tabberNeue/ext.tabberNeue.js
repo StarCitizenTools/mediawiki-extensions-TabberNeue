@@ -572,7 +572,7 @@ class TabberController {
 			return;
 		}
 
-		const decodedUrlHash = mw.util.percentDecodeFragment( urlHash );
+		const decodedUrlHash = mw.util.percentDecodeFragment( hash );
 		const targetElement = document.getElementById( decodedUrlHash );
 		if ( targetElement === null ) {
 			return;
