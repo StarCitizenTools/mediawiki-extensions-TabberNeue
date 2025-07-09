@@ -226,6 +226,7 @@ class TabberEvent {
 		this.tabs = this.tablist.querySelectorAll( ':scope > .tabber__tab' );
 		this.activeTab = this.tablist.querySelector( '[aria-selected="true"]' );
 		this.activeTabpanel = TabberAction.getTabpanel( this.activeTab );
+		this.section = this.activeTabpanel.closest( '.tabber__section' );
 		this.tabFocus = 0;
 		this.debouncedUpdateHeaderOverflow = mw.util.debounce(
 			() => TabberAction.updateHeaderOverflow( this.tablist ),
@@ -233,6 +234,7 @@ class TabberEvent {
 		);
 		this.handleTabFocusChange = this.handleTabFocusChange.bind( this );
 		this.onHeaderClick = this.onHeaderClick.bind( this );
+		this.onSectionClick = this.onSectionClick.bind( this );
 		this.onTablistScroll = this.onTablistScroll.bind( this );
 		this.onTablistKeydown = this.onTablistKeydown.bind( this );
 	}
@@ -318,6 +320,37 @@ class TabberEvent {
 	}
 
 	/**
+	 * Handles the click event on the tabber section.
+	 * If an anchor link pointing to an element on the same page is clicked
+	 * inside a panel, it prevents the default scroll behavior.
+	 *
+	 * @param {Event} e - The click event object.
+	 */
+	onSectionClick( e ) {
+		const anchor = e.target.closest( 'a[href^="#"]' );
+		if ( !anchor ) {
+			return;
+		}
+
+		const tabpanel = anchor.closest( '.tabber__panel' );
+		if ( !tabpanel ) {
+			return;
+		}
+
+		const target = document.getElementById( anchor.hash.slice( 1 ) );
+		if ( target ) {
+			/**
+			 * Fix for #240 where the native browser scroll somehow scroll all of the tabpanel vertically
+			 * This resets the scroll position to the top of the tabpanel by recalculating the tabpanel height
+			 * The delay is needed to ensure the height is recalculated after the tabpanel is in the correct position
+			 */
+			setTimeout( () => {
+				TabberAction.setActiveTabpanel( tabpanel );
+			}, 0 );
+		}
+	}
+
+	/**
 	 * Update the header overflow based on the scroll position of the tablist.
 	 */
 	onTablistScroll() {
@@ -352,6 +385,7 @@ class TabberEvent {
 	 */
 	resume() {
 		this.header.addEventListener( 'click', this.onHeaderClick );
+		this.section.addEventListener( 'click', this.onSectionClick );
 		this.tablist.addEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.addEventListener( 'keydown', this.onTablistKeydown );
 		resizeObserver.observe( this.tablist );
@@ -363,6 +397,7 @@ class TabberEvent {
 	 */
 	pause() {
 		this.header.removeEventListener( 'click', this.onHeaderClick );
+		this.section.removeEventListener( 'click', this.onSectionClick );
 		this.tablist.removeEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.removeEventListener( 'keydown', this.onTablistKeydown );
 		resizeObserver.unobserve( this.tablist );
