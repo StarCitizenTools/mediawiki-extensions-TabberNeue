@@ -21,6 +21,8 @@ class Tabber {
 		this.activeTabpanel = null;
 		this.tabFocus = 0;
 		this.isOverflowing = false;
+		this.isProgrammaticPanelScroll = false;
+		this.scrollTimeout = null;
 
 		this.panelObserver = null;
 		this.visibilityObserver = null;
@@ -36,6 +38,7 @@ class Tabber {
 		this.onTablistScroll = this.onTablistScroll.bind( this );
 		this.onTablistKeydown = this.onTablistKeydown.bind( this );
 		this.handlePanelIntersection = this.handlePanelIntersection.bind( this );
+		this.onSectionScroll = this.onSectionScroll.bind( this );
 	}
 
 	/**
@@ -271,6 +274,7 @@ class Tabber {
 		this.section.style.height = activeTabpanelHeight + 'px';
 
 		if ( !options.preventScroll ) {
+			this.isProgrammaticPanelScroll = true;
 			window.requestAnimationFrame( () => {
 				this.section.scrollLeft = activeTabpanel.offsetLeft;
 			} );
@@ -492,6 +496,20 @@ class Tabber {
 	}
 
 	/**
+	 * Handles scroll events on the panel section to detect when programmatic scrolling has finished.
+	 *
+	 * @private
+	 */
+	onSectionScroll() {
+		if ( this.scrollTimeout ) {
+			clearTimeout( this.scrollTimeout );
+		}
+		this.scrollTimeout = setTimeout( () => {
+			this.isProgrammaticPanelScroll = false;
+		}, 150 );
+	}
+
+	/**
 	 * Attaches event listeners for an active tabber.
 	 *
 	 * @private
@@ -499,6 +517,7 @@ class Tabber {
 	addEventListeners() {
 		this.header.addEventListener( 'click', this.onHeaderClick );
 		this.section.addEventListener( 'click', this.onSectionClick );
+		this.section.addEventListener( 'scroll', this.onSectionScroll );
 		this.tablist.addEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.addEventListener( 'keydown', this.onTablistKeydown );
 
@@ -521,6 +540,7 @@ class Tabber {
 	removeEventListeners() {
 		this.header.removeEventListener( 'click', this.onHeaderClick );
 		this.section.removeEventListener( 'click', this.onSectionClick );
+		this.section.removeEventListener( 'scroll', this.onSectionScroll );
 		this.tablist.removeEventListener( 'scroll', this.onTablistScroll );
 		this.tablist.removeEventListener( 'keydown', this.onTablistKeydown );
 
@@ -577,6 +597,10 @@ class Tabber {
 	 * @private
 	 */
 	handlePanelIntersection( entries ) {
+		if ( this.isProgrammaticPanelScroll ) {
+			return;
+		}
+
 		for ( const entry of entries ) {
 			if ( entry.isIntersecting ) {
 				const panel = entry.target;
