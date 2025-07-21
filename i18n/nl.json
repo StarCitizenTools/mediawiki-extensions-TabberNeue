@@ -14,5 +14,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "Lees de [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documentatie] voor aanwijzingen over het gebruik.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (ingevoegd)",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Zie de [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentatie] voor aanwijzingen over het gebruik."
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Zie de [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentatie] voor aanwijzingen over het gebruik.",
+	"tabberneue-error-tabs-title": "De volgende fouten zijn opgetreden tijdens het verwerken van tabbladen:",
+	"tabberneue-error-tabs-duplicate-label": "Het tabbladlabel ‘$1’ is al in gebruik."
 }
