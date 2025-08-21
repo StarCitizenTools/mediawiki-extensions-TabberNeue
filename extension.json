@@ -141,7 +141,8 @@
 			"class": "MediaWiki\\Extension\\TabberNeue\\Hooks",
 			"services": [
 				"MainConfig",
-				"TabberNeue.TabNameHelper"
+				"TabberNeue.TabNameHelper",
+				"HookContainer"
 			]
 		}
 	},
