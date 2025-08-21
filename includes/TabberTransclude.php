@@ -128,7 +128,6 @@ class TabberTransclude {
 			// TODO: Should probably refactor this hook, not sure if it's used anywhere else.
 			$originalinnerContentHtml = $innerContentHtml;
 
-			// TODO: Maybe we should inject the hook container into the class.
 			$this->hookContainer->run(
 				'TabberNeueRenderLazyLoadedTab',
 				[ &$innerContentHtml, $parser, $frame ]
