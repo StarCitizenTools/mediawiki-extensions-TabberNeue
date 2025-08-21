@@ -33,7 +33,7 @@ class LuaLibrary extends LibraryBase {
 	/**
 	 * @throws LuaError If the tab data is invalid.
 	 */
-	private function convertToWikitext( array $tabData ) {
+	private function convertToWikitext( array $tabData ): string {
 		$wikitext = '';
 		foreach ( $tabData as $tab ) {
 			if ( !is_array( $tab ) || !isset( $tab['label'], $tab['content'] ) ) {

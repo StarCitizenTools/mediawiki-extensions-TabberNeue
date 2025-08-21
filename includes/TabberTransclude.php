@@ -101,9 +101,12 @@ class TabberTransclude {
 	 *
 	 * @throws Exception
 	 */
-	private function prepareTransclusionPanel( string $pageName, Parser $parser, PPFrame $frame, bool $isCurrentlySelectedTab ): string {
-		$html = '';
-
+	private function prepareTransclusionPanel(
+		string $pageName,
+		Parser $parser,
+		PPFrame $frame,
+		bool $isCurrentlySelectedTab,
+	): string {
 		$title = Title::newFromText( trim( $pageName ) );
 		if ( !$title ) {
 			// The error state is already handled in TabberTranscludeWikitextProcessor::parseTabContent()
@@ -150,7 +153,7 @@ class TabberTransclude {
 		$parser->getOutput()->addTemplate(
 			$title,
 			$title->getArticleId(),
-			$revRecord ? $revRecord->getId() : null
+			$revRecord?->getId()
 		);
 
 		return $html;
