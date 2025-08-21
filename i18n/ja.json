@@ -9,9 +9,13 @@
 	"tabberneue-button-next": "次へ",
 	"tabberneue-button-prev": "前へ",
 	"tabberneue-tabber-category": "Tabberパーサータグを使用しているページ",
+	"tabberneue-tabber-category-desc": "このページでは<code><tabber></code>パーサータグが使用されています。",
 	"tabberneue-tabbertransclude-category": "TabberTranscludeパーサータグを使用しているページ",
+	"tabberneue-tabbertransclude-category-desc": "このページでは<code><tabbertransclude></code>が使用されています。",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "使用方法は[https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers ドキュメント]を参照して下さい。",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (参照読み込み)",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "使用方法は[https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion ドキュメント]を参照して下さい。"
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "使用方法は[https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion ドキュメント]を参照して下さい。",
+	"tabberneue-error-tabs-title": "タブの処理中に次のエラーが発生しました:",
+	"tabberneue-error-tabs-duplicate-label": "タブラベル「$1」は既に使用されています。"
 }
