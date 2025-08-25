@@ -2,8 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Ciencia Al Poder",
-			"Fitoschido"
+			"Fitoschido",
+			"Rousmery96"
 		]
 	},
-	"tabberneue-desc": "Permite crear pestañas dentro de una página. Bifurcada de [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber]."
+	"tabberneue-desc": "Permite crear pestañas dentro de una página. Bifurcada de [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
+	"tabberneue-tabber-category-desc": "La página utiliza el<code><tabber></code> etiqueta del analizador.",
+	"tabberneue-tabbertransclude-category-desc": "La página utiliza el<code><tabbertransclude></code> etiqueta del analizador."
 }

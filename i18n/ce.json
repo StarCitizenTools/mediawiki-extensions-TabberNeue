@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Умар"
+		]
+	},
+	"tabberneue-button-next": "Кхин дӀа",
+	"tabberneue-button-prev": "Хьалхара",
+	"tabberneue-visualeditor-mwtabberdialog-title": "Таббер",
+	"tabberneue-visualeditor-mwtabberdialog-desc": "Хьажа муха лелайо инструкци [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers документацин] агӀонан тӀехь.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Таббер (трансклюзи)",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Хьажа муха лелайо инструкци [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion документацин] агӀонан тӀехь.",
+	"tabberneue-error-tabs-title": "Вкладкаш лелош нисделла хӀара гӀалаташ:",
+	"tabberneue-error-tabs-duplicate-label": "Вкладкин билгало «$1» хӀинцале а лелош йу."
+}
