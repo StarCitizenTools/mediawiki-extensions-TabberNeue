@@ -8,6 +8,7 @@ use MediaWiki\Config\Config;
 use MediaWiki\Extension\TabberNeue\Scribunto\LuaLibrary;
 use MediaWiki\Extension\TabberNeue\Service\TabNameHelper;
 use MediaWiki\Hook\ParserFirstCallInitHook;
+use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\Html\TemplateParser;
 use MediaWiki\Parser\Parser;
 
@@ -16,8 +17,9 @@ class Hooks implements ParserFirstCallInitHook {
 	private TemplateParser $templateParser;
 
 	public function __construct(
-		private Config $config,
-		private readonly TabNameHelper $tabNameHelper
+		private readonly Config $config,
+		private readonly TabNameHelper $tabNameHelper,
+		private readonly HookContainer $hookContainer,
 	) {
 		$this->templateParser = new TemplateParser( __DIR__ . '/templates' );
 	}
@@ -28,8 +30,17 @@ class Hooks implements ParserFirstCallInitHook {
 	 * @param Parser $parser
 	 */
 	public function onParserFirstCallInit( $parser ): void {
-		$parser->setHook( 'tabber', [ new Tabber( $this->config, $this->templateParser, $this->tabNameHelper ), 'parserHook' ] );
-		$parser->setHook( 'tabbertransclude', [ new TabberTransclude( $this->config, $this->templateParser, $this->tabNameHelper ), 'parserHook' ] );
+		$parser->setHook( 'tabber', [ new Tabber(
+			$this->config,
+			$this->templateParser,
+			$this->tabNameHelper,
+		), 'parserHook' ] );
+		$parser->setHook( 'tabbertransclude', [ new TabberTransclude(
+			$this->config,
+			$this->templateParser,
+			$this->tabNameHelper,
+			$this->hookContainer,
+		), 'parserHook' ] );
 	}
 
 	/**

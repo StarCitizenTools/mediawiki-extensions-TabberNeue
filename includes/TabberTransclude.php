@@ -20,9 +20,9 @@ use MediaWiki\Extension\TabberNeue\Components\TabberComponentTab;
 use MediaWiki\Extension\TabberNeue\Components\TabberComponentTabs;
 use MediaWiki\Extension\TabberNeue\Parsing\TabberTranscludeWikitextProcessor;
 use MediaWiki\Extension\TabberNeue\Service\TabNameHelper;
+use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\Html\Html;
 use MediaWiki\Html\TemplateParser;
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
 use MediaWiki\Title\Title;
@@ -32,7 +32,8 @@ class TabberTransclude {
 	public function __construct(
 		private Config $config,
 		private TemplateParser $templateParser,
-		private readonly TabNameHelper $tabNameHelper
+		private readonly TabNameHelper $tabNameHelper,
+		private readonly HookContainer $hookContainer,
 	) {
 	}
 
@@ -100,9 +101,12 @@ class TabberTransclude {
 	 *
 	 * @throws Exception
 	 */
-	private function prepareTransclusionPanel( string $pageName, Parser $parser, PPFrame $frame, bool $isCurrentlySelectedTab ): string {
-		$html = '';
-
+	private function prepareTransclusionPanel(
+		string $pageName,
+		Parser $parser,
+		PPFrame $frame,
+		bool $isCurrentlySelectedTab,
+	): string {
 		$title = Title::newFromText( trim( $pageName ) );
 		if ( !$title ) {
 			// The error state is already handled in TabberTranscludeWikitextProcessor::parseTabContent()
@@ -119,14 +123,12 @@ class TabberTransclude {
 				$frame
 			);
 		} else {
-			$service = MediaWikiServices::getInstance();
 			$innerContentHtml = $parser->getLinkRenderer()->makeLink( $title, null );
 
 			// TODO: Should probably refactor this hook, not sure if it's used anywhere else.
 			$originalinnerContentHtml = $innerContentHtml;
 
-			// TODO: Maybe we should inject the hook container into the class.
-			$service->getHookContainer()->run(
+			$this->hookContainer->run(
 				'TabberNeueRenderLazyLoadedTab',
 				[ &$innerContentHtml, $parser, $frame ]
 			);
@@ -150,7 +152,7 @@ class TabberTransclude {
 		$parser->getOutput()->addTemplate(
 			$title,
 			$title->getArticleId(),
-			$revRecord ? $revRecord->getId() : null
+			$revRecord?->getId()
 		);
 
 		return $html;
