@@ -4,8 +4,13 @@
 			"Умар"
 		]
 	},
+	"tabberneue-desc": "АгӀонан тӀехь вкладкаш кхолла аьтто бо. Форк [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
 	"tabberneue-button-next": "Кхин дӀа",
 	"tabberneue-button-prev": "Хьалхара",
+	"tabberneue-tabber-category": "Tabber парсеран тег лелош йолу агӀонаш",
+	"tabberneue-tabber-category-desc": "АгӀонан тӀехь лелайо <code><tabber></code> парсеран тег.",
+	"tabberneue-tabbertransclude-category": "TabberTransclude парсеран тег лелош йолу агӀонаш",
+	"tabberneue-tabbertransclude-category-desc": "АгӀонан тӀехь лелайо <code><tabbertransclude></code> парсеран тег.",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Таббер",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "Хьажа муха лелайо инструкци [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers документацин] агӀонан тӀехь.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Таббер (трансклюзи)",
