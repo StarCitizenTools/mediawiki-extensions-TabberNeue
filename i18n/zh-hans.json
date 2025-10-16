@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"GuoPC",
 			"Lakejason0",
 			"NekoCharm",
 			"Xiaomingyan",
@@ -12,7 +13,9 @@
 	"tabberneue-button-next": "下一个",
 	"tabberneue-button-prev": "上一个",
 	"tabberneue-tabber-category": "使用Tabber解析器标签的页面",
+	"tabberneue-tabber-category-desc": "该页面使用<code><tabber></code>解析器标签。",
 	"tabberneue-tabbertransclude-category": "使用TabberTransclude解析器标签的页面",
+	"tabberneue-tabbertransclude-category-desc": "该页面使用<code><tabbertransclude></code>解析器标签。",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "有关具体用法，参见[https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers 文档]。",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber（嵌入）",
