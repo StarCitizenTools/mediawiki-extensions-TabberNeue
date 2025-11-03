@@ -4,5 +4,17 @@
 			"Toliño"
 		]
 	},
-	"tabberneue-desc": "Permite a creación de lapelas dentro dunha páxina"
+	"tabberneue-desc": "Permite a creación de lapelas dentro dunha páxina. Derivado de [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
+	"tabberneue-button-next": "Seguinte",
+	"tabberneue-button-prev": "Anterior",
+	"tabberneue-tabber-category": "Páxinas que usan a etiqueta do analizador Tabber",
+	"tabberneue-tabber-category-desc": "A páxina emprega a etiqueta <code><tabber></code> do analizador sintáctico.",
+	"tabberneue-tabbertransclude-category": "Páxinas que usan a etiqueta do analizador TabberTransclude",
+	"tabberneue-tabbertransclude-category-desc": "A páxina emprega a etiqueta <code><tabbertransclude></code> do analizador sintáctico.",
+	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
+	"tabberneue-visualeditor-mwtabberdialog-desc": "Consulta a [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documentación] para obter información sobre o seu uso.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (transclusión)",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Consulta a [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentación] para obter información sobre o seu uso.",
+	"tabberneue-error-tabs-title": "Producíronse os seguintes erros ao procesar as lapelas:",
+	"tabberneue-error-tabs-duplicate-label": "A etiqueta de lapela «$1» xa está en uso."
 }
