@@ -10,9 +10,13 @@
 	"tabberneue-button-next": "下一個",
 	"tabberneue-button-prev": "上一個",
 	"tabberneue-tabber-category": "使用Tabber解析器標籤的頁面",
+	"tabberneue-tabber-category-desc": "該頁面使用 <code><tabber></code> 解析標籤。",
 	"tabberneue-tabbertransclude-category": "使用TabberTransclude解析器標籤的頁面",
+	"tabberneue-tabbertransclude-category-desc": "該頁面使用 <code><tabbertransclude></code> 解析標籤。",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "關於具體用法，參閱[https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers 文件]。",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber（嵌入）",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "關於具體用法，參閱[https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion 文件]。"
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "關於具體用法，參閱[https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion 文件]。",
+	"tabberneue-error-tabs-title": "處理分頁時發生以下錯誤：",
+	"tabberneue-error-tabs-duplicate-label": "分頁標籤 '$1' 已被使用。"
 }
