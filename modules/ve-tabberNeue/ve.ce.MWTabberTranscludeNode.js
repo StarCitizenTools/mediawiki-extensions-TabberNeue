@@ -75,7 +75,7 @@ ve.ce.MWTabberTranscludeNode.prototype.renderHeader = function ( tabber ) {
 	}
 
 	renderSingleHeader( tabber );
-	ve.ce.MWTabberNode.static.lastHeader = tabber.firstElementChild;
+	ve.ce.MWTabberTranscludeNode.static.lastHeader = tabber.firstElementChild;
 };
 
 /* Registration */
