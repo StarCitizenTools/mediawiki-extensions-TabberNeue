@@ -26,8 +26,6 @@ OO.inheritClass( ve.ui.MWTabberBaseDialog, ve.ui.MWExtensionDialog );
 
 ve.ui.MWTabberBaseDialog.static.size = 'larger';
 
-ve.ui.MWTabberBaseDialog.static.dir = 'ltr';
-
 ve.ui.MWTabberBaseDialog.static.actions = [
 	{
 		action: 'save',
