@@ -99,7 +99,7 @@ ve.ui.MWTabberDialog.prototype.parseTabsFromWikitext = function ( wikitext ) {
 	// Split by tab separator |-|
 	const tabParts = wikitext.split( '|-|' );
 
-	tabParts.forEach( function ( part ) {
+	tabParts.forEach( ( part ) => {
 		const trimmedPart = part.trim();
 		if ( !trimmedPart ) {
 			return;
@@ -125,7 +125,7 @@ ve.ui.MWTabberDialog.prototype.parseTabsFromWikitext = function ( wikitext ) {
 ve.ui.MWTabberDialog.prototype.convertTabsToWikitext = function () {
 	const wikitextParts = [];
 
-	this.tabPanels.forEach( function ( tabPanel ) {
+	this.tabPanels.forEach( ( tabPanel ) => {
 		const label = tabPanel.labelInput.getValue().trim();
 		const content = tabPanel.contentInput.getValue().trim();
 
@@ -167,9 +167,9 @@ ve.ui.MWTabberDialog.prototype.validateAllTabs = function () {
 	// const duplicateLabels = new Map();
 	const promises = [];
 
-	this.tabPanels.forEach( function ( tabPanel, index ) {
+	this.tabPanels.forEach( ( tabPanel, index ) => {
 		const promise = tabPanel.labelInput.getValidity().then(
-			function () {
+			() => {
 				tabPanel.labelInput.setValidityFlag( true );
 				
 				// Check for duplicate labels
@@ -181,7 +181,7 @@ ve.ui.MWTabberDialog.prototype.validateAllTabs = function () {
 				// 	duplicateLabels.get( label ).push( index + 1 );
 				// }
 			},
-			function () {
+			() => {
 				tabPanel.labelInput.setValidityFlag( false );
 				invalidTabs.push( index + 1 );
 			}
@@ -189,7 +189,7 @@ ve.ui.MWTabberDialog.prototype.validateAllTabs = function () {
 		promises.push( promise );
 	} );
 
-	$.when.apply( $, promises ).always( function () {
+	$.when.apply( $, promises ).always( () => {
 		// Find actual duplicates (labels used more than once)
 		// const duplicates = [];
 		// duplicateLabels.forEach( function ( indices, label ) {

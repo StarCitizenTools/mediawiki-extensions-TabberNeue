@@ -101,7 +101,7 @@ ve.ui.MWTabberTranscludeInspector.prototype.parseTabsFromWikitext = function ( w
 	// Split by newlines
 	const lines = wikitext.split( '\n' );
 
-	lines.forEach( function ( line ) {
+	lines.forEach( ( line ) => {
 		const trimmedLine = line.trim();
 		if ( !trimmedLine ) {
 			return;
@@ -130,7 +130,7 @@ ve.ui.MWTabberTranscludeInspector.prototype.parseTabsFromWikitext = function ( w
 ve.ui.MWTabberTranscludeInspector.prototype.convertTabsToWikitext = function () {
 	const wikitextParts = [];
 
-	this.tabPanels.forEach( function ( tabPanel ) {
+	this.tabPanels.forEach( ( tabPanel ) => {
 		const label = tabPanel.labelInput.getValue().trim();
 		const page = tabPanel.pageInput.getValue().trim();
 
@@ -172,14 +172,14 @@ ve.ui.MWTabberTranscludeInspector.prototype.validateAllTabs = function () {
 	const invalidPages = [];
 	const promises = [];
 
-	this.tabPanels.forEach( function ( tabPanel, index ) {
+	this.tabPanels.forEach( ( tabPanel, index ) => {
 		// Validate label
 		const labelPromise = tabPanel.labelInput.getValidity().then(
-			function () {
+			() => {
 				// Valid
 				tabPanel.labelInput.setValidityFlag( true );
 			},
-			function () {
+			() => {
 				// Invalid
 				tabPanel.labelInput.setValidityFlag( false );
 				invalidLabels.push( index + 1 );
@@ -189,11 +189,11 @@ ve.ui.MWTabberTranscludeInspector.prototype.validateAllTabs = function () {
 
 		// Validate page
 		const pagePromise = tabPanel.pageInput.getValidity().then(
-			function () {
+			() => {
 				// Valid
 				tabPanel.pageInput.setValidityFlag( true );
 			},
-			function () {
+			() => {
 				// Invalid
 				tabPanel.pageInput.setValidityFlag( false );
 				invalidPages.push( index + 1 );
@@ -203,7 +203,7 @@ ve.ui.MWTabberTranscludeInspector.prototype.validateAllTabs = function () {
 	} );
 
 	// Use .always() to run regardless of individual promise success/failure
-	$.when.apply( $, promises ).always( function () {
+	$.when.apply( $, promises ).always( () => {
 		deferred.resolve( {
 			valid: invalidLabels.length === 0 && invalidPages.length === 0,
 			invalidLabels: invalidLabels,

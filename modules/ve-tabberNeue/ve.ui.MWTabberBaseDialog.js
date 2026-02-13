@@ -299,7 +299,7 @@ ve.ui.MWTabberBaseDialog.prototype.createTabPanel = function ( label, data ) {
 				)
 		);
 
-	tabPanel.panel.$element.append( $header, ...fields.map( function ( f ) { return f.$element } ) );
+	tabPanel.panel.$element.append( $header, ...fields.map( ( f ) => f.$element ) );
 
 	return tabPanel;
 };
@@ -372,7 +372,7 @@ ve.ui.MWTabberBaseDialog.prototype.onTabSelect = function ( item ) {
 		return;
 	}
 
-	const tabPanel = this.tabPanels.find( function ( panel ) { return panel.tabOption === item } );
+	const tabPanel = this.tabPanels.find( ( panel ) => panel.tabOption === item );
 
 	if ( tabPanel ) {
 		this.tabContainer.setItem( tabPanel.panel );
@@ -471,25 +471,25 @@ ve.ui.MWTabberBaseDialog.prototype.onDuplicateClick = function ( tabPanel ) {
  * Rebuild navigation widgets in current order
  */
 ve.ui.MWTabberBaseDialog.prototype.rebuildNavigation = function () {
-	const tabOptions = this.tabPanels.map( function ( tabPanel ) { return tabPanel.tabOption } );
+	const tabOptions = this.tabPanels.map( ( tabPanel ) => tabPanel.tabOption );
 
 	this.tabSelectWidget.clearItems();
 	this.tabContainer.clearItems();
 
 	this.tabSelectWidget.addItems( tabOptions );
-	this.tabPanels.forEach( function ( tabPanel ) {
+	this.tabPanels.forEach( ( tabPanel ) => {
 		this.tabContainer.addItems( [ tabPanel.panel ] );
-	}, this );
+	} );
 };
 
 /**
  * Update Move button states based on tab position
  */
 ve.ui.MWTabberBaseDialog.prototype.updateMoveButtons = function () {
-	this.tabPanels.forEach( function ( tabPanel, index ) {
+	this.tabPanels.forEach( ( tabPanel, index ) => {
 		tabPanel.moveLeftButton.setDisabled( index === 0 );
 		tabPanel.moveRightButton.setDisabled( index === this.tabPanels.length - 1 );
-	}.bind( this ) );
+	} );
 };
 
 /**
@@ -542,7 +542,7 @@ ve.ui.MWTabberBaseDialog.prototype.onRemoveTabClick = function ( tabPanel ) {
  * Update tab numbers in headers and navigation.
  */
 ve.ui.MWTabberBaseDialog.prototype.updateTabNumbers = function () {
-	this.tabPanels.forEach( function ( tabPanel, index ) {
+	this.tabPanels.forEach( ( tabPanel, index ) => {
 		const tabNumber = index + 1;
 
 		// Update cached title element
@@ -556,7 +556,7 @@ ve.ui.MWTabberBaseDialog.prototype.updateTabNumbers = function () {
 		if ( !currentLabel ) {
 			tabPanel.tabOption.setLabel( this.getDefaultTabLabel( tabNumber ) );
 		}
-	}.bind( this ) );
+	} );
 };
 
 /**
@@ -567,7 +567,7 @@ ve.ui.MWTabberBaseDialog.prototype.updateTabNumbers = function () {
  */
 ve.ui.MWTabberBaseDialog.prototype.getSetupProcess = function ( data ) {
 	return ve.ui.MWTabberBaseDialog.super.prototype.getSetupProcess.call( this, data )
-		.next( function () {
+		.next( () => {
 			let wikitext = '';
 
 			if ( this.selectedNode ) {
@@ -578,10 +578,10 @@ ve.ui.MWTabberBaseDialog.prototype.getSetupProcess = function ( data ) {
 			}
 
 			// Clear existing tabs
-			this.tabPanels.forEach( function ( tabPanel ) {
+			this.tabPanels.forEach( ( tabPanel ) => {
 				this.tabSelectWidget.removeItems( [ tabPanel.tabOption ] );
 				this.tabContainer.removeItems( [ tabPanel.panel ] );
-			}.bind( this ) );
+			} );
 			this.tabPanels = [];
 
 			// Parse and create tabs
@@ -591,12 +591,12 @@ ve.ui.MWTabberBaseDialog.prototype.getSetupProcess = function ( data ) {
 				tabs.push( this.getEmptyTabData() );
 			}
 
-			tabs.forEach( function ( tab ) {
+			tabs.forEach( ( tab ) => {
 				const tabPanel = this.createTabPanelFromData( tab );
 				this.tabPanels.push( tabPanel );
 				this.tabSelectWidget.addItems( [ tabPanel.tabOption ] );
 				this.tabContainer.addItems( [ tabPanel.panel ] );
-			}.bind( this ) );
+			} );
 
 			// Select the first tab
 			if ( this.tabPanels.length > 0 ) {
@@ -606,7 +606,7 @@ ve.ui.MWTabberBaseDialog.prototype.getSetupProcess = function ( data ) {
 
 			this.updateMoveButtons();
 			this.updateSize();
-		}, this );
+		} );
 };
 
 /**
@@ -617,13 +617,13 @@ ve.ui.MWTabberBaseDialog.prototype.getSetupProcess = function ( data ) {
  */
 ve.ui.MWTabberBaseDialog.prototype.getTeardownProcess = function ( data ) {
 	return ve.ui.MWTabberBaseDialog.super.prototype.getTeardownProcess.call( this, data )
-		.first( function () {
-			this.tabPanels.forEach( function ( tabPanel ) {
+		.first( () => {
+			this.tabPanels.forEach( ( tabPanel ) => {
 				this.tabSelectWidget.removeItems( [ tabPanel.tabOption ] );
 				this.tabContainer.removeItems( [ tabPanel.panel ] );
-			}.bind( this ) );
+			} );
 			this.tabPanels = [];
-		}, this );
+		} );
 };
 
 /**
@@ -634,9 +634,9 @@ ve.ui.MWTabberBaseDialog.prototype.getTeardownProcess = function ( data ) {
  */
 ve.ui.MWTabberBaseDialog.prototype.getActionProcess = function ( action ) {
 	if ( action === 'save' ) {
-		return new OO.ui.Process( function () {
+		return new OO.ui.Process( () => {
 			this.validateAllTabs()
-				.then( function ( result ) {
+				.then( ( result ) => {
 					if ( !result.valid ) {
 						this.showValidationError( result );
 						return $.Deferred().reject().promise();
@@ -661,12 +661,12 @@ ve.ui.MWTabberBaseDialog.prototype.getActionProcess = function ( action ) {
 					}
 
 					this.close( { action: 'save' } );
-				}.bind( this ) );
-		}, this );
+				} );
+		} );
 	} else if ( action === 'cancel' ) {
-		return new OO.ui.Process( function () {
+		return new OO.ui.Process( () => {
 			this.close( { action: 'cancel' } );
-		}, this );
+		} );
 	}
 
 	return ve.ui.MWTabberBaseDialog.super.prototype.getActionProcess.call( this, action );
