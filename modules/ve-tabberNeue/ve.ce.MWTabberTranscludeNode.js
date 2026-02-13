@@ -42,7 +42,7 @@ ve.ce.MWTabberTranscludeNode.prototype.onSetup = function () {
 
 	const tabber = this.$element[ 0 ];
 	const needsInit = tabber.classList.contains( 'tabber--init' );
-	const isNewHeader = tabber.firstElementChild !== ve.ce.MWTabberNode.static.lastHeader;
+	const isNewHeader = tabber.firstElementChild !== ve.ce.MWTabberTranscludeNode.static.lastHeader;
 
 	// Do not render header if it is already rendered
 	if ( needsInit && isNewHeader
@@ -75,7 +75,7 @@ ve.ce.MWTabberTranscludeNode.prototype.renderHeader = function ( tabber ) {
 	}
 
 	renderSingleHeader( tabber );
-	ve.ce.MWTabberNode.static.lastHeader = tabber.firstElementChild;
+	ve.ce.MWTabberTranscludeNode.static.lastHeader = tabber.firstElementChild;
 };
 
 /* Registration */

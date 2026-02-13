@@ -8,3 +8,45 @@
 .ve-ui-mwTabberDialog-content .oo-ui-textInputWidget {
 	max-width: none;
 }
+
+.ve-ui-mwTabberDialog-stickyHeader {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	background-color: var( --background-color-base, #fff );
+	border-bottom: 1px solid var( --border-color-base, #a2a9b1 );
+	padding: 0.75em 1em;
+	display: flex;
+	align-items: center;
+	gap: 1em;
+}
+
+.ve-ui-mwTabberDialog-tabSelectWrapper {
+	flex: 1;
+	min-width: 0;
+	overflow: auto hidden;
+	scroll-behavior: smooth;
+	scrollbar-width: thin;
+}
+
+.ve-ui-mwTabberDialog-tabSelect {
+	white-space: nowrap;
+}
+
+.ve-ui-mwTabberDialog-tabOption {
+	max-width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	flex-shrink: 0;
+}
+
+.ve-ui-mwTabberDialog-tabPanel-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.ve-ui-mwTabberDialog-tabPanel-title {
+	font-weight: bold;
+	font-size: 1.1em;
+}
