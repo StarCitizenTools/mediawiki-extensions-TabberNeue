@@ -445,7 +445,7 @@ ve.ui.MWTabberBaseDialog.prototype.onMoveRightClick = function ( tabPanel ) {
 ve.ui.MWTabberBaseDialog.prototype.onDuplicateClick = function ( tabPanel ) {
 	const index = this.tabPanels.indexOf( tabPanel );
 	const label = tabPanel.labelInput.getValue();
-	const newLabel = label ? label + ' (Copy)' : '';
+	const newLabel = label ? OO.ui.msg( 'tabberneue-visualeditor-copy-suffix', label ) : '';
 
 	// Get additional data for duplication
 	const data = this.getTabDataForDuplication( tabPanel );

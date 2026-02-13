@@ -43,6 +43,7 @@
     "tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-label": "The following tabs have empty labels: $1. Please provide a label for each tab.",
     "tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-page": "The following tabs have empty page names: $1. Please provide a valid page name for each tab.",
     "tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-both": "The following tabs have empty labels: $1; and the following tabs have empty page names: $2. Please provide a label and valid page name for each tab.",
+    "tabberneue-visualeditor-copy-suffix": "$1 (copy)",
     "tabberneue-error-tabs-title": "The following errors occurred while processing tabs:",
     "tabberneue-error-tabs-duplicate-label": "The tab label '$1' is already in use."
 }

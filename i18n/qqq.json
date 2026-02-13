@@ -41,6 +41,7 @@
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-label": "Error message when one or more tabs have empty labels and the user tries to save.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-page": "Error message when one or more tabs have empty page names and the user tries to save.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-both": "Error message when one or more tabs have empty labels or empty page names and the user tries to save.",
+	"tabberneue-visualeditor-copy-suffix": "Suffix added to a tab's label when duplicating it in Visual Editor.",
 	"tabberneue-error-tabs-title": "Intro for the error message box for the list of errors.",
 	"tabberneue-error-tabs-duplicate-label": "Error message when duplicate tab label is used."
 }

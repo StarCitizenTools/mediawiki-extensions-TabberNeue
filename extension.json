@@ -110,7 +110,8 @@
 				"tabberneue-visualeditor-mwtabbertranscludeinspector-error-title",
 				"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-label",
 				"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-page",
-				"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-both"
+				"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-both",
+				"tabberneue-visualeditor-copy-suffix"
 			]
 		},
 		"ext.tabberNeue.icons": {
