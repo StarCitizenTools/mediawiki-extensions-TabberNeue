@@ -2,7 +2,7 @@
  * VisualEditor UserInterface MWTabberTranscludeInspectorTool class.
  *
  * @class
- * @extends ve.ui.FragmentInspectorTool
+ * @extends ve.ui.FragmentWindowTool
  * @constructor
  * @param {OO.ui.ToolGroup} toolGroup
  * @param {Object} [config] Configuration options
@@ -13,7 +13,7 @@ ve.ui.MWTabberTranscludeInspectorTool = function VeUiMWTabberTranscludeInspector
 
 /* Inheritance */
 
-OO.inheritClass( ve.ui.MWTabberTranscludeInspectorTool, ve.ui.FragmentInspectorTool );
+OO.inheritClass( ve.ui.MWTabberTranscludeInspectorTool, ve.ui.FragmentWindowTool );
 
 /* Static properties */
 
