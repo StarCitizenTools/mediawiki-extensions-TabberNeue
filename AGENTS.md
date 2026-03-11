@@ -10,12 +10,14 @@ Run only what's relevant to the files you changed.
 
 | Files changed | Command |
 | --- | --- |
-| `*.php` | `composer test` (lint + PHPCS) then `composer phan` |
+| `*.php` | `composer preflight` (lint, style, and Phan) |
 | `*.js` | `npm run lint:js` |
 | `*.less`, `*.css` | `npm run lint:styles` |
 | `i18n/` | `npm run lint:i18n` |
 
 Auto-fix commands: `composer fix` (PHP), `npm run lint:fix:js` (JS), `npm run lint:fix:styles` (styles).
+
+**Preflight**: Run `npm run preflight` to execute all Node-based lints in one command. Run `composer preflight` from within a MediaWiki installation to execute all PHP lints, style checks, and Phan static analysis.
 
 **Always run the relevant checks before committing.** Read the full output — PHPCS warnings must be fixed, not just errors. The command exits 0 even with warnings, so do not treat exit code alone as a pass.
 
@@ -26,7 +28,7 @@ This project's standard dev environment is the MediaWiki Docker setup defined in
 To run composer commands in the standard Docker environment:
 
 ```sh
-docker compose exec mediawiki bash -c "cd /var/www/html/w/extensions/TabberNeue && composer test"
+docker compose exec mediawiki bash -c "cd /var/www/html/w/extensions/TabberNeue && composer preflight"
 ```
 
 ### Phan
