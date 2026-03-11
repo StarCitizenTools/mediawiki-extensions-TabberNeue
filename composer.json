@@ -39,12 +39,19 @@
 			"phpcbf"
 		],
 		"test": [
-			"parallel-lint . --exclude vendor --exclude node_modules",
-			"phpcs --config-set ignore_warnings_on_exit 1",
-			"phpcs -p -s",
+			"parallel-lint . --exclude node_modules --exclude vendor",
+			"@phpcs",
 			"minus-x check ."
 		],
-		"phan": "phan -d . --long-progress-bar"
+		"phan": "phan -d . --long-progress-bar",
+		"phpcs": [
+			"phpcs --config-set ignore_warnings_on_exit 1",
+			"phpcs -sp --cache"
+		],
+		"preflight": [
+			"@test",
+			"@phan"
+		]
 	},
 	"extra": {
 		"installer-name": "TabberNeue"
