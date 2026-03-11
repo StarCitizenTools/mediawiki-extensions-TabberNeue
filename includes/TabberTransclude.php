@@ -68,12 +68,12 @@ class TabberTransclude {
 			$tabContent = '';
 			try {
 				$tabContent = $this->prepareTransclusionPanel(
-					(string)$tabModel->content,
+					$tabModel->content,
 					$parser,
 					$frame,
 					$isCurrentlySelectedTab
 				);
-			} catch ( Exception $e ) {
+			} catch ( Exception ) {
 				$tabContent = Html::errorBox( 'Error processing tab: ' . $tabModel->label );
 			}
 
@@ -152,7 +152,7 @@ class TabberTransclude {
 		$parser->getOutput()->addTemplate(
 			$title,
 			$title->getArticleId(),
-			$revRecord?->getId()
+			$revRecord?->getId() ?? 0
 		);
 
 		return $html;
