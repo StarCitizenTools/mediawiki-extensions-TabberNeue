@@ -30,7 +30,7 @@ class TabberWikitextProcessor implements WikitextProcessor {
 
 		$segments = explode( '|-|', $wikitext );
 		foreach ( $segments as $segment ) {
-			if ( empty( trim( $segment ) ) ) {
+			if ( trim( $segment ) === '' ) {
 				continue;
 			}
 

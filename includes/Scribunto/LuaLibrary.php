@@ -20,6 +20,12 @@ class LuaLibrary extends LibraryBase {
 		return $this->getEngine()->registerInterface( __DIR__ . DIRECTORY_SEPARATOR . 'mw.ext.tabber.lua', $lib, [] );
 	}
 
+	/**
+	 * Render tabber from Lua data.
+	 *
+	 * @param mixed $tabData Tab data from Lua.
+	 * @return array
+	 */
 	public function render( $tabData = null ): array {
 		$this->checkType( 'mw.ext.tabber.render', 1, $tabData, 'table' );
 
@@ -36,7 +42,7 @@ class LuaLibrary extends LibraryBase {
 	private function convertToWikitext( array $tabData ): string {
 		$wikitext = '';
 		foreach ( $tabData as $tab ) {
-			if ( !is_array( $tab ) || !isset( $tab['label'], $tab['content'] ) ) {
+			if ( !is_array( $tab ) || !isset( $tab['label'] ) || !isset( $tab['content'] ) ) {
 				throw new LuaError( 'Tab must be an array with label and content keys' );
 			}
 

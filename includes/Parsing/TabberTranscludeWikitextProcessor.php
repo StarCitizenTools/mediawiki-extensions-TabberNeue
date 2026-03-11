@@ -29,7 +29,7 @@ class TabberTranscludeWikitextProcessor implements WikitextProcessor {
 		$lines = explode( "\n", $wikitext );
 
 		foreach ( $lines as $line ) {
-			if ( empty( trim( $line ) ) ) {
+			if ( trim( $line ) === '' ) {
 				continue;
 			}
 
