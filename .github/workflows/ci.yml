@@ -77,11 +77,4 @@ jobs:
     with:
       project-type: extension
       project-name: TabberNeue
-
-  test-php:
-    needs: changes
-    if: needs.changes.outputs.php == 'true'
-    uses: StarCitizenTools/mediawiki-ci-workflows/.github/workflows/test-php.yml@main
-    with:
-      project-type: extension
-      project-name: TabberNeue
+      extra-extensions: Scribunto
