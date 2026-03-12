@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.4.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.3.0...v3.4.0) (2026-03-12)
+
+
+### Features
+
+* implement full UI for Visual Editor dialogs ([30fcf2c](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/30fcf2cba9df229ddd703d743b979a4278b31ab4))
+
+
+### Miscellaneous Chores
+
+* add preflight scripts to composer and npm ([b31e475](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/b31e4754e14ce4626f919bed4d3ef11681d2a098))
+* resolve PHPCS and Phan warnings ([3ac5e95](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/3ac5e95b0ddea701865c856d810f25a1906dc1d1))
+
 ## [3.3.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.2.0...v3.3.0) (2025-07-09)
 
 
