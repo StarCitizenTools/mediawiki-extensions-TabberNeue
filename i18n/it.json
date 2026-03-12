@@ -2,12 +2,36 @@
 	"@metadata": {
 		"authors": [
 			"Beta16",
-			"Darth Kule"
+			"Darth Kule",
+			"Neonsn0w"
 		]
 	},
 	"tabberneue-desc": "Consente di creare schede all'interno di una pagina. Proviene da [https://www.mediawiki.org/wiki/Extension:Tabber Extension:Tabber].",
 	"tabberneue-button-next": "Successivo",
 	"tabberneue-button-prev": "Precedente",
+	"tabberneue-visualeditor-mwtabberdialog-addtab": "Aggiungi scheda",
+	"tabberneue-visualeditor-mwtabberdialog-removetab": "Rimuovi scheda",
+	"tabberneue-visualeditor-mwtabberdialog-moveleft": "Sposta la scheda a sinistra",
+	"tabberneue-visualeditor-mwtabberdialog-moveright": "Sposta la scheda a destra",
+	"tabberneue-visualeditor-mwtabberdialog-duplicate": "Scheda duplicata",
+	"tabberneue-visualeditor-mwtabberdialog-tab": "Scheda $1",
+	"tabberneue-visualeditor-mwtabberdialog-label": "Etichetta della scheda",
+	"tabberneue-visualeditor-mwtabberdialog-label-placeholder": "Inserisci l'etichetta della scheda",
+	"tabberneue-visualeditor-mwtabberdialog-content": "Contenuto della scheda",
+	"tabberneue-visualeditor-mwtabberdialog-content-placeholder": "Inserisci il contenuto della scheda (wikitesto)",
+	"tabberneue-visualeditor-mwtabberdialog-error-title": "Errore di convalida",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-addtab": "Aggiungi scheda",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-removetab": "Rimuovi scheda",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-moveleft": "Sposta la scheda a sinistra",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-moveright": "Sposta la scheda a destra",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-duplicate": "Scheda duplicata",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-tab": "Scheda $1",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-label": "Etichetta della scheda",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-label-placeholder": "Inserisci l'etichetta della scheda",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-page": "Nome della pagina",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-page-placeholder": "Inserisci il nome della pagina",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-title": "Errore di convalida",
+	"tabberneue-visualeditor-copy-suffix": "$1 (copia)",
 	"tabberneue-error-tabs-title": "Durante l'elaborazione delle schede sono verificati i seguenti errori:",
 	"tabberneue-error-tabs-duplicate-label": "L'etichetta della scheda '$1' è già in uso."
 }
