@@ -3,6 +3,7 @@
 		"authors": [
 			"Beta16",
 			"Darth Kule",
+			"McDutchie",
 			"Neonsn0w"
 		]
 	},
@@ -13,7 +14,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-removetab": "Rimuovi scheda",
 	"tabberneue-visualeditor-mwtabberdialog-moveleft": "Sposta la scheda a sinistra",
 	"tabberneue-visualeditor-mwtabberdialog-moveright": "Sposta la scheda a destra",
-	"tabberneue-visualeditor-mwtabberdialog-duplicate": "Scheda duplicata",
+	"tabberneue-visualeditor-mwtabberdialog-duplicate": "Duplica la scheda",
 	"tabberneue-visualeditor-mwtabberdialog-tab": "Scheda $1",
 	"tabberneue-visualeditor-mwtabberdialog-label": "Etichetta della scheda",
 	"tabberneue-visualeditor-mwtabberdialog-label-placeholder": "Inserisci l'etichetta della scheda",
@@ -24,7 +25,7 @@
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-removetab": "Rimuovi scheda",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-moveleft": "Sposta la scheda a sinistra",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-moveright": "Sposta la scheda a destra",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-duplicate": "Scheda duplicata",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-duplicate": "Duplica la scheda",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-tab": "Scheda $1",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-label": "Etichetta della scheda",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-label-placeholder": "Inserisci l'etichetta della scheda",
