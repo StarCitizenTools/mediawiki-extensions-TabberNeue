@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.4.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.4.0...v3.4.1) (2026-03-18)
+
+
+### Bug Fixes
+
+* bypass wikitext round-trip in LuaLibrary to prevent delimiter injection ([31374b5](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/31374b581897fd6ba33380079ee7a90c8c0ff9c5)), closes [#274](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/274)
+* prevent nested tabber clicks from triggering parent onSectionClick ([311ae26](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/311ae2655a2ba2612cd1509ce2de3c81f6f01f35)), closes [#252](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/252)
+* resolve disrupted ordered and unordered lists in tab content ([7cac999](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/7cac9992dbedfe6a8ff5888087eb3171362eaca5)), closes [#253](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/253)
+
 ## [3.4.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.3.0...v3.4.0) (2026-03-12)
 
 
