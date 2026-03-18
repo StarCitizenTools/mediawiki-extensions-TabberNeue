@@ -168,9 +168,10 @@
 		"TabberHooks": {
 			"class": "MediaWiki\\Extension\\TabberNeue\\Hooks",
 			"services": [
-				"MainConfig",
-				"TabberNeue.TabNameHelper",
-				"HookContainer"
+				"TabberNeue.TabParser",
+				"TabberNeue.TabIdGenerator",
+				"HookContainer",
+				"TabberNeue.TabberRenderer"
 			]
 		}
 	},

@@ -6,9 +6,9 @@ namespace MediaWiki\Extension\TabberNeue\Service;
 use MediaWiki\Parser\ParserOutput;
 use MediaWiki\Parser\Sanitizer;
 
-class TabNameHelper {
+class TabIdGenerator {
 	public function __construct(
-		private bool $parseTabName
+		private readonly bool $parseTabName
 	) {
 	}
 

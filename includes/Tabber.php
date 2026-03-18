@@ -14,21 +14,19 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue;
 
-use MediaWiki\Config\Config;
-use MediaWiki\Extension\TabberNeue\Components\TabberComponentTab;
-use MediaWiki\Extension\TabberNeue\Components\TabberComponentTabs;
 use MediaWiki\Extension\TabberNeue\Parsing\TabberWikitextProcessor;
-use MediaWiki\Extension\TabberNeue\Service\TabNameHelper;
-use MediaWiki\Html\TemplateParser;
+use MediaWiki\Extension\TabberNeue\Service\TabberRenderer;
+use MediaWiki\Extension\TabberNeue\Service\TabIdGenerator;
+use MediaWiki\Extension\TabberNeue\Service\TabParser;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
 
 class Tabber {
 
 	public function __construct(
-		private Config $config,
-		private TemplateParser $templateParser,
-		private readonly TabNameHelper $tabNameHelper
+		private readonly TabberRenderer $renderer,
+		private readonly TabParser $tabParser,
+		private readonly TabIdGenerator $tabIdGenerator
 	) {
 	}
 
@@ -40,11 +38,6 @@ class Tabber {
 			return '';
 		}
 
-		$parserOutput = $parser->getOutput();
-		$parserOutput->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
-		$parserOutput->addModules( [ 'ext.tabberNeue' ] );
-		$parser->addTrackingCategory( 'tabberneue-tabber-category' );
-
 		return $this->render( $input, $args, $parser, $frame );
 	}
 
@@ -55,26 +48,12 @@ class Tabber {
 		$processor = new TabberWikitextProcessor(
 			$parser,
 			$frame,
-			$this->config,
-			$this->tabNameHelper
+			$this->tabParser,
+			$this->tabIdGenerator
 		);
 
 		$tabModels = $processor->process( $input );
 
-		$tabsData = [];
-		$addTabPrefixConfig = $this->config->get( 'TabberNeueAddTabPrefix' );
-		foreach ( $tabModels as $tabModel ) {
-			$tab = new TabberComponentTab(
-				$tabModel->name,
-				$tabModel->label,
-				$tabModel->content,
-				$addTabPrefixConfig
-			);
-			$tabsData[] = $tab->getTemplateData();
-		}
-
-		$tabs = new TabberComponentTabs( $tabsData, $args );
-
-		return $this->templateParser->processTemplate( 'Tabs', $tabs->getTemplateData() );
+		return $this->renderer->render( $tabModels, $args, $parser );
 	}
 }
