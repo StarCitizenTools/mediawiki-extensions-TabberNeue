@@ -15,14 +15,13 @@ declare( strict_types=1 );
 namespace MediaWiki\Extension\TabberNeue;
 
 use Exception;
-use MediaWiki\Config\Config;
-use MediaWiki\Extension\TabberNeue\Components\TabberComponentTab;
-use MediaWiki\Extension\TabberNeue\Components\TabberComponentTabs;
+use MediaWiki\Extension\TabberNeue\DataModel\TabModel;
 use MediaWiki\Extension\TabberNeue\Parsing\TabberTranscludeWikitextProcessor;
-use MediaWiki\Extension\TabberNeue\Service\TabNameHelper;
+use MediaWiki\Extension\TabberNeue\Service\TabberRenderer;
+use MediaWiki\Extension\TabberNeue\Service\TabIdGenerator;
+use MediaWiki\Extension\TabberNeue\Service\TabParser;
 use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\Html\Html;
-use MediaWiki\Html\TemplateParser;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
 use MediaWiki\Title\Title;
@@ -30,9 +29,9 @@ use MediaWiki\Title\Title;
 class TabberTransclude {
 
 	public function __construct(
-		private Config $config,
-		private TemplateParser $templateParser,
-		private readonly TabNameHelper $tabNameHelper,
+		private readonly TabberRenderer $renderer,
+		private readonly TabParser $tabParser,
+		private readonly TabIdGenerator $tabIdGenerator,
 		private readonly HookContainer $hookContainer,
 	) {
 	}
@@ -45,11 +44,6 @@ class TabberTransclude {
 			return '';
 		}
 
-		$parserOutput = $parser->getOutput();
-		$parserOutput->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
-		$parserOutput->addModules( [ 'ext.tabberNeue' ] );
-		$parser->addTrackingCategory( 'tabberneue-tabbertransclude-category' );
-
 		return $this->render( $input, $args, $parser, $frame );
 	}
 
@@ -59,11 +53,10 @@ class TabberTransclude {
 	public function render( string $input, array $args, Parser $parser, PPFrame $frame ): string {
 		$isCurrentlySelectedTab = true;
 
-		$processor = new TabberTranscludeWikitextProcessor( $parser, $this->config, $this->tabNameHelper );
+		$processor = new TabberTranscludeWikitextProcessor( $parser, $this->tabParser, $this->tabIdGenerator );
 		$tabModels = $processor->process( $input );
 
-		$tabsData = [];
-		$addTabPrefixConfig = $this->config->get( 'TabberNeueAddTabPrefix' );
+		$resolvedModels = [];
 		foreach ( $tabModels as $tabModel ) {
 			$tabContent = '';
 			try {
@@ -77,23 +70,16 @@ class TabberTransclude {
 				$tabContent = Html::errorBox( 'Error processing tab: ' . $tabModel->label );
 			}
 
-			$tab = new TabberComponentTab(
-				$tabModel->name,
-				$tabModel->label,
-				$tabContent,
-				$addTabPrefixConfig
-			);
-
 			if ( $isCurrentlySelectedTab ) {
 				$isCurrentlySelectedTab = false;
 			}
 
-			$tabsData[] = $tab->getTemplateData();
+			$resolvedModels[] = new TabModel( $tabModel->name, $tabModel->label, $tabContent );
 		}
 
-		$tabs = new TabberComponentTabs( $tabsData, $args );
-
-		return $this->templateParser->processTemplate( 'Tabs', $tabs->getTemplateData() );
+		return $this->renderer->render(
+			$resolvedModels, $args, $parser, 'tabberneue-tabbertransclude-category'
+		);
 	}
 
 	/**

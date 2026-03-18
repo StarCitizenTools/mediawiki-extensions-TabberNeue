@@ -3,10 +3,9 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue\Parsing;
 
-use MediaWiki\Config\Config;
 use MediaWiki\Extension\TabberNeue\DataModel\TabModel;
-use MediaWiki\Extension\TabberNeue\Service\TabNameHelper;
-use MediaWiki\Html\Html;
+use MediaWiki\Extension\TabberNeue\Service\TabIdGenerator;
+use MediaWiki\Extension\TabberNeue\Service\TabParser;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
 
@@ -14,8 +13,8 @@ class TabberWikitextProcessor implements WikitextProcessor {
 	public function __construct(
 		private Parser $parser,
 		private PPFrame $frame,
-		private Config $config,
-		private readonly TabNameHelper $tabNameHelper
+		private readonly TabParser $tabParser,
+		private readonly TabIdGenerator $tabIdGenerator
 	) {
 	}
 
@@ -53,54 +52,15 @@ class TabberWikitextProcessor implements WikitextProcessor {
 		}
 		[ $rawLabel, $rawContent ] = $parts;
 
-		$label = $this->parseTabLabel( $rawLabel );
+		$label = $this->tabParser->parseLabel( $rawLabel, $this->parser );
 		if ( $label === '' ) {
 			return null;
 		}
 
-		$isContentHTML = strpos( $rawContent, '<' ) === 0;
-		$content = $this->parseTabContent( $rawContent );
+		$content = $this->tabParser->parseContent( $rawContent, $this->parser, $this->frame );
 
-		if ( $content !== '' && !$isContentHTML ) {
-			$content = Html::rawElement( 'p', [], $content );
-		}
-
-		$baseId = $this->tabNameHelper->generateSanitizedId( $label );
-		$uniqueName = $this->tabNameHelper->ensureUniqueId( $baseId, $this->parser->getOutput() );
+		$baseId = $this->tabIdGenerator->generateSanitizedId( $label );
+		$uniqueName = $this->tabIdGenerator->ensureUniqueId( $baseId, $this->parser->getOutput() );
 		return new TabModel( $uniqueName, $label, $content );
-	}
-
-	/**
-	 * Parses the tab label.
-	 */
-	private function parseTabLabel( string $labelWikitext ): string {
-		$label = trim( $labelWikitext );
-		if ( $label === '' ) {
-			return '';
-		}
-
-		if ( !$this->config->get( 'TabberNeueParseTabName' ) ) {
-			$label = $this->parser->getTargetLanguageConverter()->convertHtml( $label );
-		} else {
-			$label = $this->parser->recursiveTagParseFully( $label );
-			$label = $this->parser->stripOuterParagraph( $label );
-		}
-		return $label;
-	}
-
-	/**
-	 * Parses the tab content.
-	 */
-	private function parseTabContent( string $contentWikitext ): string {
-		$content = trim( $contentWikitext );
-		if ( $content === '' ) {
-			return '';
-		}
-
-		$wikitextCharacters = [ '*', '#', ';', ':', '[' ];
-		if ( in_array( substr( $content, 0, 1 ), $wikitextCharacters, true ) ) {
-			$content = "\n$content\n";
-		}
-		return $this->parser->recursiveTagParse( $content, $this->frame );
 	}
 }

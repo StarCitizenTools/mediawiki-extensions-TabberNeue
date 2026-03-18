@@ -3,9 +3,9 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue\Parsing;
 
-use MediaWiki\Config\Config;
 use MediaWiki\Extension\TabberNeue\DataModel\TabModel;
-use MediaWiki\Extension\TabberNeue\Service\TabNameHelper;
+use MediaWiki\Extension\TabberNeue\Service\TabIdGenerator;
+use MediaWiki\Extension\TabberNeue\Service\TabParser;
 use MediaWiki\Html\Html;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Title\Title;
@@ -13,8 +13,8 @@ use MediaWiki\Title\Title;
 class TabberTranscludeWikitextProcessor implements WikitextProcessor {
 	public function __construct(
 		private Parser $parser,
-		private Config $config,
-		private readonly TabNameHelper $tabNameHelper
+		private readonly TabParser $tabParser,
+		private readonly TabIdGenerator $tabIdGenerator
 	) {
 	}
 
@@ -35,35 +35,17 @@ class TabberTranscludeWikitextProcessor implements WikitextProcessor {
 
 			[ $pageName, $label ] = array_pad( explode( '|', $line, 2 ), 2, '' );
 
-			$label = $this->parseTabLabel( $label );
+			$label = $this->tabParser->parseLabel( $label, $this->parser );
 			if ( $label === '' ) {
 				continue;
 			}
 
-			$baseId = $this->tabNameHelper->generateSanitizedId( $label );
-			$uniqueName = $this->tabNameHelper->ensureUniqueId( $baseId, $this->parser->getOutput() );
+			$baseId = $this->tabIdGenerator->generateSanitizedId( $label );
+			$uniqueName = $this->tabIdGenerator->ensureUniqueId( $baseId, $this->parser->getOutput() );
 			$tabModels[] = new TabModel( $uniqueName, $label, $this->parseTabContent( $pageName ) );
 		}
 
 		return $tabModels;
-	}
-
-	/**
-	 * Parses the tab label.
-	 */
-	private function parseTabLabel( string $labelWikitext ): string {
-		$label = trim( $labelWikitext );
-		if ( $label === '' ) {
-			return '';
-		}
-
-		if ( !$this->config->get( 'TabberNeueParseTabName' ) ) {
-			$label = $this->parser->getTargetLanguageConverter()->convertHtml( $label );
-		} else {
-			$label = $this->parser->recursiveTagParseFully( $label );
-			$label = $this->parser->stripOuterParagraph( $label );
-		}
-		return $label;
 	}
 
 	/**
