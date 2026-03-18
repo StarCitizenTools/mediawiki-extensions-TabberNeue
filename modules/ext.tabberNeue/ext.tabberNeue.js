@@ -398,6 +398,12 @@ class Tabber {
 			return;
 		}
 
+		// Ignore clicks from nested tabbers (#252). If the anchor's closest
+		// section is not this tabber's section, the click belongs to a child.
+		if ( anchor.closest( '.tabber__section' ) !== this.section ) {
+			return;
+		}
+
 		// Fix for #240: browser scrolling the entire section vertically.
 		// Resetting the height after a delay seems to correct it.
 		if ( document.getElementById( anchor.hash.slice( 1 ) ) ) {
