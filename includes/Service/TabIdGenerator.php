@@ -19,7 +19,8 @@ class TabIdGenerator {
 		if ( $this->parseTabName ) {
 			$label = htmlspecialchars( strip_tags( $label ) );
 		}
-		return Sanitizer::escapeIdForAttribute( $label );
+		//return Sanitizer::decodeCharReferencesAndNormalize( Sanitizer::escapeIdForAttribute( $label ) );
+		return $label;
 	}
 
 	/**
