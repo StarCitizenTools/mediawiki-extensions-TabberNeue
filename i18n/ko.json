@@ -1,8 +1,18 @@
 {
 	"@metadata": {
 		"authors": [
+			"Ykhwong",
 			"아라"
 		]
 	},
-	"tabberneue-desc": "문서 내에서 탭 만들기 허용"
+	"tabberneue-desc": "문서 내에서 탭 만들기 허용",
+	"tabberneue-visualeditor-mwtabberdialog-addtab": "탭 추가",
+	"tabberneue-visualeditor-mwtabberdialog-removetab": "탭 제거",
+	"tabberneue-visualeditor-mwtabberdialog-moveleft": "탭을 왼쪽으로 이동",
+	"tabberneue-visualeditor-mwtabberdialog-label-placeholder": "탭 레이블 입력",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-addtab": "탭 추가",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-removetab": "탭 제거",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-moveleft": "탭을 왼쪽으로 이동",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-page": "문서 이름",
+	"tabberneue-visualeditor-copy-suffix": "$1 (사본)"
 }

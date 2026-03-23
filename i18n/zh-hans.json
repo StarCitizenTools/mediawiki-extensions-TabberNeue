@@ -29,6 +29,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-label-placeholder": "输入选项卡标签",
 	"tabberneue-visualeditor-mwtabberdialog-content": "选项卡内容",
 	"tabberneue-visualeditor-mwtabberdialog-content-placeholder": "输入选项卡内容（wikitext）",
+	"tabberneue-visualeditor-mwtabberdialog-error-title": "验证错误",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber（嵌入）",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "有关具体用法，参见[https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion 文档]。",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-addtab": "添加选项卡",
@@ -41,6 +42,7 @@
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-label-placeholder": "输入选项卡标签",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-page": "页面名称",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-page-placeholder": "输入页面名称",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-title": "验证错误",
 	"tabberneue-visualeditor-copy-suffix": "$1（复制）",
 	"tabberneue-error-tabs-title": "处理标签时发生以下错误：",
 	"tabberneue-error-tabs-duplicate-label": "标签名“$1”已被使用。"
