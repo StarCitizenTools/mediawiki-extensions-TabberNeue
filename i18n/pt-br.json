@@ -1,8 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Cainamarques"
+			"Cainamarques",
+			"Eduardoaddad"
 		]
 	},
-	"tabberneue-desc": "Permite a criação de abas dentro de uma página"
+	"tabberneue-desc": "Permite a criação de abas dentro de uma página",
+	"tabberneue-button-next": "Próximo",
+	"tabberneue-button-prev": "Anterior",
+	"tabberneue-tabber-category": "Páginas que usam a etiqueta Tabber do analisador sintático",
+	"tabberneue-visualeditor-mwtabberdialog-tab": "Guia $1"
 }

@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Beta16",
+			"Daimona Eaytoy",
 			"Darth Kule",
 			"FL2226",
 			"McDutchie",
@@ -22,7 +23,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-content": "Contenuto della scheda",
 	"tabberneue-visualeditor-mwtabberdialog-content-placeholder": "Inserisci il contenuto della scheda (wikitesto)",
 	"tabberneue-visualeditor-mwtabberdialog-error-title": "Errore di convalida",
-	"tabberneue-visualeditor-mwtabberdialog-error-empty-label": "Le seguenti schede hanno etichette vuote: $1 . Si prega di fornire un'etichetta per ciascuna scheda.",
+	"tabberneue-visualeditor-mwtabberdialog-error-empty-label": "Le seguenti schede hanno etichette vuote: $1. Si prega di fornire un'etichetta per ciascuna scheda.",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-addtab": "Aggiungi scheda",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-removetab": "Rimuovi scheda",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-moveleft": "Sposta la scheda a sinistra",
@@ -34,9 +35,9 @@
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-page": "Nome della pagina",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-page-placeholder": "Inserisci il nome della pagina",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-title": "Errore di convalida",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-label": "Le seguenti schede hanno etichette vuote: $1 . Si prega di fornire un'etichetta per ciascuna scheda.",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-page": "Le seguenti schede hanno nomi di pagina vuoti: $1 . Si prega di fornire un nome di pagina valido per ciascuna scheda.",
-	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-both": "Le seguenti schede hanno etichette vuote: $1 ; e le seguenti schede hanno nomi di pagina vuoti: $2 . Si prega di fornire un'etichetta e un nome di pagina valido per ciascuna scheda.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-label": "Le seguenti schede hanno etichette vuote: $1. Si prega di fornire un'etichetta per ciascuna scheda.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-page": "Le seguenti schede hanno nomi di pagina vuoti: $1. Si prega di fornire un nome di pagina valido per ciascuna scheda.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-both": "Le seguenti schede hanno etichette vuote: $1; e le seguenti schede hanno nomi di pagina vuoti: $2. Si prega di fornire un'etichetta e un nome di pagina valido per ciascuna scheda.",
 	"tabberneue-visualeditor-copy-suffix": "$1 (copia)",
 	"tabberneue-error-tabs-title": "Durante l'elaborazione delle schede sono verificati i seguenti errori:",
 	"tabberneue-error-tabs-duplicate-label": "L'etichetta della scheda '$1' è già in uso."
