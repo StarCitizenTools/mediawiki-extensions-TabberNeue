@@ -3,6 +3,7 @@
 		"authors": [
 			"Derugon",
 			"GenerationFallout",
+			"JLTRY",
 			"SleaY",
 			"Verdy p"
 		]
@@ -16,8 +17,18 @@
 	"tabberneue-tabbertransclude-category-desc": "La page utilise la balise de l’analyseur <code><tabbertransclude></code>.",
 	"tabberneue-visualeditor-mwtabberdialog-title": "Tabber",
 	"tabberneue-visualeditor-mwtabberdialog-desc": "Voir la [https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers documentation] pour l’utilisation.",
+	"tabberneue-visualeditor-mwtabberdialog-tab": "Onglet $1",
+	"tabberneue-visualeditor-mwtabberdialog-label": "Étiquette de l'onglet",
+	"tabberneue-visualeditor-mwtabberdialog-content": "Contenu de l'onglet",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber (transclusion)",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "Voir la [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion documentation] pour l’utilisation.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-tab": "Onglet $1",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-label": "Étiquette de l'onglet",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-page": "Nom de la page",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-page-placeholder": "Saisir le nom de la page",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-title": "Erreur de validation",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-label": "Les onglets suivants ont des étiquettes vides : $1 . Veuillez fournir une étiquette pour chaque onglet.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-page": "Les onglets suivants ont des noms de page vides : $1 . Veuillez fournir un nom de page valide pour chaque onglet.",
 	"tabberneue-error-tabs-title": "Les erreurs suivantes se sont produites lors du traitement des onglets :",
 	"tabberneue-error-tabs-duplicate-label": "L'étiquette d'onglet « $1 » est déjà utilisée."
 }
