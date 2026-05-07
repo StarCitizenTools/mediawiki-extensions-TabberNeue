@@ -308,8 +308,6 @@ ve.ui.MWTabberBaseDialog.prototype.createTabPanel = function ( label, data ) {
  *
  * @param {Object} tabPanel Tab panel object
  */
-// Message keys are dynamic (from getActionButtonConfig()), documented in subclasses
-/* eslint-disable mediawiki/msg-doc */
 ve.ui.MWTabberBaseDialog.prototype.createTabActionButtons = function ( tabPanel ) {
 	const buttonConfig = this.getActionButtonConfig();
 
@@ -362,7 +360,6 @@ ve.ui.MWTabberBaseDialog.prototype.createTabActionButtons = function ( tabPanel 
 		click: [ 'onRemoveTabClick', tabPanel ]
 	} );
 };
-/* eslint-enable mediawiki/msg-doc */
 
 /**
  * Handle tab select from navigation.
