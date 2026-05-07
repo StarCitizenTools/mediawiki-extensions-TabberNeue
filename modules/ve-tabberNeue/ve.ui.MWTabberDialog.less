@@ -13,13 +13,13 @@
 
 .ve-ui-mwTabberDialog-stickyHeader {
 	position: sticky;
-	z-index: @z-index-toolbar;
 	top: 0;
+	z-index: @z-index-toolbar;
 	display: flex;
 	align-items: center;
-	border-bottom: @border-subtle;
-	background: @background-color-neutral;
 	padding-inline: @spacing-100 - 6px @spacing-100;
+	background: @background-color-neutral;
+	border-bottom: @border-subtle;
 
 	> .oo-ui-buttonElement {
 		margin-top: 4px; /* Align with tab label */
@@ -27,9 +27,9 @@
 }
 
 .ve-ui-mwTabberDialog-tabSelectWrapper {
-	overflow: auto hidden;
-	min-width: 0;
 	flex: 1;
+	min-width: 0;
+	overflow: auto hidden;
 	scroll-behavior: smooth;
 	scrollbar-width: thin;
 }
@@ -39,9 +39,9 @@
 }
 
 .ve-ui-mwTabberDialog-tabOption {
-	overflow: hidden;
-	max-width: 200px;
 	flex-shrink: 0;
+	max-width: 200px;
+	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
