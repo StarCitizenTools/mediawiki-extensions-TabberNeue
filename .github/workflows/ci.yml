@@ -17,7 +17,7 @@ concurrency:
 jobs:
   changes:
     name: Detect changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     timeout-minutes: 5
     outputs:
       php: ${{ steps.filter.outputs.php_any_changed }}
@@ -69,6 +69,7 @@ jobs:
       lint-js: ${{ needs.changes.outputs.script == 'true' }}
       lint-styles: ${{ needs.changes.outputs.stylesheet == 'true' }}
       lint-i18n: ${{ needs.changes.outputs.i18n == 'true' }}
+      runner: ubuntu-24.04-arm
 
   analyze-php:
     needs: changes
@@ -78,3 +79,4 @@ jobs:
       project-type: extension
       project-name: TabberNeue
       extra-extensions: Scribunto
+      runner: ubuntu-24.04-arm
