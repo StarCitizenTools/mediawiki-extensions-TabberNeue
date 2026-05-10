@@ -39,6 +39,14 @@ Phan requires a full MediaWiki installation at `../../` for type resolution. The
 docker compose exec mediawiki bash -c "cd /var/www/html/w/extensions/TabberNeue && composer phan"
 ```
 
+### Browser testing
+
+When your test plan includes steps that require a browser (e.g., verifying scripts load, checking runtime behavior, confirming interactions work):
+
+- Use available browser automation tools (e.g., Chrome DevTools MCP, Playwright MCP) to test against the dev environment URL before asking the user to test manually
+- Always check the browser console for warnings and errors, not just visual correctness
+- **XSS testing for i18n**: When changes touch interface messages or how they are rendered, append `?uselang=x-xss` to the URL. This replaces all i18n messages with XSS payloads — if any script executes or markup is injected, the message output is not properly escaped. See [Manual:$wgUseXssLanguage](https://www.mediawiki.org/wiki/Manual:$wgUseXssLanguage)
+
 ## Coding conventions
 
 ### PHP
