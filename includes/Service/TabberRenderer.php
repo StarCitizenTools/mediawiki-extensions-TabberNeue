@@ -3,7 +3,6 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue\Service;
 
-use MediaWiki\Config\Config;
 use MediaWiki\Extension\TabberNeue\Components\TabberComponentTab;
 use MediaWiki\Extension\TabberNeue\Components\TabberComponentTabs;
 use MediaWiki\Extension\TabberNeue\DataModel\TabModel;
@@ -13,7 +12,6 @@ use MediaWiki\Parser\Parser;
 class TabberRenderer {
 
 	public function __construct(
-		private readonly Config $config,
 		private readonly TemplateParser $templateParser
 	) {
 	}
@@ -39,13 +37,11 @@ class TabberRenderer {
 		$parser->addTrackingCategory( $trackingCategory );
 
 		$tabsData = [];
-		$addTabPrefixConfig = $this->config->get( 'TabberNeueAddTabPrefix' );
 		foreach ( $tabModels as $tabModel ) {
 			$tab = new TabberComponentTab(
-				$tabModel->name,
+				$tabModel->id,
 				$tabModel->label,
-				$tabModel->content,
-				$addTabPrefixConfig
+				$tabModel->content
 			);
 			$tabsData[] = $tab->getTemplateData();
 		}
