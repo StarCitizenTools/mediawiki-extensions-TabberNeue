@@ -27,6 +27,14 @@ globalThis.$ = vi.fn( ( el ) => {
 // Stub OO so that any accidental require of OOJS-using files doesn't blow up.
 globalThis.OO = { inheritClass: vi.fn(), ui: { Element: function noop() {} } };
 
+// CSS.escape is not implemented in jsdom. Polyfill it so production code that
+// uses CSS.escape() for attribute selector safety works in tests.
+if ( typeof globalThis.CSS === 'undefined' ) {
+	globalThis.CSS = {
+		escape: ( value ) => String( value ).replace( /([^\w-])/g, '\\$1' )
+	};
+}
+
 const originalResolveFilename = Module._resolveFilename;
 const TABBER_MODULE_DIR = path.resolve( __dirname, '../../modules/ext.tabberNeue' );
 
