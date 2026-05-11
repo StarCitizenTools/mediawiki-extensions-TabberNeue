@@ -43,8 +43,16 @@
 						"updateLocationOnTabChange": "TabberNeueUpdateLocationOnTabChange"
 					}
 				},
-				"ext.tabberNeue/Transclude.js",
-				"ext.tabberNeue/Util.js"
+				"ext.tabberNeue/tabberRegistry.js",
+				"ext.tabberNeue/createTabber.js",
+				"ext.tabberNeue/createOverflowController.js",
+				"ext.tabberNeue/createKeyboardNavigator.js",
+				"ext.tabberNeue/createPanelSyncObserver.js",
+				"ext.tabberNeue/createVisibilityObserver.js",
+				"ext.tabberNeue/createHashRouter.js",
+				"ext.tabberNeue/loadTransclusion.js",
+				"ext.tabberNeue/overflowMath.js",
+				"ext.tabberNeue/domHelpers.js"
 			],
 			"messages": [
 				"error",
