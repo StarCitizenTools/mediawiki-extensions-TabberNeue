@@ -33,6 +33,7 @@ jobs:
             php:
               - includes/**/*.php
               - tests/**/*.php
+              - tests/parser/**/*.txt
               - extension.json
               - composer.json
               - composer.lock
@@ -79,4 +80,22 @@ jobs:
       project-type: extension
       project-name: TabberNeue
       extra-extensions: Scribunto
+      runner: ubuntu-24.04-arm
+
+  test-php:
+    needs: changes
+    if: needs.changes.outputs.php == 'true'
+    uses: StarCitizenTools/mediawiki-ci-workflows/.github/workflows/test-php.yml@main
+    with:
+      project-type: extension
+      project-name: TabberNeue
+      runner: ubuntu-24.04-arm
+
+  test-parser:
+    needs: changes
+    if: needs.changes.outputs.php == 'true'
+    uses: StarCitizenTools/mediawiki-ci-workflows/.github/workflows/test-parser.yml@main
+    with:
+      project-type: extension
+      project-name: TabberNeue
       runner: ubuntu-24.04-arm
