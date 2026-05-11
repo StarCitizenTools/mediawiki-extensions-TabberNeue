@@ -40,14 +40,16 @@ jobs:
               - .phan/config.php
               - .github/workflows/ci.yml
             script:
-              - resources/**/*.js
+              - modules/**/*.js
+              - tests/vitest/**
+              - vitest.config.js
               - package.json
               - package-lock.json
               - .eslintrc.json
               - .github/workflows/ci.yml
             stylesheet:
-              - resources/**/*.css
-              - resources/**/*.less
+              - modules/**/*.css
+              - modules/**/*.less
               - package.json
               - package-lock.json
               - .github/workflows/ci.yml
@@ -80,6 +82,13 @@ jobs:
       project-type: extension
       project-name: TabberNeue
       extra-extensions: Scribunto
+      runner: ubuntu-24.04-arm
+
+  test-js:
+    needs: changes
+    if: needs.changes.outputs.script == 'true'
+    uses: StarCitizenTools/mediawiki-ci-workflows/.github/workflows/test-js.yml@main
+    with:
       runner: ubuntu-24.04-arm
 
   test-php:
