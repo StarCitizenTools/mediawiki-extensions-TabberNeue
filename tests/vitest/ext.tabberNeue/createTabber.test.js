@@ -190,3 +190,128 @@ describe( 'createTabber', () => {
 		expect( registry.unregister ).toHaveBeenCalledWith( element );
 	} );
 } );
+
+describe( 'createTabber animation orchestration', () => {
+	// These tests verify createTabber wires the animation units correctly.
+	// Detailed unit behavior lives in createPanelTransition.test.js,
+	// createTabIndicator.test.js, and createViewTransitionWrapper.test.js.
+	let element;
+	let registry;
+	let mockIO;
+	let mockTransclude;
+	let tabs;
+	let panels;
+
+	beforeEach( () => {
+		element = document.createElement( 'div' );
+		element.className = 'tabber tabber--init';
+		element.innerHTML = `
+			<div class="tabber__header">
+				<nav class="tabber__tabs" role="tablist">
+					<a class="tabber__tab" role="tab" aria-controls="p1">A</a>
+					<a class="tabber__tab" role="tab" aria-controls="p2">B</a>
+				</nav>
+			</div>
+			<section class="tabber__section">
+				<article class="tabber__panel" id="p1">one</article>
+				<article class="tabber__panel" id="p2">two</article>
+			</section>
+		`;
+		document.body.appendChild( element );
+
+		registry = {
+			observeResize: vi.fn(),
+			unobserveResize: vi.fn(),
+			unregister: vi.fn(),
+			get: vi.fn()
+		};
+		mockIO = vi.fn( function MockIO() {
+			this.observe = vi.fn();
+			this.disconnect = vi.fn();
+		} );
+		mockTransclude = vi.fn();
+
+		tabs = element.querySelectorAll( '.tabber__tab' );
+		panels = element.querySelectorAll( '.tabber__panel' );
+
+		// jsdom doesn't lay out, so offsetLeft is 0 by default.
+		Object.defineProperty( panels[ 0 ], 'offsetLeft', { value: 0, configurable: true } );
+		Object.defineProperty( panels[ 1 ], 'offsetLeft', { value: 300, configurable: true } );
+
+		document.documentElement.classList.add( 'tabber-animations-ready' );
+	} );
+
+	afterEach( () => {
+		document.documentElement.classList.remove( 'tabber-animations-ready' );
+		document.body.innerHTML = '';
+	} );
+
+	function make() {
+		return createTabber( {
+			element, registry,
+			deps: {
+				config: { cdnMaxAge: 60, enableAnimation: true, updateLocationOnTabChange: true },
+				mw,
+				window: Object.assign( {}, window, {
+					matchMedia: vi.fn().mockReturnValue( { matches: false } )
+				} ),
+				document,
+				IntersectionObserver: mockIO,
+				requestAnimationFrame: ( fn ) => fn(),
+				setTimeout: ( fn ) => fn(),
+				loadTransclusion: mockTransclude
+			}
+		} );
+	}
+
+	it( 'invokes the panel transition for deliberate activations (fallback path)', () => {
+		const t = make();
+		t.init( tabs[ 0 ] );
+		t.activate( tabs[ 1 ], { source: 'user-click' } );
+		expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( true );
+	} );
+
+	it( 'skips the panel transition on init (no previous panel)', () => {
+		const t = make();
+		t.init( tabs[ 0 ] );
+		expect( panels[ 0 ].classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( false );
+		expect( panels[ 0 ].classList.contains( 'tabber__panel--entering-from-left' ) ).toBe( false );
+	} );
+
+	it( 'invokes startViewTransition when available and skips the fallback class', () => {
+		const mockVT = vi.fn( () => ( {
+			finished: Promise.resolve(),
+			ready: Promise.resolve(),
+			updateCallbackDone: Promise.resolve()
+		} ) );
+		document.startViewTransition = mockVT;
+		try {
+			const t = make();
+			t.init( tabs[ 0 ] );
+			t.activate( tabs[ 1 ], { source: 'user-click' } );
+			expect( mockVT ).toHaveBeenCalledTimes( 1 );
+			expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( false );
+		} finally {
+			delete document.startViewTransition;
+		}
+	} );
+
+	it( 'panel-scroll activation bypasses both VT and the fallback class', () => {
+		const mockVT = vi.fn( () => ( {
+			finished: Promise.resolve(),
+			ready: Promise.resolve(),
+			updateCallbackDone: Promise.resolve()
+		} ) );
+		document.startViewTransition = mockVT;
+		try {
+			const t = make();
+			t.init( tabs[ 0 ] );
+			t.activate( tabs[ 1 ], { source: 'panel-scroll', preventScroll: true } );
+			expect( mockVT ).not.toHaveBeenCalled();
+			expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( false );
+			expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-left' ) ).toBe( false );
+		} finally {
+			delete document.startViewTransition;
+		}
+	} );
+} );

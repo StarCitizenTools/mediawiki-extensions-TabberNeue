@@ -67,6 +67,20 @@
 		}
 	}
 
+	&__tabs {
+		position: relative;
+
+		// JS appends .tabber__indicator at construction; defer the active-tab
+		// visual to it instead of the per-tab box-shadow. The selector still
+		// applies for everything else (color, etc.), so wiki overrides of
+		// non-shadow properties continue to work. Wikis that previously
+		// overrode the box-shadow color should switch to styling
+		// .tabber__indicator { background: ... }.
+		&:has( > .tabber__indicator ) > .tabber__tab[ aria-selected='true' ] {
+			box-shadow: none;
+		}
+	}
+
 	&__tab {
 		// Skins such as Vector set a border-radius to <a> elements,
 		// so we need to override it here.
@@ -80,6 +94,14 @@
 		&[ aria-selected='true' ]:visited {
 			color: var( --color-progressive, #36c );
 		}
+	}
+
+	&__indicator {
+		position: absolute;
+		bottom: 0;
+		height: 2px;
+		pointer-events: none;
+		background: var( --color-progressive, #36c );
 	}
 
 	&__panel {
@@ -129,12 +151,144 @@
 			scroll-behavior: smooth;
 		}
 
-		&__tabs,
-		&__section {
+		&__tabs {
 			@media ( min-width: 720px ) {
 				scroll-behavior: smooth;
 			}
 		}
+
+		// scroll-snap-type tracks the snap target's painted position including
+		// transforms — without suspending it, scrollLeft follows the panel's
+		// translateX and exposes adjacent panels.
+		&__section:has( > .tabber__panel--entering-from-left ),
+		&__section:has( > .tabber__panel--entering-from-right ) {
+			scroll-snap-type: none;
+		}
+
+		&__panel--entering-from-right {
+			animation: tabber-panel-enter-from-right 150ms cubic-bezier( 0.4, 0, 0.2, 1 );
+		}
+
+		&__panel--entering-from-left {
+			animation: tabber-panel-enter-from-left 150ms cubic-bezier( 0.4, 0, 0.2, 1 );
+		}
+
+		&__indicator {
+			transition: transform 150ms cubic-bezier( 0.4, 0, 0.2, 1 ), width 150ms cubic-bezier( 0.4, 0, 0.2, 1 );
+		}
+	}
+}
+
+@keyframes tabber-panel-enter-from-right {
+	from {
+		opacity: 0;
+		transform: translateX( 48px );
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX( 0 );
+	}
+}
+
+@keyframes tabber-panel-enter-from-left {
+	from {
+		opacity: 0;
+		transform: translateX( -48px );
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX( 0 );
+	}
+}
+
+// View Transitions path. Fallback `--entering-*` animation above applies when
+// document.startViewTransition is unavailable.
+//
+// These rules sit at global scope rather than inside `.tabber-animations-ready`
+// because ::view-transition-* pseudo-elements live under the document root and
+// cannot be scoped through an ancestor class. The animation is instead gated
+// behaviorally by createViewTransitionWrapper.canUse(), which refuses to call
+// startViewTransition when `.tabber-animations-ready` is absent.
+//
+// All four pseudo-element levels (group, image-pair, old, new) carry the
+// duration/easing — UA defaults at each level otherwise run to 250ms in
+// parallel and lengthen the perceived end time.
+::view-transition-group( tabber-section-forward ),
+::view-transition-group( tabber-section-backward ),
+::view-transition-image-pair( tabber-section-forward ),
+::view-transition-image-pair( tabber-section-backward ),
+::view-transition-old( tabber-section-forward ),
+::view-transition-old( tabber-section-backward ),
+::view-transition-new( tabber-section-forward ),
+::view-transition-new( tabber-section-backward ) {
+	animation-duration: 150ms;
+	animation-timing-function: cubic-bezier( 0.4, 0, 0.2, 1 );
+	animation-fill-mode: both;
+}
+
+::view-transition-old( tabber-section-forward ) {
+	animation-name: tabber-vt-slide-out-left;
+}
+
+::view-transition-new( tabber-section-forward ) {
+	animation-name: tabber-vt-slide-in-right;
+}
+
+::view-transition-old( tabber-section-backward ) {
+	animation-name: tabber-vt-slide-out-right;
+}
+
+::view-transition-new( tabber-section-backward ) {
+	animation-name: tabber-vt-slide-in-left;
+}
+
+@keyframes tabber-vt-slide-out-left {
+	from {
+		opacity: 1;
+		transform: translateX( 0 );
+	}
+
+	to {
+		opacity: 0;
+		transform: translateX( -48px );
+	}
+}
+
+@keyframes tabber-vt-slide-in-right {
+	from {
+		opacity: 0;
+		transform: translateX( 48px );
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX( 0 );
+	}
+}
+
+@keyframes tabber-vt-slide-out-right {
+	from {
+		opacity: 1;
+		transform: translateX( 0 );
+	}
+
+	to {
+		opacity: 0;
+		transform: translateX( 48px );
+	}
+}
+
+@keyframes tabber-vt-slide-in-left {
+	from {
+		opacity: 0;
+		transform: translateX( -48px );
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX( 0 );
 	}
 }
 
