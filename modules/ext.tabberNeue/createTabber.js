@@ -2,6 +2,9 @@ const createOverflowController = require( './createOverflowController.js' );
 const createKeyboardNavigator = require( './createKeyboardNavigator.js' );
 const createPanelSyncObserver = require( './createPanelSyncObserver.js' );
 const createVisibilityObserver = require( './createVisibilityObserver.js' );
+const createPanelTransition = require( './createPanelTransition.js' );
+const createTabIndicator = require( './createTabIndicator.js' );
+const createViewTransitionWrapper = require( './createViewTransitionWrapper.js' );
 const defaultLoadTransclusion = require( './loadTransclusion.js' );
 const { getElementSize, setAttributes } = require( './domHelpers.js' );
 
@@ -80,6 +83,9 @@ function createTabber( opts ) {
 	// which are declared as hoisted function declarations and are only *called*
 	// after the units are assigned.
 	const units = {};
+	units.tabIndicator = createTabIndicator( { tablist, document: doc } );
+	units.panelTransition = createPanelTransition( { document: doc } );
+	units.vt = createViewTransitionWrapper( { section, document: doc } );
 
 	function setActivePanel( panel, options = {} ) {
 		if ( !panel ) {
@@ -100,23 +106,17 @@ function createTabber( opts ) {
 		const h = getElementSize( panel, 'height' );
 		section.style.height = h + 'px';
 		if ( !options.preventScroll ) {
-			// pauseDuring schedules its resume 150ms after fn() returns. The rAF inside
-			// fires within one animation frame (~16ms), so the scrollLeft write — and any
-			// IntersectionObserver entry it produces — lands well inside the 150ms
-			// quiet window and is suppressed. Do not swap raf for a slower scheduler
-			// without raising QUIET_PERIOD_MS in createPanelSyncObserver.
+			// Synchronous: any IO entry from this write lands inside pauseDuring's
+			// 150ms quiet window. Deferring via rAF breaks the View Transitions
+			// path — the browser pauses rendering while awaiting the update
+			// callback's promise, so rAFs scheduled inside it never fire.
 			units.panelSync.pauseDuring( () => {
-				raf( () => {
-					section.scrollLeft = panel.offsetLeft;
-				} );
+				section.scrollLeft = panel.offsetLeft;
 			} );
 		}
 	}
 
-	function activate( tab, options = {} ) {
-		if ( !tab || activeTab === tab ) {
-			return;
-		}
+	function performActivation( tab, options ) {
 		if ( activeTab ) {
 			activeTab.setAttribute( 'tabindex', '-1' );
 			activeTab.setAttribute( 'aria-selected', 'false' );
@@ -124,14 +124,16 @@ function createTabber( opts ) {
 		tab.setAttribute( 'tabindex', '0' );
 		tab.setAttribute( 'aria-selected', 'true' );
 		activeTab = tab;
+		units.tabIndicator.update( activeTab );
 
 		units.overflow.scrollTabIntoView( tab );
 
 		const panelId = tab.getAttribute( 'aria-controls' );
 		const newActivePanel = panelIdToPanelMap.get( panelId );
+		const previousActivePanel = activePanel;
 
-		if ( activePanel && activePanel !== newActivePanel ) {
-			registry.unobserveResize( activePanel );
+		if ( previousActivePanel && previousActivePanel !== newActivePanel ) {
+			registry.unobserveResize( previousActivePanel );
 		}
 		activePanel = newActivePanel;
 
@@ -146,6 +148,26 @@ function createTabber( opts ) {
 		}
 		registry.observeResize( activePanel );
 		setActivePanel( activePanel, options );
+	}
+
+	function activate( tab, options = {} ) {
+		if ( !tab || activeTab === tab ) {
+			return;
+		}
+
+		const previousActivePanel = activePanel;
+		const newPanel = panelIdToPanelMap.get( tab.getAttribute( 'aria-controls' ) );
+
+		if ( units.vt.canUse( options.source, !!previousActivePanel ) ) {
+			const direction = newPanel.offsetLeft > previousActivePanel.offsetLeft ?
+				'forward' :
+				'backward';
+			units.vt.wrap( () => performActivation( tab, options ), direction );
+			return;
+		}
+
+		performActivation( tab, options );
+		units.panelTransition.trigger( newPanel, previousActivePanel, options.source );
 	}
 
 	// Compose units
@@ -258,6 +280,7 @@ function createTabber( opts ) {
 	function handleResize( target ) {
 		if ( target === tablist ) {
 			units.overflow.update();
+			units.tabIndicator.update( activeTab );
 		} else if ( target === activePanel ) {
 			setActivePanel( target, { preventScroll: true } );
 		}
@@ -289,6 +312,7 @@ function createTabber( opts ) {
 			units.panelSync.destroy();
 			units.overflow.destroy();
 			units.keyboard.destroy();
+			units.tabIndicator.destroy();
 			detachListeners();
 			registry.unobserveResize( tablist );
 			if ( activePanel ) {
