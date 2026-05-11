@@ -11,13 +11,13 @@ Run only what's relevant to the files you changed.
 | Files changed | Command |
 | --- | --- |
 | `*.php` | `composer preflight` (lint, style, and Phan) |
-| `*.js` | `npm run lint:js` |
+| `*.js` | `npm run lint:js && npm test` |
 | `*.less`, `*.css` | `npm run lint:styles` |
 | `i18n/` | `npm run lint:i18n` |
 
 Auto-fix commands: `composer fix` (PHP), `npm run lint:fix:js` (JS), `npm run lint:fix:styles` (styles).
 
-**Preflight**: Run `npm run preflight` to execute all Node-based lints in one command. Run `composer preflight` from within a MediaWiki installation to execute all PHP lints, style checks, and Phan static analysis.
+**Preflight**: Run `npm run preflight` to execute all Node-based lints and JS tests in one command. Run `composer preflight` from within a MediaWiki installation to execute all PHP lints, style checks, and Phan static analysis.
 
 **Always run the relevant checks before committing.** Read the full output — PHPCS warnings must be fixed, not just errors. The command exits 0 even with warnings, so do not treat exit code alone as a pass.
 
