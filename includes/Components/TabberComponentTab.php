@@ -3,46 +3,29 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue\Components;
 
+use MediaWiki\Extension\TabberNeue\DataModel\TabId;
+
 class TabberComponentTab implements TabberComponent {
 	public function __construct(
-		private string $name,
-		private string $label,
-		private string $content,
-		private bool $addTabPrefix
+		private readonly TabId $id,
+		private readonly string $label,
+		private readonly string $content
 	) {
 	}
 
 	public function getTemplateData(): array {
-		$name = $this->name;
-		$id = $this->addTabPrefix ? "tabber-$name" : $name;
-
 		return [
 			'label' => $this->label,
 			'content' => $this->content,
 			'array-tab-attributes' => [
-				[
-					'key' => 'id',
-					'value' => "$id-label"
-				],
-				[
-					'key' => 'href',
-					'value' => "#$id"
-				],
-				[
-					'key' => 'aria-controls',
-					'value' => $id
-				]
+				[ 'key' => 'id', 'value' => $this->id->labelId ],
+				[ 'key' => 'href', 'value' => $this->id->fragment ],
+				[ 'key' => 'aria-controls', 'value' => $this->id->panelId ],
 			],
 			'array-tabpanel-attributes' => [
-				[
-					'key' => 'id',
-					'value' => $id
-				],
-				[
-					'key' => 'aria-labelledby',
-					'value' => "$id-label"
-				]
-			]
+				[ 'key' => 'id', 'value' => $this->id->panelId ],
+				[ 'key' => 'aria-labelledby', 'value' => $this->id->labelId ],
+			],
 		];
 	}
 }

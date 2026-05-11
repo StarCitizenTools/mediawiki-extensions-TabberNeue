@@ -1,7 +1,7 @@
 <?php
 /**
  * TabberNeue
- * Tabber Class
+ * TabberHandler Class
  * Implement <tabber> tag
  *
  * @package TabberNeue
@@ -12,21 +12,21 @@
 
 declare( strict_types=1 );
 
-namespace MediaWiki\Extension\TabberNeue;
+namespace MediaWiki\Extension\TabberNeue\Handlers;
 
 use MediaWiki\Extension\TabberNeue\Parsing\TabberWikitextProcessor;
+use MediaWiki\Extension\TabberNeue\Parsing\TabSegmentSplitter;
 use MediaWiki\Extension\TabberNeue\Service\TabberRenderer;
-use MediaWiki\Extension\TabberNeue\Service\TabIdGenerator;
-use MediaWiki\Extension\TabberNeue\Service\TabParser;
+use MediaWiki\Extension\TabberNeue\Service\TabModelBuilder;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
 
-class Tabber {
+class TabberHandler {
 
 	public function __construct(
 		private readonly TabberRenderer $renderer,
-		private readonly TabParser $tabParser,
-		private readonly TabIdGenerator $tabIdGenerator
+		private readonly TabSegmentSplitter $splitter,
+		private readonly TabModelBuilder $tabModelBuilder
 	) {
 	}
 
@@ -48,8 +48,8 @@ class Tabber {
 		$processor = new TabberWikitextProcessor(
 			$parser,
 			$frame,
-			$this->tabParser,
-			$this->tabIdGenerator
+			$this->splitter,
+			$this->tabModelBuilder
 		);
 
 		$tabModels = $processor->process( $input );

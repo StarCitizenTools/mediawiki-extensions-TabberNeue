@@ -48,9 +48,11 @@
 			"phpcs --config-set ignore_warnings_on_exit 1",
 			"phpcs -sp --cache"
 		],
+		"phpunit": "cd ../../ && composer phpunit -- extensions/TabberNeue/tests/phpunit/",
 		"preflight": [
 			"@test",
-			"@phan"
+			"@phan",
+			"@phpunit"
 		]
 	},
 	"extra": {

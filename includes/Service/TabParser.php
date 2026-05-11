@@ -3,6 +3,7 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue\Service;
 
+use MediaWiki\Extension\TabberNeue\Config\TabberOptions;
 use MediaWiki\Html\Html;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
@@ -14,7 +15,7 @@ class TabParser {
 		'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'figure' ];
 
 	public function __construct(
-		private readonly bool $parseTabName
+		private readonly TabberOptions $options
 	) {
 	}
 
@@ -27,7 +28,7 @@ class TabParser {
 			return '';
 		}
 
-		if ( !$this->parseTabName ) {
+		if ( !$this->options->parseTabName ) {
 			return $parser->getTargetLanguageConverter()->convertHtml( $label );
 		}
 

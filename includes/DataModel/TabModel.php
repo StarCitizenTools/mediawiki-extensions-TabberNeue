@@ -5,9 +5,9 @@ namespace MediaWiki\Extension\TabberNeue\DataModel;
 
 class TabModel {
 	public function __construct(
-		public string $name,
-		public string $label,
-		public string $content
+		public readonly TabId $id,
+		public readonly string $label,
+		public readonly string $content
 	) {
 	}
 }

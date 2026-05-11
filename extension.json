@@ -162,17 +162,19 @@
 	},
 	"Hooks": {
 		"ParserFirstCallInit": "TabberHooks",
+		"ParserTestGlobals": "TabberParserTestHooks",
 		"ScribuntoExternalLibraries": "MediaWiki\\Extension\\TabberNeue\\Hooks::onScribuntoExternalLibraries"
 	},
 	"HookHandlers": {
 		"TabberHooks": {
 			"class": "MediaWiki\\Extension\\TabberNeue\\Hooks",
 			"services": [
-				"TabberNeue.TabParser",
-				"TabberNeue.TabIdGenerator",
-				"HookContainer",
-				"TabberNeue.TabberRenderer"
+				"TabberNeue.TabberHandler",
+				"TabberNeue.TabberTranscludeHandler"
 			]
+		},
+		"TabberParserTestHooks": {
+			"class": "MediaWiki\\Extension\\TabberNeue\\Hook\\ParserTestGlobalsHandler"
 		}
 	},
 	"ServiceWiringFiles": [
@@ -190,5 +192,8 @@
 			]
 		}
 	},
+	"ParserTestFiles": [
+		"tests/parser/tabberneue.txt"
+	],
 	"manifest_version": 2
 }
