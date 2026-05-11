@@ -119,15 +119,15 @@ Inner 2 content.
 Outer B plain.
 </tabber>
 !! html
-<div class="tabber tabber--init"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-Outer A-label" href="#tabber-Outer A" aria-controls="tabber-Outer A">Outer A</a><a class="tabber__tab" role="tab" id="tabber-Outer B-label" href="#tabber-Outer B" aria-controls="tabber-Outer B">Outer B</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Outer A" aria-labelledby="tabber-Outer A-label"><p class="mw-empty-elt">
-</p><div class="tabber tabber--init"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-Inner 1-label" href="#tabber-Inner 1" aria-controls="tabber-Inner 1">Inner 1</a><a class="tabber__tab" role="tab" id="tabber-Inner 2-label" href="#tabber-Inner 2" aria-controls="tabber-Inner 2">Inner 2</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Inner 1" aria-labelledby="tabber-Inner 1-label"><p class="mw-empty-elt">
+<div class="tabber tabber--init"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-Outer_A-label" href="#tabber-Outer_A" aria-controls="tabber-Outer_A">Outer A</a><a class="tabber__tab" role="tab" id="tabber-Outer_B-label" href="#tabber-Outer_B" aria-controls="tabber-Outer_B">Outer B</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Outer_A" aria-labelledby="tabber-Outer_A-label"><p class="mw-empty-elt">
+</p><div class="tabber tabber--init"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-Inner_1-label" href="#tabber-Inner_1" aria-controls="tabber-Inner_1">Inner 1</a><a class="tabber__tab" role="tab" id="tabber-Inner_2-label" href="#tabber-Inner_2" aria-controls="tabber-Inner_2">Inner 2</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Inner_1" aria-labelledby="tabber-Inner_1-label"><p class="mw-empty-elt">
 </p><p>Inner 1 content.
 </p>
-<p class="mw-empty-elt"></p></article><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Inner 2" aria-labelledby="tabber-Inner 2-label"><p class="mw-empty-elt">
+<p class="mw-empty-elt"></p></article><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Inner_2" aria-labelledby="tabber-Inner_2-label"><p class="mw-empty-elt">
 </p><p>Inner 2 content.
 </p>
 <p class="mw-empty-elt"></p></article></section></div>
-<p class="mw-empty-elt"></p></article><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Outer B" aria-labelledby="tabber-Outer B-label"><p class="mw-empty-elt">
+<p class="mw-empty-elt"></p></article><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Outer_B" aria-labelledby="tabber-Outer_B-label"><p class="mw-empty-elt">
 </p><p>Outer B plain.
 </p>
 <p class="mw-empty-elt"></p></article></section></div>
@@ -173,10 +173,10 @@ Body of the bold-labeled tab.
 Body of the italic-labeled tab.
 </tabber>
 !! html
-<div class="tabber tabber--init"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-Bold label-label" href="#tabber-Bold label" aria-controls="tabber-Bold label"><b>Bold label</b></a><a class="tabber__tab" role="tab" id="tabber-Italic label-label" href="#tabber-Italic label" aria-controls="tabber-Italic label"><i>Italic label</i></a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Bold label" aria-labelledby="tabber-Bold label-label"><p class="mw-empty-elt">
+<div class="tabber tabber--init"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-Bold_label-label" href="#tabber-Bold_label" aria-controls="tabber-Bold_label"><b>Bold label</b></a><a class="tabber__tab" role="tab" id="tabber-Italic_label-label" href="#tabber-Italic_label" aria-controls="tabber-Italic_label"><i>Italic label</i></a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Bold_label" aria-labelledby="tabber-Bold_label-label"><p class="mw-empty-elt">
 </p><p>Body of the bold-labeled tab.
 </p>
-<p class="mw-empty-elt"></p></article><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Italic label" aria-labelledby="tabber-Italic label-label"><p class="mw-empty-elt">
+<p class="mw-empty-elt"></p></article><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Italic_label" aria-labelledby="tabber-Italic_label-label"><p class="mw-empty-elt">
 </p><p>Body of the italic-labeled tab.
 </p>
 <p class="mw-empty-elt"></p></article></section></div>
@@ -217,10 +217,10 @@ Content.
 Content.
 </tabber>
 !! html
-<div class="tabber tabber--init"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-&#39;&#39;&#39;Bold&#39;&#39;&#39;-label" href="#tabber-&#39;&#39;&#39;Bold&#39;&#39;&#39;" aria-controls="tabber-&#39;&#39;&#39;Bold&#39;&#39;&#39;">&#39;&#39;&#39;Bold&#39;&#39;&#39;</a><a class="tabber__tab" role="tab" id="tabber-&#39;&#39;Italic&#39;&#39;-label" href="#tabber-&#39;&#39;Italic&#39;&#39;" aria-controls="tabber-&#39;&#39;Italic&#39;&#39;">&#39;&#39;Italic&#39;&#39;</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-&#39;&#39;&#39;Bold&#39;&#39;&#39;" aria-labelledby="tabber-&#39;&#39;&#39;Bold&#39;&#39;&#39;-label"><p class="mw-empty-elt">
+<div class="tabber tabber--init"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-.26.23039.3B.26.23039.3B.26.23039.3BBold.26.23039.3B.26.23039.3B.26.23039.3B-label" href="#tabber-.26.23039.3B.26.23039.3B.26.23039.3BBold.26.23039.3B.26.23039.3B.26.23039.3B" aria-controls="tabber-.26.23039.3B.26.23039.3B.26.23039.3BBold.26.23039.3B.26.23039.3B.26.23039.3B">&#39;&#39;&#39;Bold&#39;&#39;&#39;</a><a class="tabber__tab" role="tab" id="tabber-.26.23039.3B.26.23039.3BItalic.26.23039.3B.26.23039.3B-label" href="#tabber-.26.23039.3B.26.23039.3BItalic.26.23039.3B.26.23039.3B" aria-controls="tabber-.26.23039.3B.26.23039.3BItalic.26.23039.3B.26.23039.3B">&#39;&#39;Italic&#39;&#39;</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-.26.23039.3B.26.23039.3B.26.23039.3BBold.26.23039.3B.26.23039.3B.26.23039.3B" aria-labelledby="tabber-.26.23039.3B.26.23039.3B.26.23039.3BBold.26.23039.3B.26.23039.3B.26.23039.3B-label"><p class="mw-empty-elt">
 </p><p>Content.
 </p>
-<p class="mw-empty-elt"></p></article><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-&#39;&#39;Italic&#39;&#39;" aria-labelledby="tabber-&#39;&#39;Italic&#39;&#39;-label"><p class="mw-empty-elt">
+<p class="mw-empty-elt"></p></article><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-.26.23039.3B.26.23039.3BItalic.26.23039.3B.26.23039.3B" aria-labelledby="tabber-.26.23039.3B.26.23039.3BItalic.26.23039.3B.26.23039.3B-label"><p class="mw-empty-elt">
 </p><p>Content.
 </p>
 <p class="mw-empty-elt"></p></article></section></div>
