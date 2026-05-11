@@ -68,6 +68,19 @@ class TabIdRegistryTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @covers ::generateUniqueId
 	 */
+	public function testSpacesBecomeUnderscores(): void {
+		$registry = $this->makeRegistry();
+		$po = $this->makeParserOutputStub();
+
+		$id = $registry->generateUniqueId( 'Links and formatting', $po );
+
+		$this->assertSame( 'Links_and_formatting', $id->base );
+		$this->assertSame( 'tabber-Links_and_formatting', $id->panelId );
+	}
+
+	/**
+	 * @covers ::generateUniqueId
+	 */
 	public function testParseTabNameStripsTags(): void {
 		$registry = $this->makeRegistry( parseTabName: true );
 		$po = $this->makeParserOutputStub();

@@ -6,6 +6,7 @@ namespace MediaWiki\Extension\TabberNeue\Service;
 use MediaWiki\Extension\TabberNeue\Config\TabberOptions;
 use MediaWiki\Extension\TabberNeue\DataModel\TabId;
 use MediaWiki\Parser\ParserOutput;
+use MediaWiki\Parser\Sanitizer;
 
 /**
  * Allocates unique tab identifiers, tracking already-used IDs in
@@ -34,9 +35,9 @@ class TabIdRegistry {
 		if ( $this->options->parseTabName ) {
 			$label = htmlspecialchars( strip_tags( $label ) );
 		}
-		// NOTE: passthrough kept here intentionally for Task 3.
-		// Sanitization is hardened in Task 4 (separate commit).
-		return $label;
+		return Sanitizer::decodeCharReferencesAndNormalize(
+			Sanitizer::escapeIdForAttribute( $label )
+		);
 	}
 
 	private function ensureUnique( string $base, ParserOutput $parserOutput ): string {
