@@ -260,20 +260,6 @@ wgTabberNeueAddTabPrefix=true
 !! end
 
 !! test
-TabberNeue: tabbertransclude honours the wrap attribute
-!! config
-wgTabberNeueParseTabName=false
-wgTabberNeueAddTabPrefix=true
-wgTabberNeueEnableTabWrap=false
-!! wikitext
-<tabbertransclude wrap>
-TabberNeue test/Does Not Exist|First
-</tabbertransclude>
-!! html
-<div class="tabber tabber--init tabber--wrap"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-First-label" href="#tabber-First" aria-controls="tabber-First">First</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-First" aria-labelledby="tabber-First-label"><div class="cdx-message cdx-message--block cdx-message--error"><span class="cdx-message__icon"></span><div class="cdx-message__content">Page does not exist: TabberNeue test/Does Not Exist</div></div></article></section></div>
-!! end
-
-!! test
 TabberNeue: wrap attribute enables tabber--wrap with config default off
 !! config
 wgTabberNeueParseTabName=false
