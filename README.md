@@ -109,9 +109,9 @@ Awesome third tab content goes here.
 ### Tab wrapping
 By default, when the tab headers are wider than the available space they stay on a single row that scrolls horizontally, with previous/next arrows. You can instead let the tabs **wrap** onto multiple rows.
 
-Enable it wiki-wide by setting `$wgTabberNeueEnableTabWrap = true;` (see [Configurations](#configurations)), or control it per tabber with the `wrap` attribute. The attribute always overrides the wiki-wide default:
+Enable it wiki-wide by setting `$wgTabberNeueEnableTabWrap = true;` (see [Configurations](#configurations)), or control it per tabber with the `wrap` attribute, which always overrides the wiki-wide default:
 ```html
-<tabber wrap>
+<tabber wrap=true>
 |-|First Tab Title=
 First tab content goes here.
 |-|Second Tab Title=
@@ -127,7 +127,7 @@ First tab content goes here.
 Second tab content goes here.
 </tabber>
 ```
-The `wrap` attribute works on `<tabbertransclude>` as well. Accepted values: `wrap`, `wrap=true`, `wrap=yes` enable; `wrap=false`, `wrap=no`, `wrap=off`, `wrap=0` disable.
+The `wrap` attribute also works on `<tabbertransclude>`. (A bare `<tabber wrap>` is accepted as shorthand for `wrap=true`.)
 
 ### Lua
 
