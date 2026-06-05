@@ -8,6 +8,9 @@
  * @typedef {Object} TabIndicatorOpts
  * @property {HTMLElement} tablist
  * @property {Document} [document]
+ * @property {boolean} [enabled=true] When false, no indicator is created and
+ *   update/destroy are no-ops, letting the per-tab box-shadow underline show
+ *   (used in wrap mode where a single sliding indicator can't span rows).
  *
  * @typedef {Object} TabIndicator
  * @property {Function} update
@@ -21,6 +24,10 @@
 function createTabIndicator( opts ) {
 	const tablist = opts.tablist;
 	const doc = opts.document || document;
+
+	if ( opts.enabled === false ) {
+		return { update() {}, destroy() {} };
+	}
 
 	const element = doc.createElement( 'span' );
 	element.className = 'tabber__indicator';

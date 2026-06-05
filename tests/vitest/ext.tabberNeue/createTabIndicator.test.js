@@ -46,4 +46,12 @@ describe( 'createTabIndicator', () => {
 		ind.destroy();
 		expect( tablist.querySelector( ':scope > .tabber__indicator' ) ).toBeNull();
 	} );
+
+	it( 'appends nothing and no-ops when disabled', () => {
+		const ind = createTabIndicator( { tablist, document, enabled: false } );
+		const tab = document.createElement( 'a' );
+		expect( tablist.querySelector( '.tabber__indicator' ) ).toBeNull();
+		expect( () => ind.update( tab ) ).not.toThrow();
+		expect( () => ind.destroy() ).not.toThrow();
+	} );
 } );

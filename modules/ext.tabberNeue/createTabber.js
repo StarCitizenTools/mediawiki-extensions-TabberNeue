@@ -83,7 +83,8 @@ function createTabber( opts ) {
 	// which are declared as hoisted function declarations and are only *called*
 	// after the units are assigned.
 	const units = {};
-	units.tabIndicator = createTabIndicator( { tablist, document: doc } );
+	const isWrap = element.classList.contains( 'tabber--wrap' );
+	units.tabIndicator = createTabIndicator( { tablist, document: doc, enabled: !isWrap } );
 	units.panelTransition = createPanelTransition( { document: doc } );
 	units.vt = createViewTransitionWrapper( { section, document: doc } );
 

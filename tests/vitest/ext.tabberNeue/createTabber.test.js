@@ -19,6 +19,12 @@ function makeTabberElement() {
 	return el;
 }
 
+function makeWrapTabberElement() {
+	const el = makeTabberElement();
+	el.classList.add( 'tabber--wrap' );
+	return el;
+}
+
 describe( 'createTabber', () => {
 	let element;
 	let registry;
@@ -69,6 +75,20 @@ describe( 'createTabber', () => {
 			expect( tab.getAttribute( 'tabindex' ) ).toBe( '-1' );
 			expect( tab.getAttribute( 'aria-selected' ) ).toBe( 'false' );
 		}
+	} );
+
+	it( 'creates the floating indicator in normal mode', () => {
+		make();
+		expect( element.querySelector( '.tabber__indicator' ) ).not.toBeNull();
+	} );
+
+	it( 'does not create the floating indicator in wrap mode', () => {
+		document.body.innerHTML = '';
+		element = makeWrapTabberElement();
+		const t = make();
+		const tabs = element.querySelectorAll( '.tabber__tab' );
+		t.init( tabs[ 0 ] );
+		expect( element.querySelector( '.tabber__indicator' ) ).toBeNull();
 	} );
 
 	it( 'init flips --init to --live and activates the given tab', () => {
