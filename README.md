@@ -106,6 +106,29 @@ Awesome third tab content goes here.
 </tabber>
 ```
 
+### Tab wrapping
+By default, when the tab headers are wider than the available space they stay on a single row that scrolls horizontally, with previous/next arrows. You can instead let the tabs **wrap** onto multiple rows.
+
+Enable it wiki-wide by setting `$wgTabberNeueEnableTabWrap = true;` (see [Configurations](#configurations)), or control it per tabber with the `wrap` attribute. The attribute always overrides the wiki-wide default:
+```html
+<tabber wrap>
+|-|First Tab Title=
+First tab content goes here.
+|-|Second Tab Title=
+Second tab content goes here.
+</tabber>
+```
+To force a single tabber back to scrolling when wrapping is enabled wiki-wide, use `wrap=false`:
+```html
+<tabber wrap=false>
+|-|First Tab Title=
+First tab content goes here.
+|-|Second Tab Title=
+Second tab content goes here.
+</tabber>
+```
+The `wrap` attribute works on `<tabbertransclude>` as well. Accepted values: `wrap`, `wrap=true`, `wrap=yes` enable; `wrap=false`, `wrap=no`, `wrap=off`, `wrap=0` disable.
+
 ### Lua
 
 Tabber can be invoked in Lua with the `mw.ext.tabber` library. For example:
@@ -137,6 +160,7 @@ Name | Description | Values | Default
 `$wgTabberNeueParseTabName` | Parse tab name as wikitext. This can have a performance impact and cause unexpected behaviors. |`true` - enable; `false` - disable | `false`
 `$wgTabberNeueUpdateLocationOnTabChange` | If enabled, when a tab is selected, the URL displayed on the browser changes. Opening this URL makes that tab initially selected |`true` - enable; `false` - disable | `true`
 `$wgTabberNeueAddTabPrefix` | If enabled, tabpanel IDs will be prepended with "tabber-" to avoid conflicts with page headings. |`true` - enable; `false` - disable | `true`
+`$wgTabberNeueEnableTabWrap` | If enabled, tab headers wrap onto multiple rows instead of a horizontally-scrollable row. Can be overridden per tabber with the `wrap` attribute. |`true` - enable; `false` - disable | `false`
 
 #### Tracking category
 TabberNeue adds a tracking category to all pages using Tabber for maintenance purposes. There are two ways to suppress the category from viewers:
