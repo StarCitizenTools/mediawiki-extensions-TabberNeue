@@ -12,8 +12,24 @@ use MediaWiki\Parser\Parser;
 class TabberRenderer {
 
 	public function __construct(
-		private readonly TemplateParser $templateParser
+		private readonly TemplateParser $templateParser,
+		private readonly bool $enableTabWrap = false
 	) {
+	}
+
+	/**
+	 * Resolve whether wrap mode is active: a per-tag `wrap` attribute overrides
+	 * the wiki-wide default. A bare `<tabber wrap>` (empty value) enables it.
+	 */
+	public static function resolveTabWrap( array $args, bool $default ): bool {
+		if ( !array_key_exists( 'wrap', $args ) ) {
+			return $default;
+		}
+		$value = strtolower( trim( (string)$args['wrap'] ) );
+		if ( $value === '' ) {
+			return true;
+		}
+		return !in_array( $value, [ 'false', '0', 'no', 'off' ], true );
 	}
 
 	/**
@@ -31,6 +47,11 @@ class TabberRenderer {
 			return '';
 		}
 
+		$wrap = self::resolveTabWrap( $args, $this->enableTabWrap );
+		// `wrap` is not a valid div attribute; strip it so it does not leak into
+		// the rendered markup (and would otherwise be dropped by validateTagAttributes).
+		unset( $args['wrap'] );
+
 		$parserOutput = $parser->getOutput();
 		$parserOutput->addModuleStyles( [ 'ext.tabberNeue.init.styles' ] );
 		$parserOutput->addModules( [ 'ext.tabberNeue' ] );
@@ -46,7 +67,7 @@ class TabberRenderer {
 			$tabsData[] = $tab->getTemplateData();
 		}
 
-		$tabs = new TabberComponentTabs( $tabsData, $args );
+		$tabs = new TabberComponentTabs( $tabsData, $args, $wrap );
 
 		return $this->templateParser->processTemplate( 'Tabs', $tabs->getTemplateData() );
 	}

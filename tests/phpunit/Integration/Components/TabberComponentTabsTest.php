@@ -75,4 +75,24 @@ class TabberComponentTabsTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertSame( $tabsData, $tabs->getTemplateData()['array-tabs'] );
 	}
+
+	/**
+	 * @covers ::getTemplateData
+	 */
+	public function testWrapClassAddedWhenEnabled(): void {
+		$tabs = new TabberComponentTabs( [], [], true );
+
+		$attrs = $this->asAssoc( $tabs->getTemplateData()['array-attributes'] );
+		$this->assertStringContainsString( 'tabber--wrap', $attrs['class'] );
+	}
+
+	/**
+	 * @covers ::getTemplateData
+	 */
+	public function testWrapClassAbsentByDefault(): void {
+		$tabs = new TabberComponentTabs( [], [] );
+
+		$attrs = $this->asAssoc( $tabs->getTemplateData()['array-attributes'] );
+		$this->assertStringNotContainsString( 'tabber--wrap', $attrs['class'] );
+	}
 }

@@ -36,7 +36,8 @@ return [
 	},
 	'TabberNeue.TabberRenderer' => static function ( MediaWikiServices $services ): TabberRenderer {
 		return new TabberRenderer(
-			new TemplateParser( __DIR__ . '/templates' )
+			new TemplateParser( __DIR__ . '/templates' ),
+			(bool)$services->getMainConfig()->get( 'TabberNeueEnableTabWrap' )
 		);
 	},
 	'TabberNeue.TabSegmentSplitter' => static function (): TabSegmentSplitter {
