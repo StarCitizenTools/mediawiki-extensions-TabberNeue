@@ -1,5 +1,28 @@
 # Changelog
 
+## [4.0.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.4.1...v4.0.0) (2026-06-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* Bookmarked URL fragments pointing to tabs with multi-word labels may need updating.
+
+### Features
+
+* add typed TabberNeueRenderLazyLoadedTabHook with legacy deprecation ([ea514e5](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/ea514e5a4583e139ab8bb171c0ac88dd848b41c6))
+* animate tab switches with View Transitions cross-fade + sliding indicator ([734755e](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/734755e73f1a85995976b987bfe0b2ac9be649d0))
+* opt-in tab wrapping mode ([#307](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/307)) ([8645326](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/8645326c2909e31e337f535ed244b310be4c5a13))
+
+
+### Bug Fixes
+
+* sanitize tab IDs to match MW heading conventions ([5d8eaa8](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/5d8eaa8d4bad8ff0ff86be31da779aed9c889682))
+
+
+### Miscellaneous Chores
+
+* refresh package-lock.json ([f78beff](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/f78beff79d689a137696627335f989fc31ee04ca))
+
 ## [3.4.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.4.0...v3.4.1) (2026-03-18)
 
 
