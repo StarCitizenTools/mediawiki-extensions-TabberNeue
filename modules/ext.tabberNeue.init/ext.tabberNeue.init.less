@@ -75,6 +75,17 @@
 	}
 }
 
+// Wrap mode: tabs flow onto multiple rows instead of a scrollable row.
+// Server-rendered class, so this lives in critical CSS to avoid layout shift.
+// Higher specificity than `.tabber__tabs { overflow: auto hidden }` above, so
+// it wins without !important. Prev/next arrows and edge masks are driven by
+// `--prev/next-visible`, which never get set when there is no horizontal
+// overflow, so they stay hidden automatically.
+.tabber--wrap .tabber__tabs {
+	flex-wrap: wrap;
+	overflow: visible;
+}
+
 // Basic nojs support
 /* stylelint-disable-next-line selector-class-pattern */
 .client-nojs {
