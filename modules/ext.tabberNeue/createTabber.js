@@ -173,7 +173,7 @@ function createTabber( opts ) {
 
 	// Compose units
 	units.overflow = createOverflowController( {
-		tablist, header, animationsEnabled, raf
+		tablist, header, animationsEnabled, raf, enabled: !isWrap
 	} );
 	const debouncedUpdateOverflow = mwApi.util.debounce(
 		() => units.overflow.update(), 100
