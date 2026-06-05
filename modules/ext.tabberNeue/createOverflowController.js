@@ -8,6 +8,11 @@ const OVERFLOW_BUTTON_WIDTH_RATIO = 0.2;
  * @property {HTMLElement} tablist
  * @property {HTMLElement} header
  * @property {boolean} [animationsEnabled=true]
+ * @property {boolean} [enabled=true] When false, the controller never reports
+ *   overflow and never shows the prev/next arrows or edge masks. Used in wrap
+ *   mode, where a single tab wider than the container still produces horizontal
+ *   overflow (tabs are `white-space: nowrap`) but the arrows are meaningless
+ *   because the tablist is not scrollable (`overflow: visible`).
  * @property {Function} [raf]
  *
  * @typedef {Object} OverflowController
@@ -27,6 +32,7 @@ function createOverflowController( opts ) {
 	const tablist = opts.tablist;
 	const header = opts.header;
 	const animationsEnabled = opts.animationsEnabled !== false;
+	const enabled = opts.enabled !== false;
 	const raf = opts.raf || window.requestAnimationFrame.bind( window );
 	let overflowing = false;
 
@@ -46,6 +52,16 @@ function createOverflowController( opts ) {
 	}
 
 	function update( metrics ) {
+		if ( !enabled ) {
+			// Wrap mode: never show arrows/masks even when an over-wide tab
+			// causes horizontal overflow, since the tablist is not scrollable.
+			overflowing = false;
+			header.classList.remove(
+				'tabber__header--prev-visible',
+				'tabber__header--next-visible'
+			);
+			return;
+		}
 		const m = metrics || getMetrics();
 		overflowing = overflowMath.isOverflowing( m );
 		if ( !overflowing ) {

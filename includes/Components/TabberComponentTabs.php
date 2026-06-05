@@ -8,13 +8,18 @@ use MediaWiki\Parser\Sanitizer;
 class TabberComponentTabs implements TabberComponent {
 	public function __construct(
 		private array $tabsData,
-		private array $additionalAttributes
+		private array $additionalAttributes,
+		private bool $wrap = false
 	) {
 	}
 
 	private function getAttributes(): array {
+		$class = 'tabber tabber--init';
+		if ( $this->wrap ) {
+			$class .= ' tabber--wrap';
+		}
 		$attributes = [
-			'class' => 'tabber tabber--init'
+			'class' => $class
 		];
 
 		foreach ( $this->additionalAttributes as $attribute => $value ) {

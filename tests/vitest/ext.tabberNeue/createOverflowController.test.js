@@ -50,6 +50,22 @@ describe( 'createOverflowController', () => {
 			expect( header.classList.contains( 'tabber__header--prev-visible' ) ).toBe( false );
 		} );
 
+		it( 'never shows arrows when disabled, even with overflow metrics (wrap mode)', () => {
+			// A single over-wide tab makes scrollWidth > offsetWidth even in wrap
+			// mode; the disabled controller must not surface the arrows/masks.
+			header.classList.add( 'tabber__header--next-visible' );
+			tablist = makeTablist(
+				{ scrollWidth: 500, offsetWidth: 200, clientWidth: 200, scrollLeft: 0 }
+			);
+			const ctl = createOverflowController( {
+				tablist, header, animationsEnabled: false, raf: ( fn ) => fn(), enabled: false
+			} );
+			ctl.update();
+			expect( header.classList.contains( 'tabber__header--next-visible' ) ).toBe( false );
+			expect( header.classList.contains( 'tabber__header--prev-visible' ) ).toBe( false );
+			expect( ctl.isOverflowing() ).toBe( false );
+		} );
+
 		it( 'shows prev-visible when scrolled away from start', () => {
 			tablist = makeTablist(
 				{ scrollWidth: 500, offsetWidth: 200, clientWidth: 200, scrollLeft: 100 }

@@ -169,6 +169,11 @@
 			"value": true,
 			"description": "If enabled, tabpanel IDs will be prepended with \"tabber-\". This avoids potential conflicts with page headings that use the same IDs.",
 			"public": true
+		},
+		"TabberNeueEnableTabWrap": {
+			"value": false,
+			"description": "If enabled, tab headers wrap onto multiple rows instead of using a horizontally-scrollable overflow container. Can be overridden per-tag with the `wrap` attribute (e.g. <tabber wrap> or <tabber wrap=false>).",
+			"public": true
 		}
 	},
 	"Hooks": {

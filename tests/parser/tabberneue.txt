@@ -258,3 +258,72 @@ wgTabberNeueAddTabPrefix=true
 </tabbertransclude>
 !! html
 !! end
+
+!! test
+TabberNeue: wrap attribute enables tabber--wrap with config default off
+!! config
+wgTabberNeueParseTabName=false
+wgTabberNeueAddTabPrefix=true
+wgTabberNeueEnableTabWrap=false
+!! wikitext
+<tabber wrap>
+|-|First=
+First content.
+|-|Second=
+Second content.
+</tabber>
+!! html
+<div class="tabber tabber--init tabber--wrap"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-First-label" href="#tabber-First" aria-controls="tabber-First">First</a><a class="tabber__tab" role="tab" id="tabber-Second-label" href="#tabber-Second" aria-controls="tabber-Second">Second</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-First" aria-labelledby="tabber-First-label"><p class="mw-empty-elt">
+</p><p>First content.
+</p>
+<p class="mw-empty-elt"></p></article><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Second" aria-labelledby="tabber-Second-label"><p class="mw-empty-elt">
+</p><p>Second content.
+</p>
+<p class="mw-empty-elt"></p></article></section></div>
+!! end
+
+!! test
+TabberNeue: config default on adds tabber--wrap without a wrap attribute
+!! config
+wgTabberNeueParseTabName=false
+wgTabberNeueAddTabPrefix=true
+wgTabberNeueEnableTabWrap=true
+!! wikitext
+<tabber>
+|-|First=
+First content.
+|-|Second=
+Second content.
+</tabber>
+!! html
+<div class="tabber tabber--init tabber--wrap"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-First-label" href="#tabber-First" aria-controls="tabber-First">First</a><a class="tabber__tab" role="tab" id="tabber-Second-label" href="#tabber-Second" aria-controls="tabber-Second">Second</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-First" aria-labelledby="tabber-First-label"><p class="mw-empty-elt">
+</p><p>First content.
+</p>
+<p class="mw-empty-elt"></p></article><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Second" aria-labelledby="tabber-Second-label"><p class="mw-empty-elt">
+</p><p>Second content.
+</p>
+<p class="mw-empty-elt"></p></article></section></div>
+!! end
+
+!! test
+TabberNeue: wrap=false attribute overrides config default on
+!! config
+wgTabberNeueParseTabName=false
+wgTabberNeueAddTabPrefix=true
+wgTabberNeueEnableTabWrap=true
+!! wikitext
+<tabber wrap=false>
+|-|First=
+First content.
+|-|Second=
+Second content.
+</tabber>
+!! html
+<div class="tabber tabber--init"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-First-label" href="#tabber-First" aria-controls="tabber-First">First</a><a class="tabber__tab" role="tab" id="tabber-Second-label" href="#tabber-Second" aria-controls="tabber-Second">Second</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><section class="tabber__section"><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-First" aria-labelledby="tabber-First-label"><p class="mw-empty-elt">
+</p><p>First content.
+</p>
+<p class="mw-empty-elt"></p></article><article class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Second" aria-labelledby="tabber-Second-label"><p class="mw-empty-elt">
+</p><p>Second content.
+</p>
+<p class="mw-empty-elt"></p></article></section></div>
+!! end

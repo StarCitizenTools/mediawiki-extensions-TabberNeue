@@ -31,6 +31,9 @@ class ParserTestGlobalsHandler implements ParserTestGlobalsHook {
 			$services->resetServiceForTesting( 'TabberNeue.TabParser' );
 			$services->resetServiceForTesting( 'TabberNeue.TabIdRegistry' );
 			$services->resetServiceForTesting( 'TabberNeue.TabModelBuilder' );
+			// TabberRenderer reads wgTabberNeueEnableTabWrap at construction, so it
+			// must be reset before the handlers that depend on it pick it up.
+			$services->resetServiceForTesting( 'TabberNeue.TabberRenderer' );
 			$services->resetServiceForTesting( 'TabberNeue.TabberHandler' );
 			$services->resetServiceForTesting( 'TabberNeue.TabberTranscludeHandler' );
 			// HookContainer caches hook handler objects (including the Hooks class
