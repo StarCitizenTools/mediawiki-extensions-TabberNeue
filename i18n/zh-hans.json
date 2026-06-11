@@ -30,6 +30,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-content": "选项卡内容",
 	"tabberneue-visualeditor-mwtabberdialog-content-placeholder": "输入选项卡内容（wikitext）",
 	"tabberneue-visualeditor-mwtabberdialog-error-title": "验证错误",
+	"tabberneue-visualeditor-mwtabberdialog-error-empty-label": "以下标签页的标签为空：$1。请为每个标签页添加标签。",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber（嵌入）",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "有关具体用法，参见[https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion 文档]。",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-addtab": "添加选项卡",
@@ -43,6 +44,9 @@
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-page": "页面名称",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-page-placeholder": "输入页面名称",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-title": "验证错误",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-label": "以下标签页的标签为空：$1。请为每个标签页添加标签。",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-page": "以下标签页的名称为空：$1。请为每个标签页提供有效的页面名称。",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-both": "以下标签页的标签为空：$1；以下标签页的页面名称为空：$2。请为每个标签页提供标签和有效的页面名称。",
 	"tabberneue-visualeditor-copy-suffix": "$1（复制）",
 	"tabberneue-error-tabs-title": "处理标签时发生以下错误：",
 	"tabberneue-error-tabs-duplicate-label": "标签名“$1”已被使用。"
