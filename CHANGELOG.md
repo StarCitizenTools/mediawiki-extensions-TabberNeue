@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v4.0.0...v4.0.1) (2026-06-30)
+
+
+### Bug Fixes
+
+* drop redundant "Try again" from VE Tabber validation errors ([786882c](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/786882cffff8d327152ea31176d9fc48c3321f6b))
+* keep VisualEditor Tabber tabs with empty content ([bb9fc81](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/bb9fc81e4be86c14035da3c9279091d86c77d25b)), closes [#315](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/315)
+* prevent VisualEditor Tabber dialog freeze on empty tab label ([d84e035](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/d84e0356918ca2225311ef7f5a254209cbccb22e)), closes [#314](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/314)
+* recolour the VE Tabber icon for focus and selected states ([ddecce9](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/ddecce94ef078a933e0678f4f3e316c56b11ca0d))
+* W3C-valid tab markup — &lt;div&gt; panels + aria-hidden indicator ([#309](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/309)) ([#321](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/321)) ([8050e04](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/8050e044b4f57c4ffe095042b700f344723a239f))
+
 ## [4.0.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v3.4.1...v4.0.0) (2026-06-05)
 
 
