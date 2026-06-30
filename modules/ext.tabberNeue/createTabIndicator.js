@@ -31,6 +31,10 @@ function createTabIndicator( opts ) {
 
 	const element = doc.createElement( 'span' );
 	element.className = 'tabber__indicator';
+	// Decorative sliding underline. aria-hidden keeps it out of the a11y tree
+	// so role="tablist" exposes only its tab children; it must stay a tablist
+	// child for the stylesheet's :has( > .tabber__indicator ) selector.
+	element.setAttribute( 'aria-hidden', 'true' );
 	tablist.appendChild( element );
 
 	/**

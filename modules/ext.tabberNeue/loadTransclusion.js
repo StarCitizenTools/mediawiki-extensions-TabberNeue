@@ -67,6 +67,12 @@ async function loadTransclusion( opts ) {
 			throw new Error( 'Invalid data structure received from server.' );
 		}
 
+		// Known limitation: the transcluded page's parsed HTML is generated
+		// from a separate ParserOutput, so its element IDs (section anchors,
+		// its own tabber IDs, etc.) can collide with IDs already on the host
+		// page, producing duplicate IDs in the live DOM. This is runtime-only
+		// (invisible to static W3C validation); we intentionally do not rewrite
+		// the injected IDs, which would break that content's own anchors/TOC.
 		panel.innerHTML = data.parse.text;
 		if ( onContentReplaced ) {
 			onContentReplaced( panel );

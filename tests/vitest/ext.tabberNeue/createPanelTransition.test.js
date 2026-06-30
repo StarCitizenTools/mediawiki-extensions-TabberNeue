@@ -6,8 +6,8 @@ describe( 'createPanelTransition', () => {
 	let newPanel;
 
 	beforeEach( () => {
-		prevPanel = document.createElement( 'article' );
-		newPanel = document.createElement( 'article' );
+		prevPanel = document.createElement( 'div' );
+		newPanel = document.createElement( 'div' );
 		Object.defineProperty( prevPanel, 'offsetLeft', { value: 0, configurable: true } );
 		Object.defineProperty( newPanel, 'offsetLeft', { value: 300, configurable: true } );
 		document.body.appendChild( prevPanel );
