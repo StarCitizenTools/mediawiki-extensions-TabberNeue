@@ -214,13 +214,25 @@ ve.ui.MWTabberBaseDialog.prototype.createTabPanelFromData = function ( /* data *
 };
 
 /**
- * Show validation error (to be implemented by subclasses)
+ * Get the localised validation error message (to be implemented by subclasses)
+ *
+ * @abstract
+ * @param {Object} result Validation result
+ * @return {string} Error message describing which tabs are invalid
+ */
+ve.ui.MWTabberBaseDialog.prototype.getValidationErrorMessage = function ( /* result */ ) {
+	throw new Error( 'getValidationErrorMessage must be implemented by subclass' );
+};
+
+/**
+ * Select and focus the first tab that failed validation (to be implemented by
+ * subclasses)
  *
  * @abstract
  * @param {Object} result Validation result
  */
-ve.ui.MWTabberBaseDialog.prototype.showValidationError = function ( /* result */ ) {
-	throw new Error( 'showValidationError must be implemented by subclass' );
+ve.ui.MWTabberBaseDialog.prototype.focusFirstInvalidTab = function ( /* result */ ) {
+	throw new Error( 'focusFirstInvalidTab must be implemented by subclass' );
 };
 
 /**
@@ -636,8 +648,19 @@ ve.ui.MWTabberBaseDialog.prototype.getActionProcess = function ( action ) {
 		return new OO.ui.Process( () => this.validateAllTabs()
 			.then( ( result ) => {
 				if ( !result.valid ) {
-					this.showValidationError( result );
-					return $.Deferred().reject().promise();
+					// Reject the action with a recoverable error so the dialog
+					// surfaces the validation message in its own error area
+					// (with working Dismiss/Try again buttons). Opening a
+					// separate OO.ui.alert here instead caused a contentless
+					// "Something went wrong" overlay with unresponsive buttons
+					// because the alert modal stole focus from the dialog (#314).
+					this.focusFirstInvalidTab( result );
+					return $.Deferred().reject( [
+						new OO.ui.Error(
+							this.getValidationErrorMessage( result ),
+							{ recoverable: true }
+						)
+					] ).promise();
 				}
 
 				const newWikitext = this.convertTabsToWikitext();
