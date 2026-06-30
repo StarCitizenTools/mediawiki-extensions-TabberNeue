@@ -85,11 +85,11 @@
 				"ve-tabberNeue/ve.ui.MWTabberTranscludeDialogTool.js"
 			],
 			"styles": [
-				"ve-tabberNeue/ve.ui.MWTabberDialog.less",
-				"ve-tabberNeue/ve.ui.MWTabberIcons.less"
+				"ve-tabberNeue/ve.ui.MWTabberDialog.less"
 			],
 			"dependencies": [
-				"ext.visualEditor.mwcore"
+				"ext.visualEditor.mwcore",
+				"ext.tabberNeue.visualEditor.icons"
 			],
 			"messages": [
 				"tabberneue-visualeditor-mwtabberdialog-title",
@@ -137,6 +137,29 @@
 					"file": {
 						"ltr": "ext.tabberNeue.icons/previous-ltr.svg",
 						"rtl": "ext.tabberNeue.icons/previous-rtl.svg"
+					}
+				}
+			}
+		},
+		"ext.tabberNeue.visualEditor.icons": {
+			"class": "MediaWiki\\ResourceLoader\\ImageModule",
+			"selectorWithoutVariant": ".oo-ui-icon-{name}",
+			"selectorWithVariant": ".oo-ui-image-{variant}.oo-ui-icon-{name}",
+			"variants": {
+				"progressive": {
+					"color": "#36c",
+					"global": true
+				},
+				"invert": {
+					"color": "#fff",
+					"global": true
+				}
+			},
+			"images": {
+				"tabber": {
+					"file": {
+						"ltr": "ve-tabberNeue/tabber-ltr.svg",
+						"rtl": "ve-tabberNeue/tabber-rtl.svg"
 					}
 				}
 			}
