@@ -197,22 +197,17 @@ ve.ui.MWTabberDialog.prototype.validateAllTabs = function () {
 /**
  * @inheritdoc
  */
-ve.ui.MWTabberDialog.prototype.showValidationError = function ( result ) {
-	let errorMessage = '';
+ve.ui.MWTabberDialog.prototype.getValidationErrorMessage = function ( result ) {
+	return OO.ui.msg(
+		'tabberneue-visualeditor-mwtabberdialog-error-empty-label',
+		result.invalidTabs.join( ', ' )
+	);
+};
 
-	if ( result.invalidTabs.length > 0 ) {
-		errorMessage = OO.ui.msg(
-			'tabberneue-visualeditor-mwtabberdialog-error-empty-label',
-			result.invalidTabs.join( ', ' )
-		);
-	}
-
-	OO.ui.alert( errorMessage, {
-		title: OO.ui.msg( 'tabberneue-visualeditor-mwtabberdialog-error-title' ),
-		size: 'medium'
-	} );
-
-	// Focus first invalid tab
+/**
+ * @inheritdoc
+ */
+ve.ui.MWTabberDialog.prototype.focusFirstInvalidTab = function ( result ) {
 	const firstInvalidIndex = result.invalidTabs[ 0 ] - 1;
 	if ( this.tabPanels[ firstInvalidIndex ] ) {
 		const tabPanel = this.tabPanels[ firstInvalidIndex ];

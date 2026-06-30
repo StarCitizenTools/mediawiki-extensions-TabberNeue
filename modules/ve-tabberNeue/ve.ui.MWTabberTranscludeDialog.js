@@ -219,37 +219,35 @@ ve.ui.MWTabberTranscludeDialog.prototype.validateAllTabs = function () {
 /**
  * @inheritdoc
  */
-ve.ui.MWTabberTranscludeDialog.prototype.showValidationError = function ( result ) {
-	let errorMessage = '';
-
+ve.ui.MWTabberTranscludeDialog.prototype.getValidationErrorMessage = function ( result ) {
 	// Build error message based on what's invalid
 	if ( result.invalidLabels.length > 0 && result.invalidPages.length > 0 ) {
-		errorMessage = OO.ui.msg(
+		return OO.ui.msg(
 			'tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-both',
 			result.invalidLabels.join( ', ' ),
 			result.invalidPages.join( ', ' )
 		);
 	} else if ( result.invalidLabels.length > 0 ) {
-		errorMessage = OO.ui.msg(
+		return OO.ui.msg(
 			'tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-label',
 			result.invalidLabels.join( ', ' )
 		);
 	} else if ( result.invalidPages.length > 0 ) {
-		errorMessage = OO.ui.msg(
+		return OO.ui.msg(
 			'tabberneue-visualeditor-mwtabbertranscludeinspector-error-empty-page',
 			result.invalidPages.join( ', ' )
 		);
 	}
 
-	// Show error
-	OO.ui.alert(
-		errorMessage,
-		{
-			title: OO.ui.msg( 'tabberneue-visualeditor-mwtabbertranscludeinspector-error-title' ),
-			size: 'medium'
-		}
-	);
+	// Defensive fallback: unreachable in practice, as this is only called when
+	// validation has failed, which guarantees at least one list above is non-empty.
+	return '';
+};
 
+/**
+ * @inheritdoc
+ */
+ve.ui.MWTabberTranscludeDialog.prototype.focusFirstInvalidTab = function ( result ) {
 	// Focus first invalid tab and appropriate field
 	const firstInvalidIndex = result.invalidLabels.length > 0 ?
 		result.invalidLabels[ 0 ] - 1 :
