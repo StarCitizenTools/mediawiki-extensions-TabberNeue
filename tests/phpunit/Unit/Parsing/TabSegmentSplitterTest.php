@@ -41,6 +41,33 @@ class TabSegmentSplitterTest extends MediaWikiUnitTestCase {
 	}
 
 	/**
+	 * A segment that has a label but no content (e.g. "|-|Label=") must be
+	 * kept with an empty rawContent — empty panels are valid. The VisualEditor
+	 * dialog relies on this contract (#315).
+	 *
+	 * @covers ::splitTabber
+	 */
+	public function testSplitTabberSegmentWithEmptyContentIsKept(): void {
+		$result = $this->splitter->splitTabber( '|-|Label=' );
+		$this->assertCount( 1, $result );
+		$this->assertSame( 'Label', $result[0]->rawLabel );
+		$this->assertSame( '', $result[0]->rawContent );
+	}
+
+	/**
+	 * An empty-content segment must survive even when sandwiched between
+	 * content-bearing segments (#315).
+	 *
+	 * @covers ::splitTabber
+	 */
+	public function testSplitTabberKeepsEmptyContentSegmentAmongOthers(): void {
+		$result = $this->splitter->splitTabber( '|-|A=1|-|B=|-|C=3' );
+		$this->assertCount( 3, $result );
+		$this->assertSame( [ 'A', 'B', 'C' ], array_map( static fn ( $s ) => $s->rawLabel, $result ) );
+		$this->assertSame( [ '1', '', '3' ], array_map( static fn ( $s ) => $s->rawContent, $result ) );
+	}
+
+	/**
 	 * @covers ::splitTabber
 	 */
 	public function testSplitTabberMultipleSegments(): void {
