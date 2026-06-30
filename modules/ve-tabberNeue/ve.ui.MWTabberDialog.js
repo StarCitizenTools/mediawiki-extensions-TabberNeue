@@ -134,7 +134,10 @@ ve.ui.MWTabberDialog.prototype.convertTabsToWikitext = function () {
 		const label = tabPanel.labelInput.getValue().trim();
 		const content = tabPanel.contentInput.getValue().trim();
 
-		if ( label && content ) {
+		// Keep every labelled tab; content is optional (an empty panel is
+		// valid and supported by the parser). Requiring content here silently
+		// dropped tabs whose label was filled but content left blank (#315).
+		if ( label ) {
 			wikitextParts.push( '|-|' + label + ' =\n' + content );
 		}
 	} );

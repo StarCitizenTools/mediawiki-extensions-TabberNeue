@@ -71,4 +71,33 @@ class TabModelBuilderTest extends MediaWikiUnitTestCase {
 		$this->assertSame( '<p>Body</p>', $tabModel->content );
 		$this->assertSame( $expectedId, $tabModel->id );
 	}
+
+	/**
+	 * A tab with a label but empty content must still build a TabModel (an
+	 * empty panel is valid). Only an empty label skips the tab. The
+	 * VisualEditor dialog relies on this contract (#315).
+	 *
+	 * @covers ::build
+	 */
+	public function testEmptyContentBuildsTabModel(): void {
+		$tabParser = $this->createMock( TabParser::class );
+		$tabParser->method( 'parseLabel' )->willReturn( 'Hello' );
+		$tabParser->method( 'parseContent' )->willReturn( '' );
+
+		$expectedId = TabId::build( 'Hello', true );
+		$tabIdRegistry = $this->createMock( TabIdRegistry::class );
+		$tabIdRegistry->method( 'generateUniqueId' )->willReturn( $expectedId );
+
+		$parserOutput = $this->createMock( ParserOutput::class );
+		$parser = $this->createMock( Parser::class );
+		$parser->method( 'getOutput' )->willReturn( $parserOutput );
+
+		$builder = new TabModelBuilder( $tabParser, $tabIdRegistry );
+		$tabModel = $builder->build( 'Hello', '', $parser );
+
+		$this->assertNotNull( $tabModel, 'A labelled tab with empty content must still build a tab' );
+		$this->assertSame( 'Hello', $tabModel->label );
+		$this->assertSame( '', $tabModel->content );
+		$this->assertSame( $expectedId, $tabModel->id );
+	}
 }
