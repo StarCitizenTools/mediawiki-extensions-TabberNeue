@@ -10,10 +10,10 @@ function makeTabberElement() {
 				<a class="tabber__tab" role="tab" aria-controls="p2">B</a>
 			</nav>
 		</div>
-		<section class="tabber__section">
-			<article class="tabber__panel" id="p1">one</article>
-			<article class="tabber__panel" id="p2">two</article>
-		</section>
+		<div class="tabber__section">
+			<div class="tabber__panel" id="p1">one</div>
+			<div class="tabber__panel" id="p2">two</div>
+		</div>
 	`;
 	document.body.appendChild( el );
 	return el;
@@ -232,10 +232,10 @@ describe( 'createTabber animation orchestration', () => {
 					<a class="tabber__tab" role="tab" aria-controls="p2">B</a>
 				</nav>
 			</div>
-			<section class="tabber__section">
-				<article class="tabber__panel" id="p1">one</article>
-				<article class="tabber__panel" id="p2">two</article>
-			</section>
+			<div class="tabber__section">
+				<div class="tabber__panel" id="p1">one</div>
+				<div class="tabber__panel" id="p2">two</div>
+			</div>
 		`;
 		document.body.appendChild( element );
 

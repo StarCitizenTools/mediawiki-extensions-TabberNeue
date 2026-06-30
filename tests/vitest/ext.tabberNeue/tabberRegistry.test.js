@@ -55,9 +55,9 @@ describe( 'tabberRegistry', () => {
 			<div class="tabber__header">
 				<nav class="tabber__tabs"><a class="tabber__tab" aria-controls="${ id }-p1">A</a></nav>
 			</div>
-			<section class="tabber__section">
-				<article class="tabber__panel" id="${ id }-p1">x</article>
-			</section>
+			<div class="tabber__section">
+				<div class="tabber__panel" id="${ id }-p1">x</div>
+			</div>
 		`;
 		document.body.appendChild( el );
 		return el;
