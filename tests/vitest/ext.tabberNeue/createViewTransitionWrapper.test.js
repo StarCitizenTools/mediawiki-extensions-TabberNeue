@@ -5,7 +5,7 @@ describe( 'createViewTransitionWrapper', () => {
 	let section;
 
 	beforeEach( () => {
-		section = document.createElement( 'section' );
+		section = document.createElement( 'div' );
 		document.body.appendChild( section );
 		document.documentElement.classList.add( 'tabber-animations-ready' );
 	} );
