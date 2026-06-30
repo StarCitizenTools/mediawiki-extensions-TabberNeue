@@ -21,6 +21,12 @@ describe( 'createTabIndicator', () => {
 		expect( indicator.tagName ).toBe( 'SPAN' );
 	} );
 
+	it( 'marks the indicator aria-hidden so the tablist exposes only tabs', () => {
+		createTabIndicator( { tablist, document } );
+		const indicator = tablist.querySelector( ':scope > .tabber__indicator' );
+		expect( indicator.getAttribute( 'aria-hidden' ) ).toBe( 'true' );
+	} );
+
 	it( 'update sets transform and width from the active tab geometry', () => {
 		const ind = createTabIndicator( { tablist, document } );
 		const tab = document.createElement( 'a' );
