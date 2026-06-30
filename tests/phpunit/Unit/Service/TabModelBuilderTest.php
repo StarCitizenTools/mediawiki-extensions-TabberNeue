@@ -19,85 +19,75 @@ use MediaWikiUnitTestCase;
 class TabModelBuilderTest extends MediaWikiUnitTestCase {
 
 	/**
-	 * @covers ::build
+	 * @param string $parsedLabel Value TabParser::parseLabel should return
+	 * @param string $parsedContent Value TabParser::parseContent should return
+	 * @return TabParser
 	 */
-	public function testEmptyParsedLabelReturnsNull(): void {
+	private function newTabParser( string $parsedLabel, string $parsedContent = '' ): TabParser {
 		$tabParser = $this->createMock( TabParser::class );
-		$tabParser->method( 'parseLabel' )->willReturn( '' );
+		$tabParser->method( 'parseLabel' )->willReturn( $parsedLabel );
+		$tabParser->method( 'parseContent' )->willReturn( $parsedContent );
+		return $tabParser;
+	}
+
+	/**
+	 * @return Parser
+	 */
+	private function newParser(): Parser {
+		$parser = $this->createMock( Parser::class );
+		$parser->method( 'getOutput' )->willReturn( $this->createMock( ParserOutput::class ) );
+		return $parser;
+	}
+
+	/**
+	 * A tab whose label parses to empty is skipped (build returns null) and no
+	 * ID is allocated for it.
+	 *
+	 * @covers ::build
+	 * @dataProvider provideEmptyLabels
+	 */
+	public function testReturnsNullWhenLabelEmpty( string $rawLabel ): void {
 		$tabIdRegistry = $this->createMock( TabIdRegistry::class );
 		$tabIdRegistry->expects( $this->never() )->method( 'generateUniqueId' );
 
-		$builder = new TabModelBuilder( $tabParser, $tabIdRegistry );
-		$parser = $this->createMock( Parser::class );
+		$builder = new TabModelBuilder( $this->newTabParser( '' ), $tabIdRegistry );
 
-		$this->assertNull( $builder->build( '', 'content', $parser ) );
+		$this->assertNull( $builder->build( $rawLabel, 'content', $this->newParser() ) );
+	}
+
+	public static function provideEmptyLabels(): array {
+		return [
+			'empty string' => [ '' ],
+			'whitespace only' => [ '   ' ],
+		];
 	}
 
 	/**
+	 * A labelled tab builds a model carrying the parsed content. Content is
+	 * optional: an empty panel is valid and only an empty label skips the tab
+	 * (#315).
+	 *
 	 * @covers ::build
+	 * @dataProvider provideTabContents
 	 */
-	public function testWhitespaceOnlyLabelReturnsNull(): void {
-		$tabParser = $this->createMock( TabParser::class );
-		$tabParser->method( 'parseLabel' )->willReturn( '' );
-		$tabIdRegistry = $this->createMock( TabIdRegistry::class );
-
-		$builder = new TabModelBuilder( $tabParser, $tabIdRegistry );
-		$parser = $this->createMock( Parser::class );
-
-		$this->assertNull( $builder->build( '   ', 'content', $parser ) );
-	}
-
-	/**
-	 * @covers ::build
-	 */
-	public function testHappyPathBuildsTabModel(): void {
-		$tabParser = $this->createMock( TabParser::class );
-		$tabParser->method( 'parseLabel' )->willReturn( 'Hello' );
-		$tabParser->method( 'parseContent' )->willReturn( '<p>Body</p>' );
-
+	public function testBuildsModelForLabelledTab( string $parsedContent ): void {
 		$expectedId = TabId::build( 'Hello', true );
 		$tabIdRegistry = $this->createMock( TabIdRegistry::class );
 		$tabIdRegistry->method( 'generateUniqueId' )->willReturn( $expectedId );
 
-		$parserOutput = $this->createMock( ParserOutput::class );
-		$parser = $this->createMock( Parser::class );
-		$parser->method( 'getOutput' )->willReturn( $parserOutput );
-
-		$builder = new TabModelBuilder( $tabParser, $tabIdRegistry );
-		$tabModel = $builder->build( 'Hello', 'Body wikitext', $parser );
+		$builder = new TabModelBuilder( $this->newTabParser( 'Hello', $parsedContent ), $tabIdRegistry );
+		$tabModel = $builder->build( 'Hello', 'raw content', $this->newParser() );
 
 		$this->assertNotNull( $tabModel );
 		$this->assertSame( 'Hello', $tabModel->label );
-		$this->assertSame( '<p>Body</p>', $tabModel->content );
+		$this->assertSame( $parsedContent, $tabModel->content );
 		$this->assertSame( $expectedId, $tabModel->id );
 	}
 
-	/**
-	 * A tab with a label but empty content must still build a TabModel (an
-	 * empty panel is valid). Only an empty label skips the tab. The
-	 * VisualEditor dialog relies on this contract (#315).
-	 *
-	 * @covers ::build
-	 */
-	public function testEmptyContentBuildsTabModel(): void {
-		$tabParser = $this->createMock( TabParser::class );
-		$tabParser->method( 'parseLabel' )->willReturn( 'Hello' );
-		$tabParser->method( 'parseContent' )->willReturn( '' );
-
-		$expectedId = TabId::build( 'Hello', true );
-		$tabIdRegistry = $this->createMock( TabIdRegistry::class );
-		$tabIdRegistry->method( 'generateUniqueId' )->willReturn( $expectedId );
-
-		$parserOutput = $this->createMock( ParserOutput::class );
-		$parser = $this->createMock( Parser::class );
-		$parser->method( 'getOutput' )->willReturn( $parserOutput );
-
-		$builder = new TabModelBuilder( $tabParser, $tabIdRegistry );
-		$tabModel = $builder->build( 'Hello', '', $parser );
-
-		$this->assertNotNull( $tabModel, 'A labelled tab with empty content must still build a tab' );
-		$this->assertSame( 'Hello', $tabModel->label );
-		$this->assertSame( '', $tabModel->content );
-		$this->assertSame( $expectedId, $tabModel->id );
+	public static function provideTabContents(): array {
+		return [
+			'non-empty content' => [ '<p>Body</p>' ],
+			'empty content (#315)' => [ '' ],
+		];
 	}
 }
