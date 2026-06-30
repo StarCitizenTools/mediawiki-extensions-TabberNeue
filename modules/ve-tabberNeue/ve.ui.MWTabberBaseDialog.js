@@ -692,3 +692,18 @@ ve.ui.MWTabberBaseDialog.prototype.getActionProcess = function ( action ) {
 
 	return ve.ui.MWTabberBaseDialog.super.prototype.getActionProcess.call( this, action );
 };
+
+/**
+ * @inheritdoc
+ *
+ * Hide the "Try again" button when surfacing a validation error. The error
+ * occupies the dialog body, covering the form, so retrying without first
+ * dismissing it and editing the offending fields just reproduces the same
+ * error — the button is redundant, leaving only "Dismiss" (#314 follow-up).
+ * The error is kept recoverable so the primary action stays enabled and the
+ * user can re-apply after fixing the fields.
+ */
+ve.ui.MWTabberBaseDialog.prototype.showErrors = function ( errors ) {
+	ve.ui.MWTabberBaseDialog.super.prototype.showErrors.call( this, errors );
+	this.retryButton.toggle( false );
+};
