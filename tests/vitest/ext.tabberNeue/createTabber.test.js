@@ -316,6 +316,52 @@ describe( 'createTabber animation orchestration', () => {
 		}
 	} );
 
+	it( 'applies the destination height before the view-transition callback so both captures share it', () => {
+		// The browser defers the update callback; capture it without running it,
+		// mirroring the gap between the old-state and new-state snapshots.
+		let capturedCallback = null;
+		const mockVT = vi.fn( ( cb ) => {
+			capturedCallback = cb;
+			return {
+				finished: Promise.resolve(),
+				ready: Promise.resolve(),
+				updateCallbackDone: Promise.resolve()
+			};
+		} );
+		document.startViewTransition = mockVT;
+		try {
+			// Old panel 100px tall, destination panel 250px tall.
+			vi.spyOn( panels[ 0 ], 'getBoundingClientRect' )
+				.mockReturnValue( { width: 100, height: 100 } );
+			vi.spyOn( panels[ 1 ], 'getBoundingClientRect' )
+				.mockReturnValue( { width: 100, height: 250 } );
+			const t = make();
+			t.init( tabs[ 0 ] );
+			const section = element.querySelector( '.tabber__section' );
+			expect( section.style.height ).toBe( '100px' );
+
+			t.activate( tabs[ 1 ], { source: 'user-click' } );
+
+			// The destination height must be applied up front, before the deferred
+			// callback runs, so the old and new captures share one section height.
+			// Otherwise the page reflows between the two snapshots: the root
+			// snapshot cross-fades the whole page below and the taller panel's
+			// snapshot spills out of the (overflow-clipped) container.
+			expect( mockVT ).toHaveBeenCalledTimes( 1 );
+			expect( section.style.height ).toBe( '250px' );
+
+			// Running the callback (what the browser does between captures) must
+			// not re-read or re-apply the height. Re-mock the destination panel
+			// to a different height first, so a regression that measures inside
+			// the callback would be caught here.
+			panels[ 1 ].getBoundingClientRect.mockReturnValue( { width: 100, height: 999 } );
+			capturedCallback();
+			expect( section.style.height ).toBe( '250px' );
+		} finally {
+			delete document.startViewTransition;
+		}
+	} );
+
 	it( 'panel-scroll activation bypasses both VT and the fallback class', () => {
 		const mockVT = vi.fn( () => ( {
 			finished: Promise.resolve(),

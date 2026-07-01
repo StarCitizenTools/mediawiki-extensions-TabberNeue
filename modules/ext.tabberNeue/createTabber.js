@@ -104,8 +104,17 @@ function createTabber( opts ) {
 				onContentReplaced: ( p ) => mwApi.hook( 'wikipage.content' ).fire( $( p ) )
 			} );
 		}
-		const h = getElementSize( panel, 'height' );
-		section.style.height = h + 'px';
+		// In the View Transitions path the destination height is pre-applied
+		// before the transition starts (see activate) so the old and new
+		// captures share one section height. Re-applying it here would run
+		// inside the update callback and reflow the page between the two
+		// captures — the root snapshot then cross-fades the whole page below,
+		// and the taller panel's snapshot (unclipped by the section overflow)
+		// spills out of the container.
+		if ( !options.preventHeight ) {
+			const h = getElementSize( panel, 'height' );
+			section.style.height = h + 'px';
+		}
 		if ( !options.preventScroll ) {
 			// Synchronous: any IO entry from this write lands inside pauseDuring's
 			// 150ms quiet window. Deferring via rAF breaks the View Transitions
@@ -163,7 +172,17 @@ function createTabber( opts ) {
 			const direction = newPanel.offsetLeft > previousActivePanel.offsetLeft ?
 				'forward' :
 				'backward';
-			units.vt.wrap( () => performActivation( tab, options ), direction );
+			// Apply the destination height before starting the transition so
+			// both view-transition captures share one section height. Changing
+			// it inside the update callback instead reflows the page between the
+			// old and new snapshots, causing the whole page below to cross-fade
+			// (root snapshot) and the taller panel to spill out of the
+			// overflow-clipped container.
+			section.style.height = getElementSize( newPanel, 'height' ) + 'px';
+			units.vt.wrap(
+				() => performActivation( tab, Object.assign( {}, options, { preventHeight: true } ) ),
+				direction
+			);
 			return;
 		}
 
