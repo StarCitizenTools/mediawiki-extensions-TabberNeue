@@ -15,7 +15,7 @@
 		"@vitest/coverage-v8": "^4.1.9",
 		"@wikimedia/types-wikimedia": "0.6.0",
 		"eslint-config-wikimedia": "0.32.4",
-		"eslint-plugin-no-jquery": "5.0.0",
+		"eslint-plugin-no-jquery": "6.0.0",
 		"grunt-banana-checker": "0.13.0",
 		"jsdom": "^29.1.1",
 		"stylelint-config-recess-order": "7.7.0",
