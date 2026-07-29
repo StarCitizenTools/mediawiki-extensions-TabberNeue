@@ -19,7 +19,6 @@
  */
 function createVisibilityObserver( opts ) {
 	const element = opts.element;
-	// eslint-disable-next-line compat/compat
 	const IO = opts.IntersectionObserver || window.IntersectionObserver;
 	const onShow = opts.onShow;
 	const onHide = opts.onHide;
