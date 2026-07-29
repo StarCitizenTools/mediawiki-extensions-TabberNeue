@@ -25,7 +25,6 @@ const QUIET_PERIOD_MS = 150;
 function createPanelSyncObserver( opts ) {
 	const section = opts.section;
 	const panelToTabMap = opts.panelToTabMap;
-	// eslint-disable-next-line compat/compat
 	const IO = opts.IntersectionObserver || window.IntersectionObserver;
 	const onTabActivate = opts.onTabActivate;
 	const setTimeoutFn = opts.setTimeout || window.setTimeout.bind( window );

@@ -38,7 +38,6 @@ function createTabber( opts ) {
 	const mwApi = deps.mw;
 	const win = deps.window || window;
 	const doc = deps.document || document;
-	// eslint-disable-next-line compat/compat
 	const IO = deps.IntersectionObserver || window.IntersectionObserver;
 	const raf = deps.requestAnimationFrame ||
 		window.requestAnimationFrame.bind( window );
