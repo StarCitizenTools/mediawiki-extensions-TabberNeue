@@ -34,9 +34,12 @@ describe( 'createPanelTransition', () => {
 		expect( prevPanel.classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( false );
 	} );
 
-	it( 'skips when source is panel-scroll', () => {
+	it( 'skips when source is find', () => {
+		// Find-as-you-type re-activates on every keystroke. Animating each one
+		// restarts the keyframe and strands the previous animationend listener,
+		// since the class is removed before the animation can end.
 		const t = createPanelTransition( { document } );
-		t.trigger( newPanel, prevPanel, 'panel-scroll' );
+		t.trigger( newPanel, prevPanel, 'find' );
 		expect( newPanel.classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( false );
 		expect( newPanel.classList.contains( 'tabber__panel--entering-from-left' ) ).toBe( false );
 	} );

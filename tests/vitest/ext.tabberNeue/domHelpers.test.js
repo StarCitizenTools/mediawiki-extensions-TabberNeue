@@ -1,8 +1,72 @@
 const {
-	getElementSize, getHiddenElementSize, roundScrollLeft, setAttributes
+	getElementSize, getHiddenElementSize, isBurstSource, panelAtScrollOffset, roundScrollLeft,
+	setAttributes
 } = require( '../../../modules/ext.tabberNeue/domHelpers.js' );
 
 describe( 'domHelpers', () => {
+	describe( 'isBurstSource', () => {
+		it( 'treats find as a burst', () => {
+			expect( isBurstSource( 'find' ) ).toBe( true );
+		} );
+
+		it( 'treats deliberate activations as single acts', () => {
+			for ( const source of [ 'init', 'user-click', 'user-keyboard', 'hash', 'programmatic' ] ) {
+				expect( isBurstSource( source ) ).toBe( false );
+			}
+		} );
+
+		it( 'treats a missing source as a single act', () => {
+			expect( isBurstSource( undefined ) ).toBe( false );
+		} );
+	} );
+
+	describe( 'panelAtScrollOffset', () => {
+		/**
+		 * @param {number} clientWidth
+		 * @param {number} scrollLeft
+		 * @param {number[]} offsets per-panel offsetLeft, in px
+		 * @return {Object}
+		 */
+		function build( clientWidth, scrollLeft, offsets ) {
+			const section = document.createElement( 'div' );
+			Object.defineProperty( section, 'clientWidth', { value: clientWidth } );
+			section.scrollLeft = scrollLeft;
+			const panels = offsets.map( ( offsetLeft ) => {
+				const panel = document.createElement( 'div' );
+				Object.defineProperty( panel, 'offsetLeft', { value: offsetLeft } );
+				return panel;
+			} );
+			return { section, panels };
+		}
+
+		it( 'returns the panel whose column the offset matches', () => {
+			const { section, panels } = build( 100, 200, [ 0, 100, 200 ] );
+			expect( panelAtScrollOffset( section, panels ) ).toBe( panels[ 2 ] );
+		} );
+
+		it( 'returns the nearest panel for a fractional offset', () => {
+			const { section, panels } = build( 100, 97.5, [ 0, 100, 200 ] );
+			expect( panelAtScrollOffset( section, panels ) ).toBe( panels[ 1 ] );
+		} );
+
+		it( 'returns the first panel at rest', () => {
+			const { section, panels } = build( 100, 0, [ 0, 100, 200 ] );
+			expect( panelAtScrollOffset( section, panels ) ).toBe( panels[ 0 ] );
+		} );
+
+		it( 'returns null when the section has no layout', () => {
+			// Every offset reads 0 inside a display:none ancestor, which would
+			// otherwise resolve to the first panel and reset the active tab.
+			const { section, panels } = build( 0, 200, [ 0, 0, 0 ] );
+			expect( panelAtScrollOffset( section, panels ) ).toBeNull();
+		} );
+
+		it( 'returns null when there are no panels', () => {
+			const { section } = build( 100, 0, [] );
+			expect( panelAtScrollOffset( section, [] ) ).toBeNull();
+		} );
+	} );
+
 	describe( 'roundScrollLeft', () => {
 		it( 'rounds up fractional pixels', () => {
 			expect( roundScrollLeft( 2.3 ) ).toBe( 3 );

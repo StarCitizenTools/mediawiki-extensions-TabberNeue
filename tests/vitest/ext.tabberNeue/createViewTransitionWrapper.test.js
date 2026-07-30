@@ -22,10 +22,10 @@ describe( 'createViewTransitionWrapper', () => {
 			expect( w.canUse( 'user-click', true ) ).toBe( false );
 		} );
 
-		it( 'returns false when source is panel-scroll', () => {
+		it( 'returns false for a burst source', () => {
 			document.startViewTransition = vi.fn();
 			const w = createViewTransitionWrapper( { section, document } );
-			expect( w.canUse( 'panel-scroll', true ) ).toBe( false );
+			expect( w.canUse( 'find', true ) ).toBe( false );
 		} );
 
 		it( 'returns false when hasPreviousPanel is false', () => {

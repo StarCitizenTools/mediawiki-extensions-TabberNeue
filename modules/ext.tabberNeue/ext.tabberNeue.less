@@ -348,6 +348,15 @@
 		height: auto !important;
 	}
 
+	/*
+	 * Inactive panels carry `hidden="until-found"`, whose UA rule skips rendering
+	 * their contents. Printing is meant to show every tab, so override it — an
+	 * author rule wins over the UA stylesheet.
+	 */
+	.tabber__panel[ hidden ] {
+		content-visibility: visible;
+	}
+
 	/* Show tab header */
 	.tabber__panel::before {
 		display: block;

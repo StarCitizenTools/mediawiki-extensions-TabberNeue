@@ -38,6 +38,7 @@ describe( 'createHashRouter', () => {
 			hasPanel: vi.fn().mockReturnValue( true ),
 			getTabForPanel: vi.fn().mockReturnValue( 'TAB' ),
 			getDefaultTab: vi.fn().mockReturnValue( 'DEFAULT_TAB' ),
+			getRevealedTab: vi.fn().mockReturnValue( null ),
 			activate: vi.fn()
 		};
 	} );
@@ -66,6 +67,24 @@ describe( 'createHashRouter', () => {
 			tabber.hasPanel.mockReturnValue( false );
 			const r = make();
 			expect( r.initialTabFor( tabber ) ).toBe( 'DEFAULT_TAB' );
+		} );
+
+		it( 'adopts a browser-revealed tab over the default tab', () => {
+			// A find-in-page match or `#:~:text=` directive already scrolled the
+			// section to a non-default panel before init() ran.
+			win.location.hash = '';
+			tabber.getRevealedTab.mockReturnValue( 'REVEALED_TAB' );
+			const r = make();
+			expect( r.initialTabFor( tabber ) ).toBe( 'REVEALED_TAB' );
+			expect( tabber.getDefaultTab ).not.toHaveBeenCalled();
+		} );
+
+		it( 'prefers an explicit panel hash over a browser-revealed tab', () => {
+			win.location.hash = '#some-panel';
+			tabber.hasPanel.mockReturnValue( true );
+			tabber.getRevealedTab.mockReturnValue( 'REVEALED_TAB' );
+			const r = make();
+			expect( r.initialTabFor( tabber ) ).toBe( 'TAB' );
 		} );
 	} );
 

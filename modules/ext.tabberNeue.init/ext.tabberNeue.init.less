@@ -58,6 +58,12 @@
 		grid-auto-columns: 100%;
 		grid-auto-flow: column;
 		block-size: 100%;
+		// Not user-scrollable. Find-in-page cannot reach a clipped panel by
+		// scrolling here, and it does not need to: inactive panels carry
+		// `hidden="until-found"`, so the browser reveals a match by firing
+		// `beforematch` and createFindReveal switches the tab. Making this
+		// scrollable instead would trade that for a wheel scroll trap, since the
+		// section's scrollable height tracks the tallest panel.
 		overflow: hidden;
 		scroll-snap-type: x mandatory;
 	}

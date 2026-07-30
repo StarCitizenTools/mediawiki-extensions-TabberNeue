@@ -1,3 +1,5 @@
+const { isBurstSource } = require( './domHelpers.js' );
+
 /**
  * Destination-panel entry animation. On a deliberate tab activation, applies a
  * direction-aware `tabber__panel--entering-from-{left,right}` class to the new
@@ -25,7 +27,7 @@ function createPanelTransition( opts ) {
 	 * @param {string} [source]
 	 */
 	function trigger( newPanel, previousPanel, source ) {
-		if ( source === 'panel-scroll' ) {
+		if ( isBurstSource( source ) ) {
 			return;
 		}
 		if ( !previousPanel ) {
