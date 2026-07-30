@@ -13,9 +13,8 @@ const { getElementSize, panelAtScrollOffset, setAttributes } = require( './domHe
  * active-tab/active-panel state. Dispatches `tabber:tabchange`.
  *
  * What caused an activation. Travels on `tabber:tabchange` as `detail.source`,
- * so it is public API that wiki gadgets can filter on; keep the list here in
- * sync with anything that branches on it. `find` can arrive in bursts — see
- * domHelpers.isBurstSource().
+ * so it is public API wiki gadgets can filter on. `find` can arrive in bursts —
+ * see domHelpers.isBurstSource().
  *
  * @typedef {'init'|'user-click'|'user-keyboard'|'hash'|'find'|
  *   'programmatic'} ActivationSource
@@ -108,8 +107,8 @@ function createTabber( opts ) {
 		if ( !panel ) {
 			return;
 		}
-		// Before anything measures or transcludes: a panel still carrying
-		// `hidden="until-found"` has its contents skipped and measures zero height.
+		// Reveal before measuring: a panel still carrying `hidden="until-found"`
+		// skips its contents and measures zero height.
 		units.findReveal.sync( panel );
 		if ( panel.querySelector( '.tabber__transclusion' ) ) {
 			transclude( {
@@ -124,11 +123,10 @@ function createTabber( opts ) {
 			} );
 		}
 		// A non-zero scrollTop means something outside this module scrolled the
-		// section's own box to reveal content it was clipping — an in-panel anchor
-		// jump, or a reveal that predates init(). The section's resting state is
-		// always scrollTop 0, so transfer that offset to the page scroll to keep
-		// the revealed content exactly where it was put. The reset has to be
-		// explicit: sizing the section does not reliably clamp the offset away.
+		// section's own box to reveal clipped content — an in-panel anchor jump,
+		// or a pre-init reveal. The section rests at scrollTop 0, so move that
+		// offset to the page scroll to hold the content in place. Reset it
+		// explicitly; resizing the section does not reliably clamp it away.
 		const clippedScrollTop = section.scrollTop;
 		const h = getElementSize( panel, 'height' );
 		section.style.height = h + 'px';
@@ -241,11 +239,9 @@ function createTabber( opts ) {
 		if ( anchor.closest( '.tabber__section' ) !== section ) {
 			return;
 		}
-		// Only correct for a jump that stays *inside* this panel. A link to an id
-		// in a different panel is a tab change, which the hash router already
-		// handles — correcting here too would size the section to the wrong panel
-		// and pay the scroll transfer a second time, throwing the target well off
-		// screen.
+		// Only for a jump that stays inside this panel. A link to another panel is
+		// a tab change the hash router handles; correcting here as well would size
+		// the section to the wrong panel and transfer the scroll offset twice.
 		const target = doc.getElementById( anchor.hash.slice( 1 ) );
 		if ( target && panel.contains( target ) ) {
 			setTimeoutFn( () => {
@@ -290,14 +286,10 @@ function createTabber( opts ) {
 	} );
 
 	function init( initialTab ) {
-		// Read the browser's reveal before anything else touches layout.
-		// Dropping `tabber--init` below releases the critical CSS's `height: 0`
-		// on non-first panels; the next layout flush gives them their real height
-		// and clamps any in-panel scroll offset to 0. Captured after the class
-		// swap, revealedOffset is therefore always 0 and this whole branch is
-		// dead — which is exactly how a deep match got left off-screen.
-		// section.scrollLeft is unaffected by panel heights and survives either
-		// way, so only the in-panel offset needs the early read.
+		// Read any pre-init reveal before the class swap below drops the critical
+		// CSS `height: 0` on non-first panels: giving them their real height
+		// clamps an in-panel scroll offset back to 0. section.scrollLeft is
+		// unaffected by height, so only the in-panel offset needs the early read.
 		const revealedPanel = getRevealedPanel();
 		const revealedTab = revealedPanel ? panelToTabMap.get( revealedPanel ) : null;
 		const revealedOffset = revealedPanel ? revealedPanel.scrollTop : 0;
@@ -312,19 +304,17 @@ function createTabber( opts ) {
 		if ( !revealedTab || revealedTab !== initialTab || !activePanel ) {
 			return;
 		}
-		// The browser picked its page scroll against the pre-init layout, where
-		// the critical CSS collapses every panel but the first to zero height.
-		// Giving the panel its real height invalidates that choice.
+		// The browser chose its page scroll against the pre-init layout. Now that
+		// the panel has its real height, put the reveal back in view.
 		if ( revealedOffset ) {
-			// It had scrolled inside the panel to reach the match, and that offset
-			// clamps away once the panel is no longer zero-height. Transfer it to
-			// the page scroll so the match keeps its position — this is the only
-			// way to land on a match deeper than one viewport.
+			// The match was reached by scrolling inside the panel; that offset has
+			// just been clamped away, so hand it to the page scroll instead. This
+			// is the only path that reaches a match deeper than one viewport.
 			revealedPanel.scrollTop = 0;
 			win.scrollBy( { top: revealedOffset, behavior: 'instant' } );
 		} else {
-			// No in-panel offset to go on, so the best available is the panel
-			// itself. Nothing exposes where a find-in-page hit actually landed.
+			// No in-panel offset to transfer, so re-show the panel itself. The
+			// exact match position within it is not exposed to script.
 			activePanel.scrollIntoView( { block: 'nearest' } );
 		}
 	}
@@ -343,35 +333,27 @@ function createTabber( opts ) {
 	}
 
 	/**
-	 * The tab whose panel the browser has already scrolled the section to, or
-	 * null when the section is still resting on the default panel.
+	 * The panel the browser has already scrolled to before init() runs — via a
+	 * `#:~:text=` directive or a find-in-page match landing during load — or null
+	 * if the section is still at rest. init() adopts it so it does not scroll
+	 * back to the default panel and discard the reveal.
 	 *
-	 * Something outside this module can move the section before init() runs: a
-	 * `#:~:text=` fragment directive, or a find-in-page match the browser
-	 * revealed while ext.tabberNeue was still loading. init() would otherwise
-	 * scroll straight back to the default panel and throw that reveal away.
-	 *
-	 * Meaningful only before init(). Afterwards the section rests on the active
-	 * panel by construction, so this just returns the active tab.
+	 * Only meaningful before init(); afterwards the section rests on the active
+	 * panel, so it just returns that.
 	 *
 	 * @return {HTMLElement|null}
 	 */
 	function getRevealedPanel() {
-		// The browser reveals along whichever axis it can, and the two cases are
-		// not interchangeable.
-		//
-		// It scrolled the section sideways onto the panel.
+		// The browser reveals along whichever axis it can. A sideways section
+		// scroll lands on a panel directly.
 		if ( section.scrollLeft ) {
 			const panel = panelAtScrollOffset( section, panels );
 			if ( panel ) {
 				return panel;
 			}
 		}
-		// It scrolled *within* a panel instead, leaving the section at 0. Before
-		// init() the critical CSS collapses every panel but the first to zero
-		// height, so a match deep inside one is revealed by scrolling that
-		// panel's own box. This is the only signal Firefox produces, and the only
-		// one available when the match sits deeper than the viewport.
+		// Otherwise it scrolled within a panel, leaving the section at 0 — the
+		// signal Firefox gives, and the only one for a match below the viewport.
 		for ( const panel of panels ) {
 			if ( panel.scrollTop ) {
 				return panel;

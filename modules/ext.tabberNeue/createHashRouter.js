@@ -60,11 +60,10 @@ function createHashRouter( opts ) {
 		if ( panel && tabber.hasPanel( panel ) ) {
 			return tabber.getTabForPanel( panel );
 		}
-		// A find-in-page match or a `#:~:text=` directive can land in a
-		// non-default panel before this module runs, leaving the section already
-		// scrolled to it. Adopt that panel so init() does not scroll away from
-		// the match the user was sent to. Fragment directives are stripped from
-		// location.hash, so the two signals never contend.
+		// Failing an explicit hash, adopt a panel the browser revealed on its own
+		// before load (a find-in-page match or `#:~:text=` directive), so init()
+		// does not scroll away from it. Fragment directives are stripped from
+		// location.hash, so the two never contend.
 		const revealedTab = tabber.getRevealedTab();
 		if ( revealedTab ) {
 			return revealedTab;

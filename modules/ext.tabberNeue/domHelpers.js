@@ -47,14 +47,12 @@ function getHiddenElementSize( element, type ) {
 }
 
 /**
- * Activation sources that can arrive as a burst rather than as one deliberate
- * act. Find-as-you-type can re-reveal across panels on successive keystrokes, and
- * entry animations must be skipped for those: each new activation cancels the
- * previous animation before it ends, restarting the keyframe and stranding its
- * `animationend` listener.
+ * Whether an activation source arrives as a burst rather than as one deliberate
+ * act. Find-as-you-type re-reveals across panels on successive keystrokes, so
+ * entry animations are skipped for it: otherwise each activation cancels the
+ * previous animation mid-flight and strands its `animationend` listener.
  *
- * Kept in one place because every consumer has to agree; they drifted apart once
- * already when a source was added to only one of them.
+ * Central so every consumer agrees on the set.
  *
  * @param {string} [source] one of the `tabber:tabchange` detail.source values
  * @return {boolean}

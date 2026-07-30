@@ -348,11 +348,8 @@
 		height: auto !important;
 	}
 
-	/*
-	 * Inactive panels carry `hidden="until-found"`, whose UA rule skips rendering
-	 * their contents. Printing is meant to show every tab, so override it — an
-	 * author rule wins over the UA stylesheet.
-	 */
+	/* Show every tab when printing, overriding the UA rule that skips rendering
+	 * `hidden="until-found"` content. */
 	.tabber__panel[ hidden ] {
 		content-visibility: visible;
 	}

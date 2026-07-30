@@ -1,24 +1,20 @@
 /**
  * Find-in-page reveal support.
  *
- * Inactive panels carry `hidden="until-found"`. The browser skips rendering them
- * but still searches their text, and when a find-in-page match — or a fragment
- * navigation — lands inside one it fires `beforematch` on that panel, un-hides
- * it, and scrolls to the match. Handling that event is the whole mechanism: one
- * standard signal that works in both engines, with nothing inferred from scroll
- * positions.
+ * Inactive panels carry `hidden="until-found"`: the browser skips rendering them
+ * but still searches their text, and when a find-in-page match or fragment
+ * navigation lands inside one it fires `beforematch` on that panel and un-hides
+ * it. Handling that event is the whole mechanism, and it works in both engines.
  *
- * The attribute is written from JS, not from the server-rendered markup, because
- * a browser that does not understand `until-found` treats the value as a plain
- * boolean `hidden` and would hide the panel outright with no way to get it back
- * — and there is no reliable CSS probe to guard against that. Where support is
- * absent the attribute is simply never written, leaving every panel rendered as
- * before.
+ * The attribute is applied from JS behind a feature probe, not in the
+ * server-rendered markup: a browser that does not understand `until-found`
+ * treats the value as a plain boolean `hidden` and would hide the panel with no
+ * way back, and there is no reliable CSS probe to guard against that. Without
+ * support nothing is written and every panel stays rendered.
  *
- * Panels keep their grid geometry while hidden: `grid-auto-columns: 100%` sizes
- * each column independently of its content, so `offsetLeft` and `offsetWidth`
- * are unaffected and only the height collapses. The carousel still positions
- * itself with `section.scrollLeft`.
+ * Panels keep their grid geometry while hidden — `grid-auto-columns: 100%` sizes
+ * columns independently of content, so `offsetLeft` and scroll-snap are
+ * unaffected and only the height collapses.
  *
  * @typedef {Object} FindRevealOpts
  * @property {HTMLElement} section
