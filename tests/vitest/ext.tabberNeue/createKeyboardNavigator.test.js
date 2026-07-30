@@ -82,4 +82,28 @@ describe( 'createKeyboardNavigator', () => {
 		press( 'ArrowRight' );
 		expect( onActivate ).not.toHaveBeenCalled();
 	} );
+
+	describe( 'rtl', () => {
+		it( 'ArrowLeft advances to the next tab', () => {
+			createKeyboardNavigator( { tablist, tabs, onActivate, rtl: true } );
+			press( 'ArrowLeft' );
+			expect( tabs[ 1 ].getAttribute( 'tabindex' ) ).toBe( '0' );
+			expect( onActivate ).toHaveBeenCalledWith( tabs[ 1 ] );
+		} );
+
+		it( 'ArrowRight from index 0 wraps to last', () => {
+			createKeyboardNavigator( { tablist, tabs, onActivate, rtl: true } );
+			press( 'ArrowRight' );
+			expect( tabs[ 2 ].getAttribute( 'tabindex' ) ).toBe( '0' );
+			expect( onActivate ).toHaveBeenCalledWith( tabs[ 2 ] );
+		} );
+
+		it( 'leaves Home and End on their absolute ends', () => {
+			createKeyboardNavigator( { tablist, tabs, onActivate, rtl: true } );
+			press( 'End' );
+			expect( tabs[ 2 ].getAttribute( 'tabindex' ) ).toBe( '0' );
+			press( 'Home' );
+			expect( tabs[ 0 ].getAttribute( 'tabindex' ) ).toBe( '0' );
+		} );
+	} );
 } );

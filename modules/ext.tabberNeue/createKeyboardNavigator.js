@@ -5,6 +5,8 @@
  * @property {HTMLElement} tablist
  * @property {ArrayLike<HTMLElement>} tabs
  * @property {Function} onActivate called when the user moves focus via Home/End/Arrow keys.
+ * @property {boolean} [rtl=false] Direction of the tablist's own layout. Tabs
+ *   run right-to-left when set, so ArrowLeft advances and ArrowRight retreats.
  *
  * @typedef {Object} KeyboardNavigator
  * @property {Function} destroy
@@ -31,22 +33,23 @@ function createKeyboardNavigator( opts ) {
 		};
 	}
 	const onActivate = opts.onActivate;
+	const rtl = opts.rtl === true;
 	let tabFocus = 0;
 
-	function moveFocus( direction ) {
+	function moveFocus( step ) {
 		tabs[ tabFocus ].setAttribute( 'tabindex', '-1' );
 		const tabCount = tabs.length;
-		switch ( direction ) {
+		switch ( step ) {
 			case 'home':
 				tabFocus = 0;
 				break;
 			case 'end':
 				tabFocus = tabCount - 1;
 				break;
-			case 'right':
+			case 'next':
 				tabFocus = ( tabFocus + 1 ) % tabCount;
 				break;
-			case 'left':
+			case 'prev':
 				tabFocus = ( tabFocus - 1 + tabCount ) % tabCount;
 				break;
 			default:
@@ -61,8 +64,8 @@ function createKeyboardNavigator( opts ) {
 		const keyMap = {
 			Home: 'home',
 			End: 'end',
-			ArrowRight: 'right',
-			ArrowLeft: 'left'
+			ArrowRight: rtl ? 'prev' : 'next',
+			ArrowLeft: rtl ? 'next' : 'prev'
 		};
 		if ( keyMap[ e.key ] ) {
 			e.preventDefault();

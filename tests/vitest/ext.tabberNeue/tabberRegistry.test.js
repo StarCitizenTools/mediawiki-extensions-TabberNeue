@@ -34,6 +34,7 @@ describe( 'tabberRegistry', () => {
 		MockRO = buildMockRO( resizeObservers );
 		win = Object.assign( {}, window, {
 			matchMedia: vi.fn().mockReturnValue( { matches: false } ),
+			getComputedStyle: window.getComputedStyle.bind( window ),
 			history: window.history,
 			location: { hash: '', pathname: '/wiki/Foo', search: '' },
 			addEventListener: vi.fn(),

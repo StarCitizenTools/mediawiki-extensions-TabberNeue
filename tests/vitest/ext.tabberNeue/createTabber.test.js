@@ -60,6 +60,7 @@ describe( 'createTabber', () => {
 				mw,
 				window: Object.assign( {}, window, {
 					matchMedia: vi.fn().mockReturnValue( { matches: false } ),
+					getComputedStyle: window.getComputedStyle.bind( window ),
 					scrollBy: mockScrollBy
 				} ),
 				document,
@@ -416,7 +417,8 @@ describe( 'createTabber animation orchestration', () => {
 				config: { cdnMaxAge: 60, enableAnimation: true, updateLocationOnTabChange: true },
 				mw,
 				window: Object.assign( {}, window, {
-					matchMedia: vi.fn().mockReturnValue( { matches: false } )
+					matchMedia: vi.fn().mockReturnValue( { matches: false } ),
+					getComputedStyle: window.getComputedStyle.bind( window )
 				} ),
 				document,
 				IntersectionObserver: mockIO,

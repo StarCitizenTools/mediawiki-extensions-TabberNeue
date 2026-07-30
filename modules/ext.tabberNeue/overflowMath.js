@@ -2,20 +2,20 @@
  * Pure scroll math for the tabber overflow controller.
  * No DOM access, no globals, no mw — fully testable in isolation.
  *
+ * Offsets are distances from the start edge growing toward the end edge, not
+ * physical scrollLeft values, so the same arithmetic holds in both directions.
+ * createOverflowController normalises them.
+ *
  * @typedef {Object} OverflowMetrics
- * @property {number} scrollLeft
+ * @property {number} scrollDistance
  * @property {number} scrollWidth
- * @property {number} offsetWidth
  * @property {number} clientWidth
- * @property {number} headerWidth
  *
  * @typedef {Object} TabMetrics
- * @property {number} scrollLeft
+ * @property {number} scrollDistance
  * @property {number} scrollWidth
- * @property {number} offsetWidth
  * @property {number} clientWidth
- * @property {number} headerWidth
- * @property {number} tabLeft
+ * @property {number} tabStart
  * @property {number} tabWidth
  */
 
@@ -24,7 +24,7 @@
  * @return {boolean}
  */
 function isOverflowing( metrics ) {
-	return metrics.scrollWidth > metrics.offsetWidth;
+	return metrics.scrollWidth > metrics.clientWidth;
 }
 
 /**
@@ -32,7 +32,7 @@ function isOverflowing( metrics ) {
  * @return {boolean}
  */
 function isAtStart( metrics ) {
-	return metrics.scrollLeft <= 0;
+	return metrics.scrollDistance <= 0;
 }
 
 /**
@@ -40,36 +40,33 @@ function isAtStart( metrics ) {
  * @return {boolean}
  */
 function isAtEnd( metrics ) {
-	return metrics.scrollLeft + metrics.offsetWidth >= metrics.scrollWidth;
+	return metrics.scrollDistance + metrics.clientWidth >= metrics.scrollWidth;
 }
 
 /**
  * @param {TabMetrics} metrics — includes tab position (required).
- * @param {number} buttonWidthRatio — fraction of headerWidth occupied by each
- *   prev/next overflow button (0..1).
- * @return {number|null} new scrollLeft, or null if no scroll needed.
+ * @param {number} buttonWidth — width in px of each prev/next overflow button.
+ * @return {number|null} new scroll distance, or null if no scroll needed.
  */
-function calculateNewScrollLeft( metrics, buttonWidthRatio ) {
-	const buttonWidth = metrics.headerWidth * buttonWidthRatio;
-
-	const hasPrevButton = metrics.scrollLeft > 0;
+function calculateNewScrollDistance( metrics, buttonWidth ) {
+	const hasPrevButton = metrics.scrollDistance > 0;
 	const hasNextButton =
-		metrics.scrollLeft + metrics.clientWidth < metrics.scrollWidth;
+		metrics.scrollDistance + metrics.clientWidth < metrics.scrollWidth;
 
-	const visibleLeft = metrics.scrollLeft + ( hasPrevButton ? buttonWidth : 0 );
-	const visibleRight =
-		metrics.scrollLeft + metrics.clientWidth - ( hasNextButton ? buttonWidth : 0 );
+	const visibleStart = metrics.scrollDistance + ( hasPrevButton ? buttonWidth : 0 );
+	const visibleEnd =
+		metrics.scrollDistance + metrics.clientWidth - ( hasNextButton ? buttonWidth : 0 );
 
-	const tabLeft = metrics.tabLeft;
-	const tabRight = tabLeft + metrics.tabWidth;
+	const tabStart = metrics.tabStart;
+	const tabEnd = tabStart + metrics.tabWidth;
 
-	if ( tabLeft < visibleLeft ) {
-		return tabLeft - buttonWidth;
+	if ( tabStart < visibleStart ) {
+		return tabStart - buttonWidth;
 	}
-	if ( tabRight > visibleRight ) {
-		return tabRight - metrics.clientWidth + buttonWidth;
+	if ( tabEnd > visibleEnd ) {
+		return tabEnd - metrics.clientWidth + buttonWidth;
 	}
 	return null;
 }
 
-module.exports = { isOverflowing, isAtStart, isAtEnd, calculateNewScrollLeft };
+module.exports = { isOverflowing, isAtStart, isAtEnd, calculateNewScrollDistance };
