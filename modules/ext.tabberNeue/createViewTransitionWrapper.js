@@ -1,3 +1,5 @@
+const { isBurstSource } = require( './domHelpers.js' );
+
 /**
  * Wraps the activation DOM mutations in `document.startViewTransition` so the
  * source panel slides+fades out while the destination slides+fades in. CSS for
@@ -36,7 +38,7 @@ function createViewTransitionWrapper( opts ) {
 		if ( typeof doc.startViewTransition !== 'function' ) {
 			return false;
 		}
-		if ( source === 'panel-scroll' ) {
+		if ( isBurstSource( source ) ) {
 			return false;
 		}
 		if ( !hasPreviousPanel ) {

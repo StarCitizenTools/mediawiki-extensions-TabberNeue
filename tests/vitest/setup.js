@@ -35,6 +35,14 @@ if ( typeof globalThis.CSS === 'undefined' ) {
 	};
 }
 
+// jsdom does not implement Element.prototype.scrollIntoView at all, so any
+// production code path that calls it throws rather than no-opping. Stub it so
+// those paths are reachable from tests; individual tests spy on it to assert
+// whether it fired.
+if ( typeof Element.prototype.scrollIntoView !== 'function' ) {
+	Element.prototype.scrollIntoView = function scrollIntoView() {};
+}
+
 const originalResolveFilename = Module._resolveFilename;
 const TABBER_MODULE_DIR = path.resolve( __dirname, '../../modules/ext.tabberNeue' );
 

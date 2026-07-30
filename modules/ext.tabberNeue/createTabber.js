@@ -1,16 +1,23 @@
 const createOverflowController = require( './createOverflowController.js' );
 const createKeyboardNavigator = require( './createKeyboardNavigator.js' );
-const createPanelSyncObserver = require( './createPanelSyncObserver.js' );
+const createFindReveal = require( './createFindReveal.js' );
 const createVisibilityObserver = require( './createVisibilityObserver.js' );
 const createPanelTransition = require( './createPanelTransition.js' );
 const createTabIndicator = require( './createTabIndicator.js' );
 const createViewTransitionWrapper = require( './createViewTransitionWrapper.js' );
 const defaultLoadTransclusion = require( './loadTransclusion.js' );
-const { getElementSize, setAttributes } = require( './domHelpers.js' );
+const { getElementSize, panelAtScrollOffset, setAttributes } = require( './domHelpers.js' );
 
 /**
  * Per-element orchestrator. Composes the unit factories and owns the
  * active-tab/active-panel state. Dispatches `tabber:tabchange`.
+ *
+ * What caused an activation. Travels on `tabber:tabchange` as `detail.source`,
+ * so it is public API wiki gadgets can filter on. `find` can arrive in bursts —
+ * see domHelpers.isBurstSource().
+ *
+ * @typedef {'init'|'user-click'|'user-keyboard'|'hash'|'find'|
+ *   'programmatic'} ActivationSource
  *
  * @typedef {Object} CreateTabberOpts
  * @property {HTMLElement} element
@@ -77,7 +84,7 @@ function createTabber( opts ) {
 	let activeTab = null;
 	let activePanel = null;
 
-	// units is a mutable container so overflow and panelSync can be assigned
+	// units is a mutable container so overflow and findReveal can be assigned
 	// after construction while remaining referenceable from activate/setActivePanel,
 	// which are declared as hoisted function declarations and are only *called*
 	// after the units are assigned.
@@ -86,11 +93,23 @@ function createTabber( opts ) {
 	units.tabIndicator = createTabIndicator( { tablist, document: doc, enabled: !isWrap } );
 	units.panelTransition = createPanelTransition( { document: doc } );
 	units.vt = createViewTransitionWrapper( { section, document: doc } );
+	units.findReveal = createFindReveal( {
+		section, panels, document: doc,
+		onReveal: ( panel ) => {
+			const tab = panelToTabMap.get( panel );
+			if ( tab ) {
+				activate( tab, { source: 'find' } );
+			}
+		}
+	} );
 
 	function setActivePanel( panel, options = {} ) {
 		if ( !panel ) {
 			return;
 		}
+		// Reveal before measuring: a panel still carrying `hidden="until-found"`
+		// skips its contents and measures zero height.
+		units.findReveal.sync( panel );
 		if ( panel.querySelector( '.tabber__transclusion' ) ) {
 			transclude( {
 				panel,
@@ -103,16 +122,20 @@ function createTabber( opts ) {
 				onContentReplaced: ( p ) => mwApi.hook( 'wikipage.content' ).fire( $( p ) )
 			} );
 		}
+		// A non-zero scrollTop means something outside this module scrolled the
+		// section's own box to reveal clipped content — an in-panel anchor jump,
+		// or a pre-init reveal. The section rests at scrollTop 0, so move that
+		// offset to the page scroll to hold the content in place. Reset it
+		// explicitly; resizing the section does not reliably clamp it away.
+		const clippedScrollTop = section.scrollTop;
 		const h = getElementSize( panel, 'height' );
 		section.style.height = h + 'px';
+		if ( clippedScrollTop ) {
+			section.scrollTop = 0;
+			win.scrollBy( { top: clippedScrollTop, behavior: 'instant' } );
+		}
 		if ( !options.preventScroll ) {
-			// Synchronous: any IO entry from this write lands inside pauseDuring's
-			// 150ms quiet window. Deferring via rAF breaks the View Transitions
-			// path — the browser pauses rendering while awaiting the update
-			// callback's promise, so rAFs scheduled inside it never fire.
-			units.panelSync.pauseDuring( () => {
-				section.scrollLeft = panel.offsetLeft;
-			} );
+			section.scrollLeft = panel.offsetLeft;
 		}
 	}
 
@@ -183,13 +206,6 @@ function createTabber( opts ) {
 		onActivate: ( tab ) => activate( tab, { source: 'user-keyboard' } )
 	} );
 
-	units.panelSync = createPanelSyncObserver( {
-		section, panelToTabMap,
-		IntersectionObserver: IO,
-		onTabActivate: ( tab ) => activate( tab, { source: 'panel-scroll', preventScroll: true } ),
-		setTimeout: setTimeoutFn
-	} );
-
 	// Listeners
 	function onHeaderClick( e ) {
 		const tab = e.target.closest( '.tabber__tab' );
@@ -223,7 +239,11 @@ function createTabber( opts ) {
 		if ( anchor.closest( '.tabber__section' ) !== section ) {
 			return;
 		}
-		if ( doc.getElementById( anchor.hash.slice( 1 ) ) ) {
+		// Only for a jump that stays inside this panel. A link to another panel is
+		// a tab change the hash router handles; correcting here as well would size
+		// the section to the wrong panel and transfer the scroll offset twice.
+		const target = doc.getElementById( anchor.hash.slice( 1 ) );
+		if ( target && panel.contains( target ) ) {
 			setTimeoutFn( () => {
 				setActivePanel( panel );
 			}, 0 );
@@ -251,7 +271,6 @@ function createTabber( opts ) {
 		IntersectionObserver: IO,
 		onShow: () => {
 			attachListeners();
-			units.panelSync.attach( panels );
 			registry.observeResize( tablist );
 			if ( activePanel ) {
 				registry.observeResize( activePanel );
@@ -259,7 +278,6 @@ function createTabber( opts ) {
 		},
 		onHide: () => {
 			detachListeners();
-			units.panelSync.detach();
 			registry.unobserveResize( tablist );
 			if ( activePanel ) {
 				registry.unobserveResize( activePanel );
@@ -268,6 +286,14 @@ function createTabber( opts ) {
 	} );
 
 	function init( initialTab ) {
+		// Read any pre-init reveal before the class swap below drops the critical
+		// CSS `height: 0` on non-first panels: giving them their real height
+		// clamps an in-panel scroll offset back to 0. section.scrollLeft is
+		// unaffected by height, so only the in-panel offset needs the early read.
+		const revealedPanel = getRevealedPanel();
+		const revealedTab = revealedPanel ? panelToTabMap.get( revealedPanel ) : null;
+		const revealedOffset = revealedPanel ? revealedPanel.scrollTop : 0;
+
 		units.overflow.update();
 		// Mark live before the first activate() so any listener that filters
 		// on the tabber--live class sees the bootstrap event in the correct
@@ -275,6 +301,22 @@ function createTabber( opts ) {
 		element.classList.remove( 'tabber--init' );
 		element.classList.add( 'tabber--live' );
 		activate( initialTab, { source: 'init' } );
+		if ( !revealedTab || revealedTab !== initialTab || !activePanel ) {
+			return;
+		}
+		// The browser chose its page scroll against the pre-init layout. Now that
+		// the panel has its real height, put the reveal back in view.
+		if ( revealedOffset ) {
+			// The match was reached by scrolling inside the panel; that offset has
+			// just been clamped away, so hand it to the page scroll instead. This
+			// is the only path that reaches a match deeper than one viewport.
+			revealedPanel.scrollTop = 0;
+			win.scrollBy( { top: revealedOffset, behavior: 'instant' } );
+		} else {
+			// No in-panel offset to transfer, so re-show the panel itself. The
+			// exact match position within it is not exposed to script.
+			activePanel.scrollIntoView( { block: 'nearest' } );
+		}
 	}
 
 	function handleResize( target ) {
@@ -288,6 +330,44 @@ function createTabber( opts ) {
 
 	function getDefaultTab() {
 		return tablist.firstElementChild;
+	}
+
+	/**
+	 * The panel the browser has already scrolled to before init() runs — via a
+	 * `#:~:text=` directive or a find-in-page match landing during load — or null
+	 * if the section is still at rest. init() adopts it so it does not scroll
+	 * back to the default panel and discard the reveal.
+	 *
+	 * Only meaningful before init(); afterwards the section rests on the active
+	 * panel, so it just returns that.
+	 *
+	 * @return {HTMLElement|null}
+	 */
+	function getRevealedPanel() {
+		// The browser reveals along whichever axis it can. A sideways section
+		// scroll lands on a panel directly.
+		if ( section.scrollLeft ) {
+			const panel = panelAtScrollOffset( section, panels );
+			if ( panel ) {
+				return panel;
+			}
+		}
+		// Otherwise it scrolled within a panel, leaving the section at 0 — the
+		// signal Firefox gives, and the only one for a match below the viewport.
+		for ( const panel of panels ) {
+			if ( panel.scrollTop ) {
+				return panel;
+			}
+		}
+		return null;
+	}
+
+	function getRevealedTab() {
+		const panel = getRevealedPanel();
+		if ( !panel ) {
+			return null;
+		}
+		return panelToTabMap.get( panel ) || null;
 	}
 
 	function getTabForPanel( panel ) {
@@ -304,12 +384,13 @@ function createTabber( opts ) {
 		getActiveTab: () => activeTab,
 		getActivePanel: () => activePanel,
 		getDefaultTab,
+		getRevealedTab,
 		getTabForPanel,
 		hasPanel,
 		handleResize,
 		destroy() {
 			visibility.destroy();
-			units.panelSync.destroy();
+			units.findReveal.destroy();
 			units.overflow.destroy();
 			units.keyboard.destroy();
 			units.tabIndicator.destroy();

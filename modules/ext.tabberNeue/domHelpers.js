@@ -47,6 +47,21 @@ function getHiddenElementSize( element, type ) {
 }
 
 /**
+ * Whether an activation source arrives as a burst rather than as one deliberate
+ * act. Find-as-you-type re-reveals across panels on successive keystrokes, so
+ * entry animations are skipped for it: otherwise each activation cancels the
+ * previous animation mid-flight and strands its `animationend` listener.
+ *
+ * Central so every consumer agrees on the set.
+ *
+ * @param {string} [source] one of the `tabber:tabchange` detail.source values
+ * @return {boolean}
+ */
+function isBurstSource( source ) {
+	return source === 'find';
+}
+
+/**
  * Browsers report fractional scrollLeft values inconsistently. Math.ceil
  * matches the rounding used by the active-tab-into-view logic.
  *
@@ -55,6 +70,36 @@ function getHiddenElementSize( element, type ) {
  */
 function roundScrollLeft( val ) {
 	return Math.ceil( val );
+}
+
+/**
+ * The panel whose column the section is currently resting on.
+ *
+ * Panels are full-width grid columns, and setActivePanel() shows one by writing
+ * `section.scrollLeft = panel.offsetLeft`. This is the inverse of that write: it
+ * maps a scroll offset back to the panel it belongs to, including an offset the
+ * browser produced on its own while revealing a find-in-page match.
+ *
+ * @param {HTMLElement} section
+ * @param {Iterable<HTMLElement>} panels
+ * @return {HTMLElement|null} null when the section has no layout to measure
+ */
+function panelAtScrollOffset( section, panels ) {
+	// Inside a display:none ancestor every offset reads 0, which would otherwise
+	// resolve to the first panel and silently reset the active tab.
+	if ( section.clientWidth === 0 ) {
+		return null;
+	}
+	let match = null;
+	let smallestDelta = Infinity;
+	for ( const panel of panels ) {
+		const delta = Math.abs( panel.offsetLeft - section.scrollLeft );
+		if ( delta < smallestDelta ) {
+			smallestDelta = delta;
+			match = panel;
+		}
+	}
+	return match;
 }
 
 /**
@@ -69,4 +114,11 @@ function setAttributes( element, attributes ) {
 	}
 }
 
-module.exports = { getElementSize, getHiddenElementSize, roundScrollLeft, setAttributes };
+module.exports = {
+	getElementSize,
+	getHiddenElementSize,
+	isBurstSource,
+	panelAtScrollOffset,
+	roundScrollLeft,
+	setAttributes
+};

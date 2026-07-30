@@ -48,8 +48,8 @@ function createHashRouter( opts ) {
 
 	/**
 	 * Returns the tab element that should be active on initial load for the
-	 * given tabber, based on the current URL hash.  Falls back to the tabber's
-	 * default tab when the hash is absent or belongs to a different tabber.
+	 * given tabber. An explicit panel hash wins; failing that, any panel the
+	 * browser has already revealed on its own; failing that, the default tab.
 	 *
 	 * @param {Object} tabber
 	 * @return {HTMLElement}
@@ -59,6 +59,14 @@ function createHashRouter( opts ) {
 		const panel = getPanelFromHash( doc, hash );
 		if ( panel && tabber.hasPanel( panel ) ) {
 			return tabber.getTabForPanel( panel );
+		}
+		// Failing an explicit hash, adopt a panel the browser revealed on its own
+		// before load (a find-in-page match or `#:~:text=` directive), so init()
+		// does not scroll away from it. Fragment directives are stripped from
+		// location.hash, so the two never contend.
+		const revealedTab = tabber.getRevealedTab();
+		if ( revealedTab ) {
+			return revealedTab;
 		}
 		return tabber.getDefaultTab();
 	}

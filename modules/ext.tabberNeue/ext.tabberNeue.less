@@ -348,6 +348,12 @@
 		height: auto !important;
 	}
 
+	/* Show every tab when printing, overriding the UA rule that skips rendering
+	 * `hidden="until-found"` content. */
+	.tabber__panel[ hidden ] {
+		content-visibility: visible;
+	}
+
 	/* Show tab header */
 	.tabber__panel::before {
 		display: block;

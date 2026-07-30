@@ -30,6 +30,7 @@ describe( 'createTabber', () => {
 	let registry;
 	let mockIO;
 	let mockTransclude;
+	let mockScrollBy;
 
 	beforeEach( () => {
 		element = makeTabberElement();
@@ -44,6 +45,7 @@ describe( 'createTabber', () => {
 			this.disconnect = vi.fn();
 		} );
 		mockTransclude = vi.fn();
+		mockScrollBy = vi.fn();
 	} );
 
 	afterEach( () => {
@@ -57,7 +59,8 @@ describe( 'createTabber', () => {
 				config: { cdnMaxAge: 60, enableAnimation: false, updateLocationOnTabChange: true },
 				mw,
 				window: Object.assign( {}, window, {
-					matchMedia: vi.fn().mockReturnValue( { matches: false } )
+					matchMedia: vi.fn().mockReturnValue( { matches: false } ),
+					scrollBy: mockScrollBy
 				} ),
 				document,
 				IntersectionObserver: mockIO,
@@ -145,6 +148,146 @@ describe( 'createTabber', () => {
 		const t = make();
 		const tabs = element.querySelectorAll( '.tabber__tab' );
 		expect( t.getDefaultTab() ).toBe( tabs[ 0 ] );
+	} );
+
+	describe( 'clipped scroll compensation', () => {
+		it( 'transfers a scrolled section offset to the page scroll', () => {
+			// Something outside the module scrolled the section itself to reveal
+			// content its box was clipping. Resetting that offset drops the
+			// revealed content down the page by the same amount, so the page
+			// scroll has to absorb it.
+			const section = element.querySelector( '.tabber__section' );
+			section.scrollTop = 336;
+			const t = make();
+			t.init( element.querySelectorAll( '.tabber__tab' )[ 0 ] );
+			expect( mockScrollBy ).toHaveBeenCalledWith( { top: 336, behavior: 'instant' } );
+		} );
+
+		it( 'resets the section offset rather than relying on the clamp', () => {
+			// Panels share one grid row, so the section's scrollable height
+			// tracks the tallest panel and sizing it does not clamp the offset
+			// away. Leaving a residue both over-scrolls the page and strands the
+			// panel's top out of reach — there is no scrollbar to get back.
+			const section = element.querySelector( '.tabber__section' );
+			section.scrollTop = 336;
+			const t = make();
+			t.init( element.querySelectorAll( '.tabber__tab' )[ 0 ] );
+			expect( section.scrollTop ).toBe( 0 );
+		} );
+
+		it( 'compensates once, not again on the ResizeObserver initial entry', () => {
+			// performActivation observes the new active panel, so the shared
+			// ResizeObserver delivers an initial entry straight back into
+			// handleResize -> setActivePanel. That must not pay the offset twice.
+			const section = element.querySelector( '.tabber__section' );
+			section.scrollTop = 336;
+			const t = make();
+			const panel = element.querySelector( '#p1' );
+			t.init( element.querySelectorAll( '.tabber__tab' )[ 0 ] );
+			expect( mockScrollBy ).toHaveBeenCalledTimes( 1 );
+			t.handleResize( panel );
+			expect( mockScrollBy ).toHaveBeenCalledTimes( 1 );
+		} );
+
+		it( 'leaves the page scroll alone on an ordinary activation', () => {
+			const t = make();
+			const tabs = element.querySelectorAll( '.tabber__tab' );
+			t.init( tabs[ 0 ] );
+			mockScrollBy.mockClear();
+			t.activate( tabs[ 1 ], { source: 'user-click' } );
+			expect( mockScrollBy ).not.toHaveBeenCalled();
+		} );
+	} );
+
+	describe( 'init reveal re-scroll', () => {
+		it( 'puts an adopted revealed panel back in view', () => {
+			// The browser chose its page scroll against the pre-init layout,
+			// where the critical CSS collapses non-first panels to zero height.
+			const section = element.querySelector( '.tabber__section' );
+			Object.defineProperty( section, 'clientWidth', { value: 100, configurable: true } );
+			element.querySelectorAll( '.tabber__panel' ).forEach( ( panel, i ) => {
+				Object.defineProperty( panel, 'offsetLeft', { value: i * 100, configurable: true } );
+			} );
+			section.scrollLeft = 100;
+			const spy = vi.spyOn( element.querySelector( '#p2' ), 'scrollIntoView' );
+			const t = make();
+			t.init( element.querySelectorAll( '.tabber__tab' )[ 1 ] );
+			expect( spy ).toHaveBeenCalledWith( { block: 'nearest' } );
+		} );
+
+		it( 'transfers an in-panel reveal offset instead of re-scrolling', () => {
+			// A match deeper than one viewport is only reachable this way; the
+			// panel's own offset clamps away once it stops being zero-height.
+			const section = element.querySelector( '.tabber__section' );
+			Object.defineProperty( section, 'clientWidth', { value: 100, configurable: true } );
+			element.querySelectorAll( '.tabber__panel' ).forEach( ( el, i ) => {
+				Object.defineProperty( el, 'offsetLeft', { value: i * 100, configurable: true } );
+			} );
+			const panel = element.querySelector( '#p2' );
+			panel.scrollTop = 3000;
+			const spy = vi.spyOn( panel, 'scrollIntoView' );
+			const t = make();
+			t.init( element.querySelectorAll( '.tabber__tab' )[ 1 ] );
+			expect( mockScrollBy ).toHaveBeenCalledWith( { top: 3000, behavior: 'instant' } );
+			expect( panel.scrollTop ).toBe( 0 );
+			expect( spy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'does not touch the page scroll on a plain load', () => {
+			const spies = [ ...element.querySelectorAll( '.tabber__panel' ) ]
+				.map( ( panel ) => vi.spyOn( panel, 'scrollIntoView' ) );
+			const t = make();
+			t.init( element.querySelectorAll( '.tabber__tab' )[ 0 ] );
+			spies.forEach( ( spy ) => expect( spy ).not.toHaveBeenCalled() );
+		} );
+	} );
+
+	describe( 'getRevealedTab', () => {
+		/**
+		 * jsdom has no layout, so stand in for the carousel geometry:
+		 * a measurable section and one 100px-wide column per panel.
+		 */
+		function layOutPanels() {
+			const section = element.querySelector( '.tabber__section' );
+			Object.defineProperty( section, 'clientWidth', { value: 100, configurable: true } );
+			element.querySelectorAll( '.tabber__panel' ).forEach( ( panel, i ) => {
+				Object.defineProperty( panel, 'offsetLeft', { value: i * 100, configurable: true } );
+			} );
+		}
+
+		it( 'returns null while the section rests on the default panel', () => {
+			layOutPanels();
+			expect( make().getRevealedTab() ).toBeNull();
+		} );
+
+		it( 'returns the tab of a panel the browser already scrolled to', () => {
+			layOutPanels();
+			element.querySelector( '.tabber__section' ).scrollLeft = 100;
+			const tabs = element.querySelectorAll( '.tabber__tab' );
+			expect( make().getRevealedTab() ).toBe( tabs[ 1 ] );
+		} );
+
+		it( 'returns null when the section has no layout to measure', () => {
+			element.querySelector( '.tabber__section' ).scrollLeft = 100;
+			expect( make().getRevealedTab() ).toBeNull();
+		} );
+
+		it( 'falls back to a panel scrolled internally by the browser', () => {
+			// Firefox reveals a deep match by scrolling the panel's own box and
+			// leaves the section at 0, so the section offset alone misses it.
+			layOutPanels();
+			element.querySelector( '#p2' ).scrollTop = 240;
+			const tabs = element.querySelectorAll( '.tabber__tab' );
+			expect( make().getRevealedTab() ).toBe( tabs[ 1 ] );
+		} );
+
+		it( 'prefers the section offset over an in-panel offset', () => {
+			layOutPanels();
+			element.querySelector( '.tabber__section' ).scrollLeft = 100;
+			element.querySelector( '#p1' ).scrollTop = 240;
+			const tabs = element.querySelectorAll( '.tabber__tab' );
+			expect( make().getRevealedTab() ).toBe( tabs[ 1 ] );
+		} );
 	} );
 
 	it( 'getTabForPanel returns the tab mapped to a panel', () => {
@@ -316,7 +459,7 @@ describe( 'createTabber animation orchestration', () => {
 		}
 	} );
 
-	it( 'panel-scroll activation bypasses both VT and the fallback class', () => {
+	it( 'burst activation bypasses both VT and the fallback class', () => {
 		const mockVT = vi.fn( () => ( {
 			finished: Promise.resolve(),
 			ready: Promise.resolve(),
@@ -326,7 +469,7 @@ describe( 'createTabber animation orchestration', () => {
 		try {
 			const t = make();
 			t.init( tabs[ 0 ] );
-			t.activate( tabs[ 1 ], { source: 'panel-scroll', preventScroll: true } );
+			t.activate( tabs[ 1 ], { source: 'find', preventScroll: true } );
 			expect( mockVT ).not.toHaveBeenCalled();
 			expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( false );
 			expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-left' ) ).toBe( false );

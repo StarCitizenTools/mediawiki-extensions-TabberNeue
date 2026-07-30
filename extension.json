@@ -47,12 +47,12 @@
 				"ext.tabberNeue/createTabber.js",
 				"ext.tabberNeue/createOverflowController.js",
 				"ext.tabberNeue/createKeyboardNavigator.js",
-				"ext.tabberNeue/createPanelSyncObserver.js",
 				"ext.tabberNeue/createVisibilityObserver.js",
 				"ext.tabberNeue/createPanelTransition.js",
 				"ext.tabberNeue/createTabIndicator.js",
 				"ext.tabberNeue/createViewTransitionWrapper.js",
 				"ext.tabberNeue/createHashRouter.js",
+				"ext.tabberNeue/createFindReveal.js",
 				"ext.tabberNeue/loadTransclusion.js",
 				"ext.tabberNeue/overflowMath.js",
 				"ext.tabberNeue/domHelpers.js"
