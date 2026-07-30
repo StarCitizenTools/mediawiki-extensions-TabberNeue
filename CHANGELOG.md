@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.0.2](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v4.0.1...v4.0.2) (2026-07-30)
+
+
+### Bug Fixes
+
+* correct overflow scrolling, indicator and arrow keys under RTL ([c1e91c8](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/c1e91c87ca6d06f3b1d79c158bb703806ed562a9))
+* enlarge the overflow arrow hit target to 32px ([1718857](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/17188574d94c9857579d69881263e022a38efefd)), closes [#308](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/308)
+* position the active-tab indicator correctly under RTL ([#334](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/334)) ([8bd659d](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/8bd659d5fbebb9dca4d2575b59cdcaf71a466838))
+* reveal find-in-page matches in non-active tabs ([#333](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/333)) ([11bcbdf](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/11bcbdf337fadbbe723171920cfdb8080481241d))
+* **security:** escape tab and panel ID attributes in Tabs template ([6913bb6](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/6913bb6ba788da9110a943edbaa581f43db0ec06))
+
+
+### Miscellaneous Chores
+
+* remove stale compat/compat eslint-disable directives ([fa80010](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/fa8001053c770a266d9c260849accd746f7ca994))
+
 ## [4.0.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v4.0.0...v4.0.1) (2026-06-30)
 
 
