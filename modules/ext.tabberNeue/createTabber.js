@@ -63,6 +63,11 @@ function createTabber( opts ) {
 	const section = element.querySelector( ':scope > .tabber__section' );
 	const panels = section.querySelectorAll( ':scope > .tabber__panel' );
 
+	const tablistStyle = win.getComputedStyle( tablist );
+	const rtl = tablistStyle.direction === 'rtl';
+	const arrowWidth =
+		parseFloat( tablistStyle.getPropertyValue( '--tabber-arrow-width' ) ) || 0;
+
 	// Build maps
 	const panelToTabMap = new WeakMap();
 	const panelIdToPanelMap = new Map();
@@ -195,14 +200,14 @@ function createTabber( opts ) {
 
 	// Compose units
 	units.overflow = createOverflowController( {
-		tablist, header, animationsEnabled, raf, enabled: !isWrap
+		tablist, header, animationsEnabled, raf, enabled: !isWrap, rtl, arrowWidth
 	} );
 	const debouncedUpdateOverflow = mwApi.util.debounce(
 		() => units.overflow.update(), 100
 	);
 
 	units.keyboard = createKeyboardNavigator( {
-		tablist, tabs,
+		tablist, tabs, rtl,
 		onActivate: ( tab ) => activate( tab, { source: 'user-keyboard' } )
 	} );
 
@@ -216,9 +221,9 @@ function createTabber( opts ) {
 		}
 		if ( isPointerDevice ) {
 			if ( e.target.closest( '.tabber__header__prev' ) ) {
-				units.overflow.scrollBy( -tablist.offsetWidth / 2 );
+				units.overflow.scrollBy( -tablist.clientWidth / 2 );
 			} else if ( e.target.closest( '.tabber__header__next' ) ) {
-				units.overflow.scrollBy( tablist.offsetWidth / 2 );
+				units.overflow.scrollBy( tablist.clientWidth / 2 );
 			}
 		}
 	}

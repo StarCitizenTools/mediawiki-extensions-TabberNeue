@@ -1,8 +1,6 @@
 const overflowMath = require( './overflowMath.js' );
 const { roundScrollLeft } = require( './domHelpers.js' );
 
-const OVERFLOW_BUTTON_WIDTH_RATIO = 0.2;
-
 /**
  * @typedef {Object} OverflowControllerOpts
  * @property {HTMLElement} tablist
@@ -13,6 +11,12 @@ const OVERFLOW_BUTTON_WIDTH_RATIO = 0.2;
  *   mode, where a single tab wider than the container still produces horizontal
  *   overflow (tabs are `white-space: nowrap`) but the arrows are meaningless
  *   because the tablist is not scrollable (`overflow: visible`).
+ * @property {boolean} [rtl=false] Direction of the tablist's own layout, which
+ *   is what decides the sign of scrollLeft. Injected rather than read from
+ *   getComputedStyle so the unit is testable against a plain-object tablist.
+ * @property {number} [arrowWidth=0] Width in px of each prev/next button, used
+ *   to keep a scrolled-to tab clear of the overlay. 0 reserves nothing, which
+ *   is correct wherever the arrows are absent.
  * @property {Function} [raf]
  *
  * @typedef {Object} OverflowController
@@ -33,19 +37,37 @@ function createOverflowController( opts ) {
 	const header = opts.header;
 	const animationsEnabled = opts.animationsEnabled !== false;
 	const enabled = opts.enabled !== false;
+	const rtl = opts.rtl === true;
+	const arrowWidth = opts.arrowWidth || 0;
 	const raf = opts.raf || window.requestAnimationFrame.bind( window );
 	let overflowing = false;
 
+	/**
+	 * @param {number} scrollLeft
+	 * @return {number} distance from the start edge, always >= 0 at rest.
+	 */
+	function toScrollDistance( scrollLeft ) {
+		return roundScrollLeft( rtl ? -scrollLeft : scrollLeft );
+	}
+
+	/**
+	 * @param {number} distance
+	 * @return {number} scrollLeft value to write.
+	 */
+	function toScrollLeft( distance ) {
+		return rtl ? 0 - distance : distance;
+	}
+
 	function getMetrics( tab ) {
 		const metrics = {
-			scrollLeft: roundScrollLeft( tablist.scrollLeft ),
+			scrollDistance: toScrollDistance( tablist.scrollLeft ),
 			scrollWidth: tablist.scrollWidth,
-			offsetWidth: tablist.offsetWidth,
-			clientWidth: tablist.clientWidth,
-			headerWidth: header.offsetWidth
+			clientWidth: tablist.clientWidth
 		};
 		if ( tab ) {
-			metrics.tabLeft = tab.offsetLeft;
+			metrics.tabStart = rtl ?
+				tablist.clientWidth - tab.offsetLeft - tab.offsetWidth :
+				tab.offsetLeft;
 			metrics.tabWidth = tab.offsetWidth;
 		}
 		return metrics;
@@ -80,12 +102,11 @@ function createOverflowController( opts ) {
 			return;
 		}
 		const metrics = getMetrics( tab );
-		const newScrollLeft = overflowMath.calculateNewScrollLeft(
-			metrics, OVERFLOW_BUTTON_WIDTH_RATIO
-		);
-		if ( newScrollLeft === null || newScrollLeft === metrics.scrollLeft ) {
+		const newDistance = overflowMath.calculateNewScrollDistance( metrics, arrowWidth );
+		if ( newDistance === null || newDistance === metrics.scrollDistance ) {
 			return;
 		}
+		const newScrollLeft = toScrollLeft( newDistance );
 		if ( animationsEnabled ) {
 			// Smooth scroll fires `scroll` events as it progresses; the caller's
 			// onTablistScroll handler will trigger update() during the animation.
@@ -97,12 +118,16 @@ function createOverflowController( opts ) {
 		}
 	}
 
+	/**
+	 * @param {number} offset Signed distance to travel, positive toward the end
+	 *   edge. Callers stay direction-agnostic; the sign is applied here.
+	 */
 	function scrollBy( offset ) {
-		const currentScroll = roundScrollLeft( tablist.scrollLeft );
-		const maxScroll = tablist.scrollWidth - tablist.offsetWidth;
-		const targetScroll = Math.min( Math.max( currentScroll + offset, 0 ), maxScroll );
+		const currentDistance = toScrollDistance( tablist.scrollLeft );
+		const maxDistance = tablist.scrollWidth - tablist.clientWidth;
+		const targetDistance = Math.min( Math.max( currentDistance + offset, 0 ), maxDistance );
 		raf( () => {
-			tablist.scrollLeft = targetScroll;
+			tablist.scrollLeft = toScrollLeft( targetDistance );
 		} );
 	}
 

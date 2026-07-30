@@ -53,18 +53,18 @@
 		}
 
 		&--prev-visible .tabber__tabs {
-			-webkit-mask-image: linear-gradient( 90deg, transparent var( --tabber-arrow-width ), #000 20% );
-			mask-image: linear-gradient( 90deg, transparent var( --tabber-arrow-width ), #000 20% );
+			-webkit-mask-image: linear-gradient( to right, transparent var( --tabber-arrow-width ), #000 20% );
+			mask-image: linear-gradient( to right, transparent var( --tabber-arrow-width ), #000 20% );
 		}
 
 		&--next-visible .tabber__tabs {
-			-webkit-mask-image: linear-gradient( 90deg, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
-			mask-image: linear-gradient( 90deg, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
+			-webkit-mask-image: linear-gradient( to right, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
+			mask-image: linear-gradient( to right, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
 		}
 
 		&--prev-visible.tabber__header--next-visible .tabber__tabs {
-			-webkit-mask-image: linear-gradient( 90deg, transparent var( --tabber-arrow-width ), #000 20%, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
-			mask-image: linear-gradient( 90deg, transparent var( --tabber-arrow-width ), #000 20%, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
+			-webkit-mask-image: linear-gradient( to right, transparent var( --tabber-arrow-width ), #000 20%, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
+			mask-image: linear-gradient( to right, transparent var( --tabber-arrow-width ), #000 20%, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
 		}
 
 		&--prev-visible .tabber__header__prev,
@@ -105,6 +105,7 @@
 	&__indicator {
 		position: absolute;
 		bottom: 0;
+		/* @noflip */
 		left: 0;
 		height: 2px;
 		pointer-events: none;
@@ -127,8 +128,8 @@
 					display: block;
 					height: 0.5em;
 					margin-top: 1em;
-					background: #000;
-					background: linear-gradient( to right, var( --color-base, #202122 ) 8%, var( --color-subtle, #54595d ) 18%, var( --color-base, #202122 ) 33% );
+					background-color: #000;
+					background-image: linear-gradient( to right, var( --color-base, #202122 ) 8%, var( --color-subtle, #54595d ) 18%, var( --color-base, #202122 ) 33% );
 					border-radius: 40px;
 					animation-name: skeletonload;
 					animation-duration: 3s;
