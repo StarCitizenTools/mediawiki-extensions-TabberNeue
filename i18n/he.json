@@ -3,6 +3,7 @@
 		"authors": [
 			"Amire80",
 			"YaronSh",
+			"המקיסט",
 			"ערן"
 		]
 	},
@@ -26,6 +27,13 @@
 	"tabberneue-visualeditor-mwtabberdialog-content": "תוכן הלשונית",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "יוצר לשוניות (הכללה)",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "ר' את [https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion התיעוד] להוראות שימוש.",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-addtab": "הוספת כרטיסייה",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-removetab": "הסרת כרטיסייה",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-moveleft": "הזזת כרטיסייה שמאלה",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-moveright": "הזזת כרטיסייה ימינה",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-label": "תגית כרטיסייה",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-page": "שם דף",
+	"tabberneue-visualeditor-mwtabbertranscludeinspector-page-placeholder": "הזנת תגית לכרטיסייה",
 	"tabberneue-error-tabs-title": "השגיאות הבאות קרו בעת עיבוד לשוניות:",
 	"tabberneue-error-tabs-duplicate-label": "תווית הלשונית ‚$1’ כבר בשימוש."
 }
