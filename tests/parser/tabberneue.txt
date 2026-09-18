@@ -328,3 +328,40 @@ Second content.
 </p>
 <p class="mw-empty-elt"></p></div></div></div>
 !! end
+
+!! test
+TabberNeue: parseTabName=true renders plain labels identically to a full parse
+!! config
+wgTabberNeueParseTabName=true
+wgTabberNeueAddTabPrefix=true
+!! wikitext
+<tabber>
+|-|Player's stats=
+Content.
+|-|A "quoted" label=
+Content.
+|-|Level (2)=
+Content.
+|-|Stats : Level=
+Content.
+|-|Non breaking=
+Content.
+</tabber>
+!! html
+<div class="tabber tabber--init"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-Player.26.23039.3Bs_stats-label" href="#tabber-Player.26.23039.3Bs_stats" aria-controls="tabber-Player.26.23039.3Bs_stats">Player's stats</a><a class="tabber__tab" role="tab" id="tabber-A_.26quot.3Bquoted.26quot.3B_label-label" href="#tabber-A_.26quot.3Bquoted.26quot.3B_label" aria-controls="tabber-A_.26quot.3Bquoted.26quot.3B_label">A "quoted" label</a><a class="tabber__tab" role="tab" id="tabber-Level_.282.29-label" href="#tabber-Level_.282.29" aria-controls="tabber-Level_.282.29">Level (2)</a><a class="tabber__tab" role="tab" id="tabber-Stats.26amp.3B.23160.3B:_Level-label" href="#tabber-Stats.26amp.3B.23160.3B:_Level" aria-controls="tabber-Stats.26amp.3B.23160.3B:_Level">Stats&#160;: Level</a><a class="tabber__tab" role="tab" id="tabber-Non.26amp.3B.23160.3Bbreaking-label" href="#tabber-Non.26amp.3B.23160.3Bbreaking" aria-controls="tabber-Non.26amp.3B.23160.3Bbreaking">Non&#160;breaking</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><div class="tabber__section"><div class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Player.26.23039.3Bs_stats" aria-labelledby="tabber-Player.26.23039.3Bs_stats-label"><p class="mw-empty-elt">
+</p><p>Content.
+</p>
+<p class="mw-empty-elt"></p></div><div class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-A_.26quot.3Bquoted.26quot.3B_label" aria-labelledby="tabber-A_.26quot.3Bquoted.26quot.3B_label-label"><p class="mw-empty-elt">
+</p><p>Content.
+</p>
+<p class="mw-empty-elt"></p></div><div class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Level_.282.29" aria-labelledby="tabber-Level_.282.29-label"><p class="mw-empty-elt">
+</p><p>Content.
+</p>
+<p class="mw-empty-elt"></p></div><div class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Stats.26amp.3B.23160.3B:_Level" aria-labelledby="tabber-Stats.26amp.3B.23160.3B:_Level-label"><p class="mw-empty-elt">
+</p><p>Content.
+</p>
+<p class="mw-empty-elt"></p></div><div class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Non.26amp.3B.23160.3Bbreaking" aria-labelledby="tabber-Non.26amp.3B.23160.3Bbreaking-label"><p class="mw-empty-elt">
+</p><p>Content.
+</p>
+<p class="mw-empty-elt"></p></div></div></div>
+!! end
