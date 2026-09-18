@@ -26,7 +26,8 @@ return [
 	},
 	'TabberNeue.TabParser' => static function ( MediaWikiServices $services ): TabParser {
 		return new TabParser(
-			$services->getService( 'TabberNeue.TabberOptions' )
+			$services->getService( 'TabberNeue.TabberOptions' ),
+			$services->getUrlUtils()
 		);
 	},
 	'TabberNeue.TabIdRegistry' => static function ( MediaWikiServices $services ): TabIdRegistry {

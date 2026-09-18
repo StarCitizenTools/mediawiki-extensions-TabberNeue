@@ -7,6 +7,7 @@ use MediaWiki\Extension\TabberNeue\Config\TabberOptions;
 use MediaWiki\Html\Html;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
+use MediaWiki\Utils\UrlUtils;
 
 class TabParser {
 	// Note: <p> is intentionally excluded. recursiveTagParse adds <p> tags inconsistently
@@ -14,8 +15,11 @@ class TabParser {
 	private const BLOCK_ELEMENTS = [ 'ol', 'ul', 'dl', 'div', 'table', 'pre', 'blockquote',
 		'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'figure' ];
 
+	private ?string $markupPattern = null;
+
 	public function __construct(
-		private readonly TabberOptions $options
+		private readonly TabberOptions $options,
+		private readonly UrlUtils $urlUtils
 	) {
 	}
 
@@ -32,8 +36,36 @@ class TabParser {
 			return $parser->getTargetLanguageConverter()->convertHtml( $label );
 		}
 
-		$label = $parser->recursiveTagParseFully( $label );
-		return $parser->stripOuterParagraph( $label );
+		if ( !$this->hasWikitextMarkup( $label ) ) {
+			$html = htmlspecialchars( $label, ENT_NOQUOTES | ENT_SUBSTITUTE );
+			$options = $parser->getOptions();
+			if ( $options->getDisableContentConversion() || $options->getInterfaceMessage() ) {
+				return $html;
+			}
+			return $parser->getTargetLanguageConverter()->convert( $html );
+		}
+
+		return Parser::stripOuterParagraph( $parser->recursiveTagParseFully( $label ) );
+	}
+
+	/**
+	 * Whether a label contains anything the parser would render differently
+	 * from plain escaped text. Conservative: false positives only cost a parse.
+	 */
+	private function hasWikitextMarkup( string $label ): bool {
+		$this->markupPattern ??= '/' . implode( '|', [
+			'[\\[{<&\\x7f]',
+			'[\\x00-\\x08\\x0a-\\x1f]',
+			"''",
+			'__',
+			'^[*#:;=]',
+			'^-{4}',
+			' (?=[?:;!%»›])',
+			'[«‹] ',
+			'[\\x{00A0}\\x{0338}]',
+			'(?i:' . $this->urlUtils->validAbsoluteProtocols() . ')',
+		] ) . '/u';
+		return preg_match( $this->markupPattern, $label ) !== 0;
 	}
 
 	/**
