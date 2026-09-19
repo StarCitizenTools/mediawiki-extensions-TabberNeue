@@ -107,4 +107,8 @@ jobs:
     with:
       project-type: extension
       project-name: TabberNeue
-      runner: ubuntu-24.04-arm
+      # The Lua cases in tests/parser/tabberneue.txt need mw.ext.tabber.
+      extra-extensions: Scribunto
+      # Scribunto's LuaStandalone engine ships x86-64 binaries only, so this
+      # job cannot run on the arm runner the others use.
+      runner: ubuntu-latest
