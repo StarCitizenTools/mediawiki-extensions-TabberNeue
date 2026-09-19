@@ -4,6 +4,7 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\TabberNeue\Scribunto;
 
+use InvalidArgumentException;
 use MediaWiki\Extension\Scribunto\Engines\LuaCommon\LibraryBase;
 use MediaWiki\Extension\Scribunto\Engines\LuaCommon\LuaError;
 use MediaWiki\MediaWikiServices;
@@ -25,11 +26,21 @@ class LuaLibrary extends LibraryBase {
 	 * Render tabber from Lua data.
 	 *
 	 * @param mixed $tabData Tab data from Lua.
+	 * @param mixed $attributes Attributes for the wrapper element, or null.
 	 * @return array
-	 * @throws LuaError If the tab data is invalid.
+	 * @throws LuaError If the tab data or the attributes are invalid.
 	 */
-	public function render( $tabData = null ): array {
+	public function render( $tabData = null, $attributes = null ): array {
 		$this->checkType( 'mw.ext.tabber.render', 1, $tabData, 'table' );
+		if ( $attributes !== null ) {
+			$this->checkType( 'mw.ext.tabber.render', 2, $attributes, 'table' );
+		}
+
+		try {
+			$args = LuaAttributeNormaliser::normalise( $attributes );
+		} catch ( InvalidArgumentException $e ) {
+			throw new LuaError( $e->getMessage() );
+		}
 
 		$parser = $this->getParser();
 		$services = $this->getServices();
@@ -53,7 +64,7 @@ class LuaLibrary extends LibraryBase {
 			return [ '' ];
 		}
 
-		$html = $services->tabberRenderer->render( $tabModels, [], $parser );
+		$html = $services->tabberRenderer->render( $tabModels, $args, $parser );
 		// Wrap in strip marker to prevent parser from double-processing the HTML.
 		return [ $parser->insertStripItem( $html ) ];
 	}
