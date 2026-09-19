@@ -365,3 +365,58 @@ Content.
 </p>
 <p class="mw-empty-elt"></p></div></div></div>
 !! end
+
+!! article
+Module:TabberNeueLuaAttrs
+!! text
+local p = {}
+function p.main()
+	return mw.ext.tabber.render(
+		{ { label = 'Alpha', content = 'A content' } },
+		{ id = 'lua-id', class = 'lua-class', ['data-x'] = 'lua-data', wrap = true }
+	)
+end
+function p.unsafe()
+	return mw.ext.tabber.render(
+		{ { label = 'Alpha', content = 'A content' } },
+		{ onmouseover = 'alert(1)', style = 'background:url(javascript:alert(1))', id = 'a"><script>alert(1)</script>' }
+	)
+end
+function p.noattrs()
+	return mw.ext.tabber.render( { { label = 'Alpha', content = 'A content' } } )
+end
+return p
+!! endarticle
+
+!! test
+Lua render passes wrapper attributes through the tag sanitizer
+!! wikitext
+{{#invoke:TabberNeueLuaAttrs|main}}
+!! html
+<div class="tabber tabber--init tabber--wrap lua-class" id="lua-id" data-x="lua-data"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-Alpha-label" href="#tabber-Alpha" aria-controls="tabber-Alpha">Alpha</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><div class="tabber__section"><div class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Alpha" aria-labelledby="tabber-Alpha-label"><p class="mw-empty-elt">
+</p><p>A content
+</p>
+<p class="mw-empty-elt"></p></div></div></div>
+!! end
+
+!! test
+Lua render drops event handlers and neutralises unsafe attribute values
+!! wikitext
+{{#invoke:TabberNeueLuaAttrs|unsafe}}
+!! html
+<div class="tabber tabber--init" style="/* insecure input */" id="a.22.3E.3Cscript.3Ealert.281.29.3C.2Fscript.3E"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-Alpha-label" href="#tabber-Alpha" aria-controls="tabber-Alpha">Alpha</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><div class="tabber__section"><div class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Alpha" aria-labelledby="tabber-Alpha-label"><p class="mw-empty-elt">
+</p><p>A content
+</p>
+<p class="mw-empty-elt"></p></div></div></div>
+!! end
+
+!! test
+Lua render without the attributes argument stays backward compatible
+!! wikitext
+{{#invoke:TabberNeueLuaAttrs|noattrs}}
+!! html
+<div class="tabber tabber--init"><header class="tabber__header"><button class="tabber__header__prev" tabindex="-1" type="button" aria-hidden="true"></button><nav class="tabber__tabs" role="tablist"><a class="tabber__tab" role="tab" id="tabber-Alpha-label" href="#tabber-Alpha" aria-controls="tabber-Alpha">Alpha</a></nav><button class="tabber__header__next" tabindex="-1" type="button" aria-hidden="true"></button></header><div class="tabber__section"><div class="tabber__panel" role="tabpanel" tabindex="0" id="tabber-Alpha" aria-labelledby="tabber-Alpha-label"><p class="mw-empty-elt">
+</p><p>A content
+</p>
+<p class="mw-empty-elt"></p></div></div></div>
+!! end

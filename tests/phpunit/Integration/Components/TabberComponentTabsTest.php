@@ -95,4 +95,40 @@ class TabberComponentTabsTest extends MediaWikiIntegrationTestCase {
 		$attrs = $this->asAssoc( $tabs->getTemplateData()['array-attributes'] );
 		$this->assertStringNotContainsString( 'tabber--wrap', $attrs['class'] );
 	}
+
+	/**
+	 * Sanitizer::validateTagAttributes lets any `data-*` name through, and its
+	 * exclusion list omits U+000C — an HTML attribute separator. A caller that
+	 * supplies names directly rather than through the tag lexer could otherwise
+	 * smuggle an event handler in via the attribute name.
+	 *
+	 * @covers ::getTemplateData
+	 * @dataProvider provideUnlexableNames
+	 */
+	public function testNamesThatDoNotLexAreDropped( string $name ): void {
+		$tabs = new TabberComponentTabs( [], [ $name => 'alert(1)' ] );
+
+		$attrs = $this->asAssoc( $tabs->getTemplateData()['array-attributes'] );
+		$this->assertSame( [ 'class' ], array_keys( $attrs ) );
+	}
+
+	public static function provideUnlexableNames(): array {
+		return [
+			'form feed' => [ "data-x\x0Conmouseover" ],
+			'space' => [ 'data-x onmouseover' ],
+			'tab' => [ "data-x\tonmouseover" ],
+			'slash' => [ 'data-x/onmouseover' ],
+			'quote' => [ 'data-x"onmouseover' ],
+		];
+	}
+
+	/**
+	 * @covers ::getTemplateData
+	 */
+	public function testNameIsLowercased(): void {
+		$tabs = new TabberComponentTabs( [], [ 'ID' => 'x' ] );
+
+		$attrs = $this->asAssoc( $tabs->getTemplateData()['array-attributes'] );
+		$this->assertSame( 'x', $attrs['id'] ?? null );
+	}
 }
