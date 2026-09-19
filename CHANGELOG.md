@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.1.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v4.0.2...v4.1.0) (2026-09-19)
+
+
+### Features
+
+* accept wrapper attributes in mw.ext.tabber.render ([fc2b503](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/fc2b503441943e2aa4ce73f6055803dbd6b18ab6)), closes [#341](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/341)
+
+
+### Bug Fixes
+
+* keep arrow keys inside a tab from moving the panel row ([c657b91](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/c657b91d775f2c75a106a5350ee006fda4410eb1)), closes [#356](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/356)
+* scope the tab-switch view transition to the tabber section ([fed0aef](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/fed0aefbd45bbe8ac11a4e84f7765aa7212b3aed))
+
+
+### Performance Improvements
+
+* skip the parser for tab labels without wikitext markup ([157b55b](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/157b55b7526ec472de38992cc26071d036fcfca1))
+
 ## [4.0.2](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v4.0.1...v4.0.2) (2026-07-30)
 
 
