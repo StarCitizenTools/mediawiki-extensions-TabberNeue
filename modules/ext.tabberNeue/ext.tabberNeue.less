@@ -211,45 +211,41 @@
 	}
 }
 
-// View Transitions path. Fallback `--entering-*` animation above applies when
-// document.startViewTransition is unavailable.
+// View Transitions path; the `--entering-*` animation above is the fallback.
+// The transition is element-scoped, so these pseudo-elements originate from
+// `.tabber__section` rather than the document root.
 //
-// These rules sit at global scope rather than inside `.tabber-animations-ready`
-// because ::view-transition-* pseudo-elements live under the document root and
-// cannot be scoped through an ancestor class. The animation is instead gated
-// behaviorally by createViewTransitionWrapper.canUse(), which refuses to call
-// startViewTransition when `.tabber-animations-ready` is absent.
-//
-// All four pseudo-element levels (group, image-pair, old, new) carry the
-// duration/easing — UA defaults at each level otherwise run to 250ms in
-// parallel and lengthen the perceived end time.
-::view-transition-group( tabber-section-forward ),
-::view-transition-group( tabber-section-backward ),
-::view-transition-image-pair( tabber-section-forward ),
-::view-transition-image-pair( tabber-section-backward ),
-::view-transition-old( tabber-section-forward ),
-::view-transition-old( tabber-section-backward ),
-::view-transition-new( tabber-section-forward ),
-::view-transition-new( tabber-section-backward ) {
-	animation-duration: 150ms;
-	animation-timing-function: cubic-bezier( 0.4, 0, 0.2, 1 );
-	animation-fill-mode: both;
-}
+// All four levels carry the duration/easing — UA defaults at each level
+// otherwise run to 250ms in parallel and lengthen the perceived end time.
+.tabber-animations-ready .tabber__section {
+	&::view-transition-group( tabber-section-forward ),
+	&::view-transition-group( tabber-section-backward ),
+	&::view-transition-image-pair( tabber-section-forward ),
+	&::view-transition-image-pair( tabber-section-backward ),
+	&::view-transition-old( tabber-section-forward ),
+	&::view-transition-old( tabber-section-backward ),
+	&::view-transition-new( tabber-section-forward ),
+	&::view-transition-new( tabber-section-backward ) {
+		animation-duration: 150ms;
+		animation-timing-function: cubic-bezier( 0.4, 0, 0.2, 1 );
+		animation-fill-mode: both;
+	}
 
-::view-transition-old( tabber-section-forward ) {
-	animation-name: tabber-vt-slide-out-left;
-}
+	&::view-transition-old( tabber-section-forward ) {
+		animation-name: tabber-vt-slide-out-left;
+	}
 
-::view-transition-new( tabber-section-forward ) {
-	animation-name: tabber-vt-slide-in-right;
-}
+	&::view-transition-new( tabber-section-forward ) {
+		animation-name: tabber-vt-slide-in-right;
+	}
 
-::view-transition-old( tabber-section-backward ) {
-	animation-name: tabber-vt-slide-out-right;
-}
+	&::view-transition-old( tabber-section-backward ) {
+		animation-name: tabber-vt-slide-out-right;
+	}
 
-::view-transition-new( tabber-section-backward ) {
-	animation-name: tabber-vt-slide-in-left;
+	&::view-transition-new( tabber-section-backward ) {
+		animation-name: tabber-vt-slide-in-left;
+	}
 }
 
 @keyframes tabber-vt-slide-out-left {

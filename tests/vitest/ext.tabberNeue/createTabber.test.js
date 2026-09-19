@@ -443,7 +443,26 @@ describe( 'createTabber animation orchestration', () => {
 		expect( panels[ 0 ].classList.contains( 'tabber__panel--entering-from-left' ) ).toBe( false );
 	} );
 
-	it( 'invokes startViewTransition when available and skips the fallback class', () => {
+	function stubScopedVT() {
+		const mockVT = vi.fn( () => ( {
+			finished: Promise.resolve(),
+			ready: Promise.resolve(),
+			updateCallbackDone: Promise.resolve()
+		} ) );
+		element.querySelector( '.tabber__section' ).startViewTransition = mockVT;
+		return mockVT;
+	}
+
+	it( 'invokes the element-scoped startViewTransition and skips the fallback class', () => {
+		const mockVT = stubScopedVT();
+		const t = make();
+		t.init( tabs[ 0 ] );
+		t.activate( tabs[ 1 ], { source: 'user-click' } );
+		expect( mockVT ).toHaveBeenCalledTimes( 1 );
+		expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( false );
+	} );
+
+	it( 'falls back to the panel transition when only document.startViewTransition exists', () => {
 		const mockVT = vi.fn( () => ( {
 			finished: Promise.resolve(),
 			ready: Promise.resolve(),
@@ -454,29 +473,20 @@ describe( 'createTabber animation orchestration', () => {
 			const t = make();
 			t.init( tabs[ 0 ] );
 			t.activate( tabs[ 1 ], { source: 'user-click' } );
-			expect( mockVT ).toHaveBeenCalledTimes( 1 );
-			expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( false );
+			expect( mockVT ).not.toHaveBeenCalled();
+			expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( true );
 		} finally {
 			delete document.startViewTransition;
 		}
 	} );
 
 	it( 'burst activation bypasses both VT and the fallback class', () => {
-		const mockVT = vi.fn( () => ( {
-			finished: Promise.resolve(),
-			ready: Promise.resolve(),
-			updateCallbackDone: Promise.resolve()
-		} ) );
-		document.startViewTransition = mockVT;
-		try {
-			const t = make();
-			t.init( tabs[ 0 ] );
-			t.activate( tabs[ 1 ], { source: 'find', preventScroll: true } );
-			expect( mockVT ).not.toHaveBeenCalled();
-			expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( false );
-			expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-left' ) ).toBe( false );
-		} finally {
-			delete document.startViewTransition;
-		}
+		const mockVT = stubScopedVT();
+		const t = make();
+		t.init( tabs[ 0 ] );
+		t.activate( tabs[ 1 ], { source: 'find', preventScroll: true } );
+		expect( mockVT ).not.toHaveBeenCalled();
+		expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( false );
+		expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-left' ) ).toBe( false );
 	} );
 } );
