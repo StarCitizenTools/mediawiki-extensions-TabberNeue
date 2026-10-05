@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Blockernagnto",
 			"Justincheng12345",
 			"Kly",
 			"Lakejason0"
@@ -17,6 +18,7 @@
 	"tabberneue-visualeditor-mwtabberdialog-desc": "關於具體用法，參閱[https://www.mediawiki.org/wiki/Extension:TabberNeue#Simple_tabbers 文件]。",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-title": "Tabber（嵌入）",
 	"tabberneue-visualeditor-mwtabbertranscludeinspector-desc": "關於具體用法，參閱[https://www.mediawiki.org/wiki/Extension:TabberNeue#Transclusion 文件]。",
+	"tabberneue-visualeditor-copy-suffix": "$1（複製）",
 	"tabberneue-error-tabs-title": "處理分頁時發生以下錯誤：",
 	"tabberneue-error-tabs-duplicate-label": "分頁標籤 '$1' 已被使用。"
 }
