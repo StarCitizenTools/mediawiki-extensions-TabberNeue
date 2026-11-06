@@ -12,7 +12,7 @@
 		"preflight": "npm -s run lint && npm -s test"
 	},
 	"devDependencies": {
-		"@vitest/coverage-v8": "^5.0.5",
+		"@vitest/coverage-v8": "^5.1.0",
 		"@wikimedia/types-wikimedia": "0.8.0",
 		"eslint-config-wikimedia": "0.32.6",
 		"eslint-plugin-no-jquery": "6.0.1",
