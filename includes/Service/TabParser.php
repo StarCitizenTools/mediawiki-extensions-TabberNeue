@@ -39,7 +39,13 @@ class TabParser {
 		if ( !$this->hasWikitextMarkup( $label ) ) {
 			$html = htmlspecialchars( $label, ENT_NOQUOTES | ENT_SUBSTITUTE );
 			$options = $parser->getOptions();
-			if ( $options->getDisableContentConversion() || $options->getInterfaceMessage() ) {
+			// Mirror when Parser::internalParseHalfParsed() converts. Since MW 1.46 it
+			// skips conversion under Parsoid, which converts the final DOM itself.
+			if (
+				$options->getDisableContentConversion() ||
+				$options->getInterfaceMessage() ||
+				$options->getUseParsoid()
+			) {
 				return $html;
 			}
 			return $parser->getTargetLanguageConverter()->convert( $html );
