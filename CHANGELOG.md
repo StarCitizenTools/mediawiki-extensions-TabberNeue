@@ -1,5 +1,28 @@
 # Changelog
 
+## [4.1.1](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v4.1.0...v4.1.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* convert plain label text before a bare "&gt;" ([7222889](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/72228892b35aff285f889f247368375b90c00348))
+* declare the mediawiki.api dependency ([67b70d5](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/67b70d5d02ec5870c079b3db9876fec5d11c2987))
+* keep the active tab in view after the tabber is moved ([e2693f4](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/e2693f4fa89dfde09db4c748a9294648f96be541)), closes [#389](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/389)
+* skip label variant conversion under Parsoid ([d2400a9](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/d2400a91188c6b2b4069f1724c3f1c56e7f178f7))
+* skip plain label variant conversion when the parser skips it ([8a25557](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/8a2555714468eb2cb8113dd72476e46ab765ca41))
+* stop a trackpad swipe from dragging an empty tab panel ([b10d898](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/b10d89812e4ba91cee10b5112f66c417c8f71f51))
+
+
+### Performance Improvements
+
+* handle resizes of visible tabbers together ([1320e9d](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/1320e9d1da06e4abb467c513be16887f648e45a1)), closes [#352](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/352)
+* initialise all tabbers on a page together ([76768e2](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/76768e2ca0ba85d3e48dde5a2718145f8e559329)), closes [#352](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/issues/352)
+
+
+### Miscellaneous Chores
+
+* let agents start their own dev environment with mwenv ([1ed2cd2](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/commit/1ed2cd2c2b5f859b93d853948396379b04c94ff1))
+
 ## [4.1.0](https://github.com/StarCitizenTools/mediawiki-extensions-TabberNeue/compare/v4.0.2...v4.1.0) (2026-09-19)
 
 
