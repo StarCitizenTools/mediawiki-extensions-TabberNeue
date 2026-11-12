@@ -189,9 +189,12 @@ class TabParserTest extends MediaWikiIntegrationTestCase {
 	 * @covers ::parseLabel
 	 */
 	public function testParseLabelMatchesFullParseUnderLanguageVariant(): void {
-		$this->overrideConfigValue( MainConfigNames::DefaultLanguageVariant, 'zh-hans' );
-		$options = ParserOptions::newFromAnon();
-		$options->setTargetLanguage( $this->getServiceContainer()->getLanguageFactory()->getLanguage( 'zh' ) );
+		$options = $this->makeVariantParserOptions();
+		// The legacy parser converts variants itself only when Parsoid is off,
+		// which MW 1.47+ no longer defaults to ($wgUseParsoidParser).
+		// Before MW 1.45, setUseParsoid() ignores its argument and always enables
+		// Parsoid, so set the option directly.
+		$options->setOption( 'useParsoid', false );
 		$parser = $this->makeRealParser( $options );
 		$label = '測試 > 中文';
 		$expected = $parser->stripOuterParagraph( $parser->recursiveTagParseFully( $label ) );
@@ -200,6 +203,29 @@ class TabParserTest extends MediaWikiIntegrationTestCase {
 		$result = $this->makeTabParser( parseTabName: true )->parseLabel( $label, $parser );
 
 		$this->assertSame( $expected, $result );
+	}
+
+	/**
+	 * Under Parsoid, variant conversion runs on the final DOM, so the label
+	 * must be left unconverted, as the parser itself does since MW 1.46.
+	 *
+	 * @covers ::parseLabel
+	 */
+	public function testParseLabelSkipsLanguageVariantUnderParsoid(): void {
+		$options = $this->makeVariantParserOptions();
+		$options->setUseParsoid();
+		$parser = $this->makeRealParser( $options );
+
+		$result = $this->makeTabParser( parseTabName: true )->parseLabel( '測試 > 中文', $parser );
+
+		$this->assertSame( '測試 &gt; 中文', $result );
+	}
+
+	private function makeVariantParserOptions(): ParserOptions {
+		$this->overrideConfigValue( MainConfigNames::DefaultLanguageVariant, 'zh-hans' );
+		$options = ParserOptions::newFromAnon();
+		$options->setTargetLanguage( $this->getServiceContainer()->getLanguageFactory()->getLanguage( 'zh' ) );
+		return $options;
 	}
 
 	/**
