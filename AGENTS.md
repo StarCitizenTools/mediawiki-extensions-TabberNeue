@@ -17,27 +17,27 @@ Run only what's relevant to the files you changed.
 
 Auto-fix commands: `composer fix` (PHP), `npm run lint:fix:js` (JS), `npm run lint:fix:styles` (styles).
 
-**Preflight**: Run `npm run preflight` to execute all Node-based lints and JS tests in one command. Run `composer preflight` from within a MediaWiki installation to execute all PHP lints, style checks, and Phan static analysis.
+**Preflight**: Run `npm run preflight` to execute all Node-based lints and JS tests in one command. Run `composer preflight` in the [dev environment](#dev-environment) to execute all PHP lints, style checks, and Phan static analysis.
 
 **Always run the relevant checks before committing.** Read the full output — PHPCS warnings must be fixed, not just errors. The command exits 0 even with warnings, so do not treat exit code alone as a pass.
 
 ### Dev environment
 
-This project's standard dev environment is the MediaWiki Docker setup defined in the parent `mediawiki/` directory. The user may be using a different environment. Ask the user for their dev environment URL and how to run commands if not already known.
+PHP checks, PHPUnit and browser tests need a running MediaWiki that serves this checkout. Use the first that applies:
 
-To run composer commands in the standard Docker environment:
+1. An environment the user has named.
+2. A disposable one you start yourself with [mwenv](https://github.com/ProfessionalWiki/mwenv), which needs no MediaWiki installation.
+3. A MediaWiki installation that contains this checkout, such as MediaWiki-Docker, when the task needs its content or extensions.
 
-```sh
-docker compose exec mediawiki bash -c "cd /var/www/html/w/extensions/TabberNeue && composer preflight"
-```
+Ask the user only if none of these can run, or the task needs something a fresh wiki lacks. Don't destroy an environment you didn't create: its database may hold the user's test content.
+
+Whichever you use, it needs what CI's PHP jobs get (`.github/workflows/ci.yml`): load each extension in `extra-extensions`, and require each package in `extra-composer-packages` into MediaWiki with Composer, without loading it.
+
+On arm64 hosts, Scribunto needs the LuaSandbox PHP extension, because the standalone Lua binary it ships is x86-64 only.
 
 ### Phan
 
-Phan requires a full MediaWiki installation at `../../` for type resolution. The `.phan/config.php` conditionally includes Scribunto for type resolution when available.
-
-```sh
-docker compose exec mediawiki bash -c "cd /var/www/html/w/extensions/TabberNeue && composer phan"
-```
+`.phan/config.php` adds Scribunto to type resolution when it is in MediaWiki's `extensions/` directory.
 
 ### Browser testing
 
