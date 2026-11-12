@@ -69,7 +69,9 @@
 	&__panel {
 		height: max-content;
 		overflow-x: auto;
-		overscroll-behavior-x: contain;
+		// Stops arrow keys from scrolling the section (#356). `contain` would
+		// still let a trackpad rubber-band an empty panel.
+		overscroll-behavior-x: none;
 		scroll-snap-align: start;
 
 		// Hide edit buttons for non-transclusion tabs since they don't work
