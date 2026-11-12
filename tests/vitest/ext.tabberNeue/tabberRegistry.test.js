@@ -84,6 +84,50 @@ describe( 'tabberRegistry', () => {
 		expect( document.querySelectorAll( '.tabber--init' ).length ).toBe( 0 );
 	} );
 
+	describe( 'scan initialises tabbers together (#352)', () => {
+		it( 'reads every tabber before any of them goes live', () => {
+			const a = makeTabberEl( 'a' );
+			const b = makeTabberEl( 'b' );
+			const aLiveAtBRead = [];
+			Object.defineProperty( b.querySelector( '.tabber__section' ), 'scrollLeft', {
+				configurable: true,
+				get: () => {
+					aLiveAtBRead.push( a.classList.contains( 'tabber--live' ) );
+					return 0;
+				},
+				set: () => {}
+			} );
+			make().scan();
+			expect( aLiveAtBRead.length ).toBeGreaterThan( 1 );
+			expect( aLiveAtBRead ).not.toContain( true );
+		} );
+
+		it( 'measures every panel before sizing any section', () => {
+			const a = makeTabberEl( 'a' );
+			const b = makeTabberEl( 'b' );
+			const aSizedAtBMeasure = [];
+			const panelB = b.querySelector( '.tabber__panel' );
+			const rect = panelB.getBoundingClientRect.bind( panelB );
+			panelB.getBoundingClientRect = () => {
+				aSizedAtBMeasure.push( a.querySelector( '.tabber__section' ).style.height !== '' );
+				return rect();
+			};
+			make().scan();
+			expect( aSizedAtBMeasure ).toEqual( [ false ] );
+		} );
+
+		it( 'still initialises the tabbers before one that fails to construct', () => {
+			const a = makeTabberEl( 'a' );
+			// No header: createTabber throws on it.
+			const broken = document.createElement( 'div' );
+			broken.className = 'tabber tabber--init';
+			document.body.appendChild( broken );
+			const reg = make();
+			expect( () => reg.scan() ).toThrow();
+			expect( a.classList.contains( 'tabber--live' ) ).toBe( true );
+		} );
+	} );
+
 	it( 'scan is idempotent', () => {
 		makeTabberEl( 'a' );
 		const reg = make();

@@ -73,13 +73,19 @@ describe( 'createTabber', () => {
 		} );
 	}
 
-	it( 'sets initial tab attributes', () => {
+	it( 'leaves the DOM alone until init', () => {
 		make();
+		const tab = element.querySelector( '.tabber__tab' );
+		expect( tab.hasAttribute( 'aria-selected' ) ).toBe( false );
+		expect( element.querySelector( '.tabber__indicator' ) ).toBeNull();
+	} );
+
+	it( 'init marks every other tab unselected', () => {
+		const t = make();
 		const tabs = element.querySelectorAll( '.tabber__tab' );
-		for ( const tab of tabs ) {
-			expect( tab.getAttribute( 'tabindex' ) ).toBe( '-1' );
-			expect( tab.getAttribute( 'aria-selected' ) ).toBe( 'false' );
-		}
+		t.init( tabs[ 1 ] );
+		expect( tabs[ 0 ].getAttribute( 'tabindex' ) ).toBe( '-1' );
+		expect( tabs[ 0 ].getAttribute( 'aria-selected' ) ).toBe( 'false' );
 	} );
 
 	it( 'keeps only the active panel in the tab order', () => {
@@ -95,7 +101,8 @@ describe( 'createTabber', () => {
 	} );
 
 	it( 'creates the floating indicator in normal mode', () => {
-		make();
+		const t = make();
+		t.init( element.querySelectorAll( '.tabber__tab' )[ 0 ] );
 		expect( element.querySelector( '.tabber__indicator' ) ).not.toBeNull();
 	} );
 
@@ -130,6 +137,34 @@ describe( 'createTabber', () => {
 		expect( handler.mock.calls[ 0 ][ 0 ].detail ).toEqual( {
 			panelId: 'p2', source: 'user-click'
 		} );
+	} );
+
+	it( 'announces init before measuring the panel, like any other activation', () => {
+		const t = make();
+		const panel = element.querySelector( '#p1' );
+		const order = [];
+		element.addEventListener( 'tabber:tabchange', () => order.push( 'event' ) );
+		const rect = panel.getBoundingClientRect.bind( panel );
+		panel.getBoundingClientRect = () => {
+			order.push( 'measure' );
+			return rect();
+		};
+		t.init( element.querySelectorAll( '.tabber__tab' )[ 0 ] );
+		expect( order ).toEqual( [ 'event', 'measure' ] );
+	} );
+
+	it( 'follows a tab that an init listener activates instead', () => {
+		const t = make();
+		const tabs = element.querySelectorAll( '.tabber__tab' );
+		Object.defineProperty( tabs[ 1 ], 'offsetLeft', { value: 50, configurable: true } );
+		element.addEventListener( 'tabber:tabchange', ( e ) => {
+			if ( e.detail.source === 'init' ) {
+				t.activate( tabs[ 1 ] );
+			}
+		} );
+		t.init( tabs[ 0 ] );
+		expect( t.getActiveTab() ).toBe( tabs[ 1 ] );
+		expect( element.querySelector( '.tabber__indicator' ).style.transform ).toBe( 'translateX(50px)' );
 	} );
 
 	it( 'activate is a no-op if tab is already active', () => {

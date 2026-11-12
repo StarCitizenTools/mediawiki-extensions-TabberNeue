@@ -117,6 +117,18 @@ describe( 'createOverflowController', () => {
 			expect( tablist.scrollTo ).not.toHaveBeenCalled();
 		} );
 
+		it( 'uses metrics the caller already read instead of reading again', () => {
+			tablist = makeTablist( { scrollWidth: 500, clientWidth: 200, scrollLeft: 0 } );
+			const ctl = make( { animationsEnabled: true, arrowWidth: 40 } );
+			const tab = { offsetLeft: 250, offsetWidth: 50 };
+			const metrics = ctl.getMetrics( tab );
+			ctl.update( metrics );
+			// Geometry that moved after the read is not consulted.
+			tab.offsetLeft = 0;
+			ctl.scrollTabIntoView( tab, metrics );
+			expect( tablist.scrollTo ).toHaveBeenCalledWith( { left: 140, behavior: 'smooth' } );
+		} );
+
 		it( 'mirrors the tab offset and the written scrollLeft in rtl', () => {
 			// The rtl mirror of offsetLeft 250 / width 50 in a 200-wide viewport is
 			// tabStart = 200 - ( -100 ) - 50 = 250, the same distance as ltr above,

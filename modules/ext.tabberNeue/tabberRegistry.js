@@ -1,5 +1,6 @@
 const createTabber = require( './createTabber.js' );
 const createHashRouter = require( './createHashRouter.js' );
+const { stepInLockstep } = require( './domHelpers.js' );
 
 /**
  * Page-level coordinator.
@@ -165,25 +166,33 @@ function createRegistry( deps ) {
 		ensureHashRouter();
 		mwApi.loader.load( 'ext.tabberNeue.icons' );
 
-		for ( const el of tabberEls ) {
-			if ( instances.has( el ) ) {
-				continue;
-			}
-			const tabber = createTabber( {
-				element: el,
-				registry: api,
-				deps: {
-					config,
-					mw: mwApi,
-					window: win,
-					document: doc,
-					IntersectionObserver: IO,
-					setTimeout: setTimeoutFn
+		const created = [];
+		try {
+			for ( const el of tabberEls ) {
+				if ( instances.has( el ) ) {
+					continue;
 				}
-			} );
-			register( el, tabber );
-			const initialTab = hashRouter.initialTabFor( tabber );
-			tabber.init( initialTab );
+				const tabber = createTabber( {
+					element: el,
+					registry: api,
+					deps: {
+						config,
+						mw: mwApi,
+						window: win,
+						document: doc,
+						IntersectionObserver: IO,
+						setTimeout: setTimeoutFn
+					}
+				} );
+				register( el, tabber );
+				created.push( tabber );
+			}
+		} finally {
+			// Initialise together so that layout reads share one flush. Resolve
+			// every initial tab first: that reads layout too. In `finally` so that
+			// a failed construction does not strand the tabbers registered before it.
+			const initialTabs = created.map( ( tabber ) => hashRouter.initialTabFor( tabber ) );
+			stepInLockstep( created.map( ( tabber, i ) => tabber.initPhases( initialTabs[ i ] ) ) );
 		}
 
 		setTimeoutFn( () => toggleAnimation( true ), 250 );

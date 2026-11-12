@@ -1,9 +1,47 @@
 const {
 	getElementSize, getHiddenElementSize, isBurstSource, panelAtScrollOffset, roundScrollLeft,
-	setAttributes
+	setAttributes, stepInLockstep
 } = require( '../../../modules/ext.tabberNeue/domHelpers.js' );
 
 describe( 'domHelpers', () => {
+	describe( 'stepInLockstep', () => {
+		function* phases( name, count, log ) {
+			for ( let i = 1; i <= count; i++ ) {
+				log.push( name + i );
+				if ( i < count ) {
+					yield;
+				}
+			}
+		}
+
+		it( 'runs every iterator through a step before any takes the next', () => {
+			const log = [];
+			stepInLockstep( [ phases( 'a', 3, log ), phases( 'b', 3, log ) ] );
+			expect( log ).toEqual( [ 'a1', 'b1', 'a2', 'b2', 'a3', 'b3' ] );
+		} );
+
+		it( 'keeps stepping the others once one finishes early', () => {
+			const log = [];
+			stepInLockstep( [ phases( 'a', 1, log ), phases( 'b', 3, log ) ] );
+			expect( log ).toEqual( [ 'a1', 'b1', 'b2', 'b3' ] );
+		} );
+
+		it( 'finishes the others when one throws, then rethrows', () => {
+			const log = [];
+			function* broken() {
+				log.push( 'x1' );
+				yield;
+				throw new Error( 'boom' );
+			}
+			expect( () => stepInLockstep( [ broken(), phases( 'b', 3, log ) ] ) ).toThrow( 'boom' );
+			expect( log ).toEqual( [ 'x1', 'b1', 'b2', 'b3' ] );
+		} );
+
+		it( 'accepts no iterators', () => {
+			expect( () => stepInLockstep( [] ) ).not.toThrow();
+		} );
+	} );
+
 	describe( 'isBurstSource', () => {
 		it( 'treats find as a burst', () => {
 			expect( isBurstSource( 'find' ) ).toBe( true );
