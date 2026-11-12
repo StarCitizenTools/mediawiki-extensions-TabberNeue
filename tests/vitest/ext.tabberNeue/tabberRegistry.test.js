@@ -227,6 +227,26 @@ describe( 'tabberRegistry', () => {
 		expect( () => ro.cb( [ { target: tablist } ] ) ).not.toThrow();
 	} );
 
+	it( 'measures every resized panel before sizing any section', () => {
+		const a = makeTabberEl( 'a' );
+		const b = makeTabberEl( 'b' );
+		const reg = make();
+		reg.scan();
+		const panelA = a.querySelector( '.tabber__panel' );
+		const panelB = b.querySelector( '.tabber__panel' );
+		const sectionA = a.querySelector( '.tabber__section' );
+		const before = sectionA.style.height;
+		panelA.getBoundingClientRect = () => ( { height: 50 } );
+		const aHeightAtBMeasure = [];
+		panelB.getBoundingClientRect = () => {
+			aHeightAtBMeasure.push( sectionA.style.height );
+			return { height: 20 };
+		};
+		resizeObservers[ 0 ].cb( [ { target: panelA }, { target: panelB } ] );
+		expect( sectionA.style.height ).toBe( '50px' );
+		expect( aHeightAtBMeasure ).toEqual( [ before ] );
+	} );
+
 	it( 'toggleAnimation(true) adds the class on documentElement', () => {
 		const reg = make();
 		reg.toggleAnimation( true );

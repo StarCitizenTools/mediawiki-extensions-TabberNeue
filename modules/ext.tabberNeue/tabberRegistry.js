@@ -73,13 +73,16 @@ function createRegistry( deps ) {
 			return;
 		}
 		resizeObserver = new RO( ( entries ) => {
+			const phases = [];
 			for ( const { target } of entries ) {
 				const tabberEl = target.closest( '.tabber' );
 				if ( !tabberEl || !instances.has( tabberEl ) ) {
 					continue;
 				}
-				instances.get( tabberEl ).handleResize( target );
+				phases.push( instances.get( tabberEl ).resizePhases( target ) );
 			}
+			// Together, as in scan().
+			stepInLockstep( phases );
 		} );
 	}
 
