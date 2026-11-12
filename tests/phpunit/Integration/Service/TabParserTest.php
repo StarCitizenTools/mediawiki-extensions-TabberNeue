@@ -50,27 +50,28 @@ class TabParserTest extends MediaWikiIntegrationTestCase {
 	}
 
 	/**
+	 * The label is escaped before it is converted, as the parser converts HTML.
+	 *
 	 * @covers ::parseLabel
 	 */
 	public function testParseLabelWithoutParseTabNameUsesLanguageConverter(): void {
 		$converter = $this->createMock( LanguageConverter::class );
 		$converter->expects( $this->once() )
-			->method( 'convertHtml' )
-			->with( 'Label' )
+			->method( 'convert' )
+			->with( 'A &gt; B' )
 			->willReturn( 'Converted' );
 
 		$parser = $this->createMock( Parser::class );
 		$parser->method( 'getTargetLanguageConverter' )->willReturn( $converter );
 		$parser->method( 'getOptions' )->willReturn( $this->createMock( ParserOptions::class ) );
 
-		$result = $this->makeTabParser( parseTabName: false )->parseLabel( 'Label', $parser );
+		$result = $this->makeTabParser( parseTabName: false )->parseLabel( 'A > B', $parser );
 
 		$this->assertSame( 'Converted', $result );
 	}
 
 	/**
-	 * When the parser would not convert, the label is only escaped, exactly as
-	 * convertHtml() escapes it.
+	 * When the parser would not convert, the label is only escaped.
 	 *
 	 * @covers ::parseLabel
 	 * @dataProvider provideNonConvertingOptions
@@ -232,6 +233,21 @@ class TabParserTest extends MediaWikiIntegrationTestCase {
 		$result = $this->makeTabParser( parseTabName: true )->parseLabel( $label, $parser );
 
 		$this->assertSame( $expected, $result );
+	}
+
+	/**
+	 * Text before a bare ">" must be converted too.
+	 *
+	 * @covers ::parseLabel
+	 */
+	public function testParseLabelWithoutParseTabNameConvertsLanguageVariant(): void {
+		$options = $this->makeVariantParserOptions();
+		$options->setOption( 'useParsoid', false );
+		$parser = $this->makeRealParser( $options );
+
+		$result = $this->makeTabParser( parseTabName: false )->parseLabel( '測試 > 中文', $parser );
+
+		$this->assertSame( '测试 &gt; 中文', $result );
 	}
 
 	/**
