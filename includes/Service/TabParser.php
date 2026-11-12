@@ -32,37 +32,34 @@ class TabParser {
 			return '';
 		}
 
+		// Escape before converting, as the parser does: the converter takes text
+		// before a bare ">" for the end of an HTML tag and leaves it unconverted.
 		if ( !$this->options->parseTabName ) {
-			if ( !$this->parserConvertsVariants( $parser ) ) {
-				// Same escaping as convertHtml(), without the conversion.
-				return htmlspecialchars( $label );
-			}
-			return $parser->getTargetLanguageConverter()->convertHtml( $label );
+			return $this->convertVariants( htmlspecialchars( $label ), $parser );
 		}
 
 		if ( !$this->hasWikitextMarkup( $label ) ) {
-			$html = htmlspecialchars( $label, ENT_NOQUOTES | ENT_SUBSTITUTE );
-			if ( !$this->parserConvertsVariants( $parser ) ) {
-				return $html;
-			}
-			return $parser->getTargetLanguageConverter()->convert( $html );
+			return $this->convertVariants( htmlspecialchars( $label, ENT_NOQUOTES | ENT_SUBSTITUTE ), $parser );
 		}
 
 		return Parser::stripOuterParagraph( $parser->recursiveTagParseFully( $label ) );
 	}
 
 	/**
-	 * Whether the parser converts this parse's output to the preferred language
-	 * variant. Mirrors Parser::internalParseHalfParsed(); since MW 1.46 that skips
+	 * Converts HTML to the preferred language variant when the parser would.
+	 * Mirrors Parser::internalParseHalfParsed(); since MW 1.46 that skips
 	 * conversion under Parsoid, which converts the final DOM itself.
 	 */
-	private function parserConvertsVariants( Parser $parser ): bool {
+	private function convertVariants( string $html, Parser $parser ): string {
 		$options = $parser->getOptions();
-		return !(
+		if (
 			$options->getDisableContentConversion() ||
 			$options->getInterfaceMessage() ||
 			$options->getUseParsoid()
-		);
+		) {
+			return $html;
+		}
+		return $parser->getTargetLanguageConverter()->convert( $html );
 	}
 
 	/**
