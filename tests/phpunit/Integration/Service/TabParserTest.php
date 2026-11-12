@@ -61,10 +61,39 @@ class TabParserTest extends MediaWikiIntegrationTestCase {
 
 		$parser = $this->createMock( Parser::class );
 		$parser->method( 'getTargetLanguageConverter' )->willReturn( $converter );
+		$parser->method( 'getOptions' )->willReturn( $this->createMock( ParserOptions::class ) );
 
 		$result = $this->makeTabParser( parseTabName: false )->parseLabel( 'Label', $parser );
 
 		$this->assertSame( 'Converted', $result );
+	}
+
+	/**
+	 * When the parser would not convert, the label is only escaped, exactly as
+	 * convertHtml() escapes it.
+	 *
+	 * @covers ::parseLabel
+	 * @dataProvider provideNonConvertingOptions
+	 */
+	public function testParseLabelWithoutParseTabNameSkipsConversionWhenParserDoes( string $option ): void {
+		$options = $this->createMock( ParserOptions::class );
+		$options->method( $option )->willReturn( true );
+
+		$parser = $this->createMock( Parser::class );
+		$parser->method( 'getOptions' )->willReturn( $options );
+		$parser->expects( $this->never() )->method( 'getTargetLanguageConverter' );
+
+		$result = $this->makeTabParser( parseTabName: false )->parseLabel( 'Player\'s "Q&A" <b>', $parser );
+
+		$this->assertSame( 'Player&#039;s &quot;Q&amp;A&quot; &lt;b&gt;', $result );
+	}
+
+	public static function provideNonConvertingOptions(): array {
+		return [
+			'content conversion disabled' => [ 'getDisableContentConversion' ],
+			'interface message' => [ 'getInterfaceMessage' ],
+			'Parsoid' => [ 'getUseParsoid' ],
+		];
 	}
 
 	/**
@@ -210,15 +239,23 @@ class TabParserTest extends MediaWikiIntegrationTestCase {
 	 * must be left unconverted, as the parser itself does since MW 1.46.
 	 *
 	 * @covers ::parseLabel
+	 * @dataProvider provideParseTabName
 	 */
-	public function testParseLabelSkipsLanguageVariantUnderParsoid(): void {
+	public function testParseLabelSkipsLanguageVariantUnderParsoid( bool $parseTabName ): void {
 		$options = $this->makeVariantParserOptions();
 		$options->setUseParsoid();
 		$parser = $this->makeRealParser( $options );
 
-		$result = $this->makeTabParser( parseTabName: true )->parseLabel( '測試 > 中文', $parser );
+		$result = $this->makeTabParser( $parseTabName )->parseLabel( '測試 > 中文', $parser );
 
 		$this->assertSame( '測試 &gt; 中文', $result );
+	}
+
+	public static function provideParseTabName(): array {
+		return [
+			'parseTabName off' => [ false ],
+			'parseTabName on' => [ true ],
+		];
 	}
 
 	private function makeVariantParserOptions(): ParserOptions {
