@@ -45,7 +45,7 @@ jobs:
               - vitest.config.js
               - package.json
               - package-lock.json
-              - .eslintrc.json
+              - eslint.config.js
               - .github/workflows/ci.yml
             stylesheet:
               - modules/**/*.css

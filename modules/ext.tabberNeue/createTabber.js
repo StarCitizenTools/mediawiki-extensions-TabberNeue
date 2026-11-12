@@ -165,7 +165,6 @@ function createTabber( opts ) {
 		}
 		activePanel = newActivePanel;
 
-		// eslint-disable-next-line n/no-unsupported-features/node-builtins
 		element.dispatchEvent( new CustomEvent( 'tabber:tabchange', {
 			bubbles: true, composed: true,
 			detail: { panelId, source: options.source || 'programmatic' }
