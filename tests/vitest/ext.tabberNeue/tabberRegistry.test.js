@@ -24,7 +24,7 @@ describe( 'tabberRegistry', () => {
 
 	// Separate named constructor for IntersectionObserver mock.
 	function MockIOImpl() {
-		return { observe: vi.fn(), disconnect: vi.fn() };
+		return { observe: vi.fn(), unobserve: vi.fn(), disconnect: vi.fn() };
 	}
 
 	beforeEach( () => {
@@ -141,6 +141,7 @@ describe( 'tabberRegistry', () => {
 			ResizeObserver: MockRO,
 			IntersectionObserver: vi.fn( function MockIO() {
 				this.observe = vi.fn();
+				this.unobserve = vi.fn();
 				this.disconnect = vi.fn();
 			} ),
 			setTimeout: setTimeoutSpy,

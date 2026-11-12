@@ -3,6 +3,7 @@ const createKeyboardNavigator = require( './createKeyboardNavigator.js' );
 const createFindReveal = require( './createFindReveal.js' );
 const createVisibilityObserver = require( './createVisibilityObserver.js' );
 const createPanelTransition = require( './createPanelTransition.js' );
+const createPanelAligner = require( './createPanelAligner.js' );
 const createTabIndicator = require( './createTabIndicator.js' );
 const createViewTransitionWrapper = require( './createViewTransitionWrapper.js' );
 const defaultLoadTransclusion = require( './loadTransclusion.js' );
@@ -85,6 +86,11 @@ function createTabber( opts ) {
 	for ( const tab of tabs ) {
 		setAttributes( tab, { tabindex: '-1', 'aria-selected': 'false' } );
 	}
+	// Only the active panel is in the tab order; focusing a clipped panel
+	// scrolls the section to it.
+	for ( const panel of panels ) {
+		panel.setAttribute( 'tabindex', '-1' );
+	}
 
 	let activeTab = null;
 	let activePanel = null;
@@ -97,6 +103,7 @@ function createTabber( opts ) {
 	const isWrap = element.classList.contains( 'tabber--wrap' );
 	units.tabIndicator = createTabIndicator( { tablist, document: doc, enabled: !isWrap } );
 	units.panelTransition = createPanelTransition( { document: doc } );
+	units.panelAligner = createPanelAligner( { section, IntersectionObserver: IO } );
 	units.vt = createViewTransitionWrapper( { section, document: doc } );
 	units.findReveal = createFindReveal( {
 		section, panels, document: doc,
@@ -108,7 +115,7 @@ function createTabber( opts ) {
 		}
 	} );
 
-	function setActivePanel( panel, options = {} ) {
+	function setActivePanel( panel ) {
 		if ( !panel ) {
 			return;
 		}
@@ -139,9 +146,8 @@ function createTabber( opts ) {
 			section.scrollTop = 0;
 			win.scrollBy( { top: clippedScrollTop, behavior: 'instant' } );
 		}
-		if ( !options.preventScroll ) {
-			section.scrollLeft = panel.offsetLeft;
-		}
+		// Also restores the offset lost when a tabber is detached and put back.
+		section.scrollLeft = panel.offsetLeft;
 	}
 
 	function performActivation( tab, options ) {
@@ -162,8 +168,10 @@ function createTabber( opts ) {
 
 		if ( previousActivePanel && previousActivePanel !== newActivePanel ) {
 			registry.unobserveResize( previousActivePanel );
+			previousActivePanel.setAttribute( 'tabindex', '-1' );
 		}
 		activePanel = newActivePanel;
+		units.panelAligner.track( activePanel || null );
 
 		element.dispatchEvent( new CustomEvent( 'tabber:tabchange', {
 			bubbles: true, composed: true,
@@ -173,8 +181,9 @@ function createTabber( opts ) {
 		if ( !activePanel ) {
 			return;
 		}
+		activePanel.setAttribute( 'tabindex', '0' );
 		registry.observeResize( activePanel );
-		setActivePanel( activePanel, options );
+		setActivePanel( activePanel );
 	}
 
 	function activate( tab, options = {} ) {
@@ -328,7 +337,7 @@ function createTabber( opts ) {
 			units.overflow.update();
 			units.tabIndicator.update( activeTab );
 		} else if ( target === activePanel ) {
-			setActivePanel( target, { preventScroll: true } );
+			setActivePanel( target );
 		}
 	}
 
@@ -395,6 +404,7 @@ function createTabber( opts ) {
 		destroy() {
 			visibility.destroy();
 			units.findReveal.destroy();
+			units.panelAligner.destroy();
 			units.overflow.destroy();
 			units.keyboard.destroy();
 			units.tabIndicator.destroy();

@@ -42,6 +42,7 @@ describe( 'createTabber', () => {
 		};
 		mockIO = vi.fn( function MockIO() {
 			this.observe = vi.fn();
+			this.unobserve = vi.fn();
 			this.disconnect = vi.fn();
 		} );
 		mockTransclude = vi.fn();
@@ -79,6 +80,18 @@ describe( 'createTabber', () => {
 			expect( tab.getAttribute( 'tabindex' ) ).toBe( '-1' );
 			expect( tab.getAttribute( 'aria-selected' ) ).toBe( 'false' );
 		}
+	} );
+
+	it( 'keeps only the active panel in the tab order', () => {
+		const t = make();
+		const tabs = element.querySelectorAll( '.tabber__tab' );
+		const panels = element.querySelectorAll( '.tabber__panel' );
+		t.init( tabs[ 0 ] );
+		expect( panels[ 0 ].getAttribute( 'tabindex' ) ).toBe( '0' );
+		expect( panels[ 1 ].getAttribute( 'tabindex' ) ).toBe( '-1' );
+		t.activate( tabs[ 1 ], { source: 'user-click' } );
+		expect( panels[ 0 ].getAttribute( 'tabindex' ) ).toBe( '-1' );
+		expect( panels[ 1 ].getAttribute( 'tabindex' ) ).toBe( '0' );
 	} );
 
 	it( 'creates the floating indicator in normal mode', () => {
@@ -331,7 +344,7 @@ describe( 'createTabber', () => {
 		expect( () => t.handleResize( tablist ) ).not.toThrow();
 	} );
 
-	it( 'handleResize on the active panel re-runs setActivePanel without scrolling', () => {
+	it( 'handleResize on the active panel re-runs setActivePanel', () => {
 		const t = make();
 		const tabs = element.querySelectorAll( '.tabber__tab' );
 		t.init( tabs[ 0 ] );
@@ -343,6 +356,39 @@ describe( 'createTabber', () => {
 		t.handleResize( activePanel );
 		const section = element.querySelector( '.tabber__section' );
 		expect( section.style.height ).toBe( '250px' );
+	} );
+
+	it( 'handleResize on the active panel restores a lost section scroll offset', () => {
+		// Reattaching a detached tabber resets scrollLeft to 0 (#389).
+		element.querySelectorAll( '.tabber__panel' ).forEach( ( panel, i ) => {
+			Object.defineProperty( panel, 'offsetLeft', { value: i * 100, configurable: true } );
+		} );
+		const section = element.querySelector( '.tabber__section' );
+		const t = make();
+		const tabs = element.querySelectorAll( '.tabber__tab' );
+		t.init( tabs[ 0 ] );
+		t.activate( tabs[ 1 ], { source: 'user-click' } );
+		expect( section.scrollLeft ).toBe( 100 );
+		section.scrollLeft = 0;
+		t.handleResize( t.getActivePanel() );
+		expect( section.scrollLeft ).toBe( 100 );
+	} );
+
+	it( 'keeps the panel aligner on the active panel', () => {
+		const section = element.querySelector( '.tabber__section' );
+		const t = make();
+		const i = mockIO.mock.calls
+			.findIndex( ( args ) => args[ 1 ] && args[ 1 ].root === section );
+		const aligner = mockIO.mock.instances[ i ];
+		const tabs = element.querySelectorAll( '.tabber__tab' );
+		const panels = element.querySelectorAll( '.tabber__panel' );
+		t.init( tabs[ 0 ] );
+		expect( aligner.observe ).toHaveBeenLastCalledWith( panels[ 0 ] );
+		t.activate( tabs[ 1 ], { source: 'user-click' } );
+		expect( aligner.unobserve ).toHaveBeenCalledWith( panels[ 0 ] );
+		expect( aligner.observe ).toHaveBeenLastCalledWith( panels[ 1 ] );
+		t.destroy();
+		expect( aligner.disconnect ).toHaveBeenCalled();
 	} );
 
 	it( 'destroy unobserves resize from registry', () => {
@@ -391,6 +437,7 @@ describe( 'createTabber animation orchestration', () => {
 		};
 		mockIO = vi.fn( function MockIO() {
 			this.observe = vi.fn();
+			this.unobserve = vi.fn();
 			this.disconnect = vi.fn();
 		} );
 		mockTransclude = vi.fn();
@@ -484,7 +531,7 @@ describe( 'createTabber animation orchestration', () => {
 		const mockVT = stubScopedVT();
 		const t = make();
 		t.init( tabs[ 0 ] );
-		t.activate( tabs[ 1 ], { source: 'find', preventScroll: true } );
+		t.activate( tabs[ 1 ], { source: 'find' } );
 		expect( mockVT ).not.toHaveBeenCalled();
 		expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-right' ) ).toBe( false );
 		expect( panels[ 1 ].classList.contains( 'tabber__panel--entering-from-left' ) ).toBe( false );
