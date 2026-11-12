@@ -68,6 +68,7 @@
 				"ext.tabberNeue/ext.tabberNeue.mobile.less"
 			],
 			"dependencies": [
+				"mediawiki.api",
 				"mediawiki.util"
 			]
 		},
