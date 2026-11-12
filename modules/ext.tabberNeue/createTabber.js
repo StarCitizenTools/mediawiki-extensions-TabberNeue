@@ -436,13 +436,52 @@ function createTabber( opts ) {
 		stepInLockstep( [ initPhases( initialTab ) ] );
 	}
 
-	function handleResize( target ) {
-		if ( target === tablist ) {
-			units.overflow.update();
-			units.tabIndicator.update( activeTab );
-		} else if ( target === activePanel ) {
-			setActivePanel( target );
+	/**
+	 * Follow a ResizeObserver entry for the tablist or the active panel, phased
+	 * like initPhases() so that the registry can batch a callback's entries.
+	 *
+	 * @param {Element} target
+	 * @yield {undefined}
+	 */
+	function* resizePhases( target ) {
+		const isTablist = target === tablist;
+		const isPanel = target === activePanel;
+
+		// Write. Normally a no-op: the panel is already shown.
+		if ( isPanel ) {
+			showPanel( target );
 		}
+		yield;
+
+		// Read.
+		const overflowMetrics = isTablist ? units.overflow.getMetrics() : null;
+		const indicatorMetrics = isTablist ? units.tabIndicator.measure( activeTab ) : null;
+		const panelMetrics = isPanel ? measurePanel( target ) : null;
+		yield;
+
+		// Write.
+		if ( isTablist ) {
+			units.overflow.update( overflowMetrics );
+			units.tabIndicator.apply( indicatorMetrics );
+		}
+		if ( panelMetrics ) {
+			sizeSection( panelMetrics );
+		}
+		yield;
+
+		// Scroll.
+		if ( panelMetrics ) {
+			scrollSection( target, panelMetrics );
+		}
+	}
+
+	/**
+	 * Follow one resize on its own. The registry batches resizePhases() instead.
+	 *
+	 * @param {Element} target
+	 */
+	function handleResize( target ) {
+		stepInLockstep( [ resizePhases( target ) ] );
 	}
 
 	function getDefaultTab() {
@@ -506,6 +545,7 @@ function createTabber( opts ) {
 		getTabForPanel,
 		hasPanel,
 		handleResize,
+		resizePhases,
 		destroy() {
 			visibility.destroy();
 			units.findReveal.destroy();
