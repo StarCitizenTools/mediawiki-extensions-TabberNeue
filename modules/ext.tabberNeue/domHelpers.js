@@ -103,6 +103,33 @@ function panelAtScrollOffset( section, panels ) {
 }
 
 /**
+ * Step every iterator once, then every one again, until all are done. Used to
+ * run tabbers through their read and write phases together, so that one
+ * tabber's writes are not flushed by the next one's reads. An iterator that
+ * throws is dropped so that the rest still finish; the first error is rethrown
+ * at the end.
+ *
+ * @param {Iterable<Iterator>} iterators
+ */
+function stepInLockstep( iterators ) {
+	let pending = Array.from( iterators );
+	const errors = [];
+	while ( pending.length ) {
+		pending = pending.filter( ( it ) => {
+			try {
+				return !it.next().done;
+			} catch ( e ) {
+				errors.push( e );
+				return false;
+			}
+		} );
+	}
+	if ( errors.length ) {
+		throw errors[ 0 ];
+	}
+}
+
+/**
  * Sets the attributes of the given element based on the provided attributes object.
  *
  * @param {HTMLElement} element
@@ -120,5 +147,6 @@ module.exports = {
 	isBurstSource,
 	panelAtScrollOffset,
 	roundScrollLeft,
-	setAttributes
+	setAttributes,
+	stepInLockstep
 };

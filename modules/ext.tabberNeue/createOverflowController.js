@@ -97,11 +97,15 @@ function createOverflowController( opts ) {
 		header.classList.toggle( 'tabber__header--next-visible', !overflowMath.isAtEnd( m ) );
 	}
 
-	function scrollTabIntoView( tab ) {
+	/**
+	 * @param {HTMLElement} tab
+	 * @param {Object} [tabMetrics] getMetrics( tab ), if already read
+	 */
+	function scrollTabIntoView( tab, tabMetrics ) {
 		if ( !overflowing ) {
 			return;
 		}
-		const metrics = getMetrics( tab );
+		const metrics = tabMetrics || getMetrics( tab );
 		const newDistance = overflowMath.calculateNewScrollDistance( metrics, arrowWidth );
 		if ( newDistance === null || newDistance === metrics.scrollDistance ) {
 			return;
