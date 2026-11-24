@@ -1,6 +1,8 @@
 .tabber {
 	&__header {
 		--tabber-arrow-width: 32px;
+		/* @noflip */
+		--tabber-fade-end: to right;
 		position: relative;
 		display: flex;
 		/* defend against .tabber__section needing 100% */
@@ -15,6 +17,19 @@
 			--tabber-arrow-width: 0px;
 		}
 
+		// Set by JS from the tablist's computed direction, the same source the
+		// scroll controller uses. :dir() would ignore a CSS `direction` override.
+		&--rtl {
+			/* @noflip */
+			--tabber-fade-end: to left;
+
+			// The icon is the LTR chevron; mirror it for an RTL tabber
+			.tabber__header__prev::after,
+			.tabber__header__next::after {
+				transform: scaleX( -1 );
+			}
+		}
+
 		button {
 			/* Remove all default button styles */
 			all: unset;
@@ -22,11 +37,11 @@
 
 		/* additional specificity needed after reset button styles */
 		& &__prev {
-			left: 0;
+			inset-inline-start: 0;
 		}
 
 		& &__next {
-			right: 0;
+			inset-inline-end: 0;
 		}
 
 		& &__prev,
@@ -53,18 +68,18 @@
 		}
 
 		&--prev-visible .tabber__tabs {
-			-webkit-mask-image: linear-gradient( to right, transparent var( --tabber-arrow-width ), #000 20% );
-			mask-image: linear-gradient( to right, transparent var( --tabber-arrow-width ), #000 20% );
+			-webkit-mask-image: linear-gradient( var( --tabber-fade-end ), transparent var( --tabber-arrow-width ), #000 20% );
+			mask-image: linear-gradient( var( --tabber-fade-end ), transparent var( --tabber-arrow-width ), #000 20% );
 		}
 
 		&--next-visible .tabber__tabs {
-			-webkit-mask-image: linear-gradient( to right, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
-			mask-image: linear-gradient( to right, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
+			-webkit-mask-image: linear-gradient( var( --tabber-fade-end ), #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
+			mask-image: linear-gradient( var( --tabber-fade-end ), #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
 		}
 
 		&--prev-visible.tabber__header--next-visible .tabber__tabs {
-			-webkit-mask-image: linear-gradient( to right, transparent var( --tabber-arrow-width ), #000 20%, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
-			mask-image: linear-gradient( to right, transparent var( --tabber-arrow-width ), #000 20%, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
+			-webkit-mask-image: linear-gradient( var( --tabber-fade-end ), transparent var( --tabber-arrow-width ), #000 20%, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
+			mask-image: linear-gradient( var( --tabber-fade-end ), transparent var( --tabber-arrow-width ), #000 20%, #000 80%, transparent calc( 100% - var( --tabber-arrow-width ) ) );
 		}
 
 		&--prev-visible .tabber__header__prev,

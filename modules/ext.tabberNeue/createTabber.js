@@ -68,6 +68,7 @@ function createTabber( opts ) {
 
 	const tablistStyle = win.getComputedStyle( tablist );
 	const rtl = tablistStyle.direction === 'rtl';
+	header.classList.toggle( 'tabber__header--rtl', rtl );
 	const arrowWidth =
 		parseFloat( tablistStyle.getPropertyValue( '--tabber-arrow-width' ) ) || 0;
 
