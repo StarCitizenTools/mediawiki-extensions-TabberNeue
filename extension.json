@@ -130,16 +130,10 @@
 			"selector": ".tabber__header__{name}:after",
 			"images": {
 				"next": {
-					"file": {
-						"ltr": "ext.tabberNeue.icons/next-ltr.svg",
-						"rtl": "ext.tabberNeue.icons/next-rtl.svg"
-					}
+					"file": "ext.tabberNeue.icons/next-ltr.svg"
 				},
 				"prev": {
-					"file": {
-						"ltr": "ext.tabberNeue.icons/previous-ltr.svg",
-						"rtl": "ext.tabberNeue.icons/previous-rtl.svg"
-					}
+					"file": "ext.tabberNeue.icons/previous-ltr.svg"
 				}
 			}
 		},
